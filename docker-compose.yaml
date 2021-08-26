@@ -1,16 +1,39 @@
 version: "3.8"
 services:
+  mysql:
+    image: mysql:5.7
+    command: --disable-partition-engine-check
+    environment:
+      MYSQL_ROOT_PASSWORD: kyosk_pass
+      MYSQL_DATABASE: kyosk_online
+      MYSQL_USER: user_kyosk
+      MYSQL_PASSWORD: pass_kyosk
+
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 15s
+      retries: 5
+
+    ports:
+      - 3306:3306
+
+    networks:
+      - sema-dev-network
+
   app:
     build:
       context: .
       dockerfile: Dockerfile
-
     volumes:
       - ./:/var/www/html/
     ports:
       - 8000:80
     networks:
       - sema-dev-network
+    depends_on:
+      mysql:
+        condition: service_healthy
 
 networks:
   sema-dev-network:
