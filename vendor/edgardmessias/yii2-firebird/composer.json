@@ -1,0 +1,48 @@
+{
+    "name": "edgardmessias/yii2-firebird",
+    "description": "Firebird connector for Yii2 framework",
+    "keywords": ["yii2", "firebird", "active-record"],
+    "type": "yii2-extension",
+    "license": "BSD-3-Clause",
+    "support": {
+        "issues": "https://github.com/edgardmessias/yii2-firebird/issues",
+        "forum": "http://www.yiiframework.com/forum/",
+        "wiki": "http://www.yiiframework.com/wiki/",
+        "irc": "irc://irc.freenode.net/yii",
+        "source": "https://github.com/edgardmessias/yii2-firebird"
+    },
+    "authors": [
+        {
+            "name": "Edgard Lorraine Messias",
+            "email": "edgardmessias@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "^2.0.15.0"
+    },
+    "require-dev": {
+        "yiisoft/yii2-dev": "~2.0.15.0",
+        "yiisoft/yii2-coding-standards": "^2.0.2",
+        "phpunit/phpunit": "4.8.34"
+    },
+    "autoload": {
+        "psr-4": {
+            "edgardmessias\\db\\firebird\\": "src"
+        }
+    },
+    "config": {
+        "platform": {
+            "php": "5.4"
+        },
+        "fxp-asset": {
+            "installer-paths": {
+                "npm-asset-library": "vendor/npm",
+                "bower-asset-library": "vendor/bower"
+            },
+            "vcs-driver-options": {
+                "github-no-api": true
+            },
+            "pattern-skip-version": "(-build|-patch)"
+        }
+    }
+}
