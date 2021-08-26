@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    volumes:
+      - ./:/var/www/html/
+    ports:
+      - 8000:80
+    networks:
+      - sema-dev-network
+
+networks:
+  sema-dev-network:
+    driver: 'bridge'

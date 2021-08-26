@@ -1,0 +1,9 @@
+23/04/2020 14:36:00 Dispositivo : Five  | Erros => erro:e
+23/04/2020 14:38:45 Dispositivo : Five  | Erros => r:a
+cnpj:0
+23/04/2020 14:41:48 Dispositivo : Five  | Erros => r:acnpj:023/04/2020 14:44:33 Dispositivo : Five  | Erros => r:a
+cnpj:1
+23/04/2020 14:53:33 Dispositivo : Five  | Erros => r:a
+cnpj:2
+23/04/2020 14:54:32 Dispositivo : Five  | Erros => r:a
+cnpj:2

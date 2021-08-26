@@ -1,0 +1,1 @@
+<?php foreach (PDO::getAvailableDrivers() as $drv) { echo $drv."<br/>"; } ?> 
