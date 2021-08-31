@@ -1,0 +1,33 @@
+.banner {
+  height: 16rem;
+  background: linear-gradient(0deg, rgba(16, 17, 37, 0.5), rgba(16, 17, 37, 0.5)), url(/web/images/new/food.jpg) no-repeat center;
+  background-size: cover;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+}
+
+.banner .banner__logo {
+  width: 8rem;
+  height: 8rem;
+  background: url(/web/images/logo/logo.png) no-repeat center, #fff;
+  background-size: contain;
+  border-radius: 50%;
+}
+
+.banner .banner__mesa {
+  font-family: var(--font-poppins);
+  font-style: normal;
+  font-weight: 600;
+  font-size: 1.8rem;
+  color: #fff;
+}
+
+.content {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 1.5rem;
+}

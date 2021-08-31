@@ -593,8 +593,12 @@ var enviarPedido = function () {
             pedido: consumo_list
         };
         console.log(dados);
+
+        const queryParams = new URLSearchParams(window.location.search);
+        const token = queryParams.get("token");
+
         $.ajax({
-            url: urlBase + "salvarpedido",
+            url: urlBase + "salvarpedido&token=" + token,
             async: false,
             type: 'POST',
             data: dados,

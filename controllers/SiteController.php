@@ -9,6 +9,8 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use Ramsey\Uuid\Uuid;
+use ReallySimpleJWT\Token;
 
 class SiteController extends Controller {
 
@@ -57,12 +59,27 @@ class SiteController extends Controller {
      *
      * @return string
      */
-    public function actionIndex($mesa) {
-        if (isset($mesa)) {
+    public function actionIndex() {
+        $mesa = Yii::$app->getRequest()->getQueryParam("mesa");
+        $token = Yii::$app->getRequest()->getQueryParam("token");
+
+        if (!isset($token) && isset($mesa)) {
+            $uuid = Uuid::uuid4();
+            $payload = [
+                'iat' => time(),
+                'uid' => $mesa,
+                'req_uid' => $uuid->toString()
+            ];
+            $token = Token::customPayload($payload, "Hello&MikeFooBar123");
+            return $this->redirect("/web?token=$token");
+        } else if (isset($token)) {
+            $payload = Token::getPayload($token, "Hello&MikeFooBar123");
+            $mesa = $payload["uid"];
+
             return $this->render('index', [
-                        'mesa' => $mesa,
+                'mesa' => $mesa,
             ]);
-        }else{
+        } else {
             return $this->render('error');
         }
     }
@@ -283,8 +300,18 @@ class SiteController extends Controller {
         }
     }
 
-    public function actionSalvarpedido() {
+    public function actionSalvarpedido($token) {
         Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $payload = Token::getPayload($token, "Hello&MikeFooBar123");
+        $uid = $payload["req_uid"];
+
+        $existentToken = \app\models\Token::findOne(['uuid' => $uid]);
+        if ($existentToken != null) {
+            Yii::$app->response->statusCode = 400;
+            return ['message' => 'invalid token'];
+        }
+
         $req = Yii::$app->request;
         if ($req->isPost) {
             $mesa = $req->post('mesa');
@@ -332,6 +359,10 @@ class SiteController extends Controller {
                     }
                 }
             }
+
+            $tokenreg = new \app\models\Token();
+            $tokenreg->uuid = $uid;
+            $tokenreg->save();
 
             return ['message' => 'sucesso'];
         } else {

@@ -9,6 +9,9 @@ services:
       MYSQL_USER: user_kyosk
       MYSQL_PASSWORD: pass_kyosk
 
+    volumes:
+      - ./kyosk_online.sql:/docker-entrypoint-initdb.d/init-db.sql
+
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       interval: 10s

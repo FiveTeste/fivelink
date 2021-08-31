@@ -177,6 +177,9 @@ class ActiveField extends Component
         } catch (\Exception $e) {
             ErrorHandler::convertExceptionToError($e);
             return '';
+        } catch (\Throwable $e) {
+            ErrorHandler::convertExceptionToError($e);
+            return '';
         }
     }
 
@@ -542,6 +545,13 @@ class ActiveField extends Component
      */
     public function radio($options = [], $enclosedByLabel = true)
     {
+        if ($this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_INPUT) {
+            $this->addErrorClassIfNeeded($options);
+        }
+
+        $this->addAriaAttributes($options);
+        $this->adjustLabelFor($options);
+
         if ($enclosedByLabel) {
             $this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
             $this->parts['{label}'] = '';
@@ -556,13 +566,6 @@ class ActiveField extends Component
             $options['label'] = null;
             $this->parts['{input}'] = Html::activeRadio($this->model, $this->attribute, $options);
         }
-
-        if ($this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_INPUT) {
-            $this->addErrorClassIfNeeded($options);
-        }
-
-        $this->addAriaAttributes($options);
-        $this->adjustLabelFor($options);
 
         return $this;
     }
@@ -594,6 +597,13 @@ class ActiveField extends Component
      */
     public function checkbox($options = [], $enclosedByLabel = true)
     {
+        if ($this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_INPUT) {
+            $this->addErrorClassIfNeeded($options);
+        }
+
+        $this->addAriaAttributes($options);
+        $this->adjustLabelFor($options);
+
         if ($enclosedByLabel) {
             $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
             $this->parts['{label}'] = '';
@@ -608,13 +618,6 @@ class ActiveField extends Component
             $options['label'] = null;
             $this->parts['{input}'] = Html::activeCheckbox($this->model, $this->attribute, $options);
         }
-
-        if ($this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_INPUT) {
-            $this->addErrorClassIfNeeded($options);
-        }
-
-        $this->addAriaAttributes($options);
-        $this->adjustLabelFor($options);
 
         return $this;
     }
@@ -753,7 +756,7 @@ class ActiveField extends Component
      * the following code, assuming that `$form` is your [[ActiveForm]] instance:
      *
      * ```php
-     * $form->field($model, 'date')->widget(\yii\widgets\MaskedInput::className(), [
+     * $form->field($model, 'date')->widget(\yii\widgets\MaskedInput::class, [
      *     'mask' => '99/99/9999',
      * ]);
      * ```
@@ -763,6 +766,7 @@ class ActiveField extends Component
      * @param string $class the widget class name.
      * @param array $config name-value pairs that will be used to initialize the widget.
      * @return $this the field object itself.
+     * @throws \Exception
      */
     public function widget($class, $config = [])
     {
@@ -777,14 +781,15 @@ class ActiveField extends Component
                 }
             }
             $config['field'] = $this;
-            if (isset($config['options'])) {
-                if ($this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_INPUT) {
-                    $this->addErrorClassIfNeeded($config['options']);
-                }
-
-                $this->addAriaAttributes($config['options']);
-                $this->adjustLabelFor($config['options']);
+            if (!isset($config['options'])) {
+                $config['options'] = [];
             }
+            if ($this->form->validationStateOn === ActiveForm::VALIDATION_STATE_ON_INPUT) {
+                $this->addErrorClassIfNeeded($config['options']);
+            }
+
+            $this->addAriaAttributes($config['options']);
+            $this->adjustLabelFor($config['options']);
         }
 
         $this->parts['{input}'] = $class::widget($config);
