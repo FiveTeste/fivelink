@@ -6,7 +6,6 @@ return [
     'username' => 'm61t5k8gtzvl59lw',
     'password' => 'eg4ixs4yddxewkow',
     'charset' => 'utf8',
-
     // 'class' => 'yii\db\Connection',
     // 'dsn' => 'mysql:host=mysql;port=3306;dbname=kyosk_online',
     // 'username' => 'user_kyosk',
