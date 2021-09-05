@@ -26,8 +26,7 @@ class HomePage extends HTMLElement {
       const element = document.createElement(CardItem);
 
       const slotsHtml = html`
-        <span slot="name">${groupName.toLowerCase()}</span>
-      `;
+        <span slot="name">${groupName.toLowerCase()}</span>`;
 
       element.appendChild(slotsHtml);
       element.image = imageUrl;

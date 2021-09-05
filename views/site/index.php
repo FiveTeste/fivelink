@@ -64,7 +64,24 @@ $this->title = 'Kyosk online';
 
 <!-- PRODUCTS PAGE TEMPLATE -->
 <template id="products-page">
-    <div id="item-id"></div>
+    <link rel="stylesheet" href="/web/css/new/products-page.css">
+    
+    <ul class="content">
+        <slot name="items"></slot>
+    </ul>
+</template>
+    
+    <!-- PRODUCT ITEM TEMPLATE -->
+<template id="product-item">
+    <link rel="stylesheet" href="/web/css/new/product-item.css">
+    
+    <li class="item">
+        <img class="item__image" loading="lazy" />
+        <div class="item__name"><slot name="name"></slot></div>
+        <div>
+            <div class="item__preco"><slot name="preco"></slot></div>
+        </div>
+    </li> 
 </template>
 
 

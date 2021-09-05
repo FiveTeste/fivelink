@@ -12,11 +12,13 @@ $(window).ready(function () {
 /**         VARIAVEIS GLOBAL      **/
 var idSubgrupoSelecionado = "";
 var lista_produto = [];
-var produto = {ACOMPANHAMENTO: "", ADICIONAL: null, CODGRUPO: "", CODIGO: "",
+var produto = {
+    ACOMPANHAMENTO: "", ADICIONAL: null, CODGRUPO: "", CODIGO: "",
     CODSUBGRUPO: "", DT_FIM_PROMOCAO: "", DT_INICIO_PROMOCAO: "",
     FOTO: "", HORARIO_PROMOCAO: 1, HORA_FIM_PROMOCAO: "", HORA_INICIO_PROMOCAO: "",
     MOSTRA_KYOSK_APP: "", PRECOVENDA: 0, PRECO_PROMOCAO: 0, PRODUTO: "", PRODUTO_MONTADO: null,
-    SITUACAO: 0, UNIDADE: "UN", USA_BALANCA: 2, USA_COPOS: null, USA_PONTO_CARNE: null, USA_TALHERES: null};
+    SITUACAO: 0, UNIDADE: "UN", USA_BALANCA: 2, USA_COPOS: null, USA_PONTO_CARNE: null, USA_TALHERES: null
+};
 
 
 var lista_telas_opcoes = [];
@@ -44,7 +46,7 @@ class ItemIngrediente {
 ;
 class Consumo {
     constructor(COD_MESA, COD_USUARIO, COD_PRODUTO, PRODUTO, QTDE, UNITARIO, TOTAL, TRANSF_MESA, CANCELADO, COMPLEMENTO, COMPLEMENTO2, IMPRESSO, COD_AGRUP, CODSUBGRUPO,
-            COD_TEMP, DISPOSITIVO, LISTA_OPCIONAIS, LISTA_ADICIONAIS, FOTO) {
+        COD_TEMP, DISPOSITIVO, LISTA_OPCIONAIS, LISTA_ADICIONAIS, FOTO) {
         var agora = new Date();
         this.COD_MESA = COD_MESA;
         this.COD_USUARIO = COD_USUARIO;
@@ -106,15 +108,15 @@ var carregarGrupos = function () {
             $('#pills-tab').html('');
             while (data[i]) {
                 $('#pills-tab').append(
-                        ' <li class="nav-item " id="' + data[i]['CODIGO'] + '" onClick="carregarProdutos(this.id)" style="margin-left: 3px!important; "> ' +
-                        ' <a class="nav-link" id="pills-home-tab-icon" data-toggle="pill" href="#produtos" data-transition="slide" data-direction="reverse" ' +
-                        'role="tab" aria-controls="pills-destaques-icon" aria-selected="true" style="height: 80px;display: block;vertical-align: middle;">' +
-                        '     <i class=""><!-- <img src="images/grupos/correios1.png" class="img-item-grupo" /> --></i>' +
-                        '' +
-                        '    ' + data[i]['GRUPO'] + '      ' +
-                        ' </a>              ' +
-                        ' </li>             '
-                        );
+                    ' <li class="nav-item " id="' + data[i]['CODIGO'] + '" onClick="carregarProdutos(this.id)" style="margin-left: 3px!important; "> ' +
+                    ' <a class="nav-link" id="pills-home-tab-icon" data-toggle="pill" href="#produtos" data-transition="slide" data-direction="reverse" ' +
+                    'role="tab" aria-controls="pills-destaques-icon" aria-selected="true" style="height: 80px;display: block;vertical-align: middle;">' +
+                    '     <i class=""><!-- <img src="images/grupos/correios1.png" class="img-item-grupo" /> --></i>' +
+                    '' +
+                    '    ' + data[i]['GRUPO'] + '      ' +
+                    ' </a>              ' +
+                    ' </li>             '
+                );
                 i++;
             }
         },
@@ -132,7 +134,7 @@ function getListasubgrupo(codigo) {
 }
 
 var carregarProdutos = function (codigo) {
-    $.mobile.navigate("#produtos", {info: "info about the #foo hash"});
+    $.mobile.navigate("#produtos", { info: "info about the #foo hash" });
     $.mobile.defaultPageTransition = "slide";
     var dados = {
         'codgrupo': codigo
@@ -166,16 +168,16 @@ var carregarProdutos = function (codigo) {
                     }
 
                     $('#lst-prod').append(
-                            '<li class="nav-item1" style="margin-left: 0!important;" id="' + i + '_id" onclick="prodSelecionado(this.id,0)" >  ' +
-                            '<a class="nav-link " id="pills-home-tab-icon" data-toggle="pill" href="#" data-transition="slide" data-direction="reverse" ' +
-                            'role="tab" aria-controls="pills-destaques-icon" aria-selected="true" style="padding: 0;">' +
-                            '<img src="images/produtos/' + imagem + '" class=" float-left rounded-circle" />' +
-                            '<p >  ' + data[i]['PRODUTO'] + '</p>   ' +
-                            '<h4 >  ' + acompanhamento + ' </h4>  ' +
-                            '<h5  >R$ ' + preco + '</h5>' +
-                            '</a>             ' +
-                            '</li>          '
-                            );
+                        '<li class="nav-item1" style="margin-left: 0!important;" id="' + i + '_id" onclick="prodSelecionado(this.id,0)" >  ' +
+                        '<a class="nav-link " id="pills-home-tab-icon" data-toggle="pill" href="#" data-transition="slide" data-direction="reverse" ' +
+                        'role="tab" aria-controls="pills-destaques-icon" aria-selected="true" style="padding: 0;">' +
+                        '<img src="images/produtos/' + imagem + '" class=" float-left rounded-circle" />' +
+                        '<p >  ' + data[i]['PRODUTO'] + '</p>   ' +
+                        '<h4 >  ' + acompanhamento + ' </h4>  ' +
+                        '<h5  >R$ ' + preco + '</h5>' +
+                        '</a>             ' +
+                        '</li>          '
+                    );
                     i++;
                 }
 
@@ -195,16 +197,16 @@ var carregarProdutos = function (codigo) {
             var imagem = "default.png";
 
             $('#lst-prod').append(
-                    '<li class="nav-item1" style="margin-left: 0!important;" id="' + codigo + '" onclick="prodSelecionado(this.id,1)" >  ' +
-                    '<a class="nav-link " id="pills-home-tab-icon" data-toggle="pill" href="#" data-transition="slide" data-direction="reverse" ' +
-                    'role="tab" aria-controls="pills-destaques-icon" aria-selected="true" style="padding: 0;">' +
-                    '<img src="images/produtos/' + imagem + '" class=" float-left rounded-circle" />' +
-                    '<p >  </p>   ' +
-                    '<p >  ' + subgrupos[i]['SUBGRUPO'] + ' </p>  ' +
-                    '<h5  ></h5>' +
-                    '</a>             ' +
-                    '</li>          '
-                    );
+                '<li class="nav-item1" style="margin-left: 0!important;" id="' + codigo + '" onclick="prodSelecionado(this.id,1)" >  ' +
+                '<a class="nav-link " id="pills-home-tab-icon" data-toggle="pill" href="#" data-transition="slide" data-direction="reverse" ' +
+                'role="tab" aria-controls="pills-destaques-icon" aria-selected="true" style="padding: 0;">' +
+                '<img src="images/produtos/' + imagem + '" class=" float-left rounded-circle" />' +
+                '<p >  </p>   ' +
+                '<p >  ' + subgrupos[i]['SUBGRUPO'] + ' </p>  ' +
+                '<h5  ></h5>' +
+                '</a>             ' +
+                '</li>          '
+            );
             i++;
         }
     }
@@ -222,7 +224,7 @@ var prodSelecionado = function (_id, tipo) {
     produto_opcao_talheres = 0;
     obs = "";
 
-    $.mobile.changePage("#myDialog", {role: "page", transition: 'slideup'});
+    $.mobile.changePage("#myDialog", { role: "page", transition: 'slideup' });
 
     /**
      * tipo = 0  produto
@@ -287,7 +289,7 @@ function navnext() {
     $("div.input-group").remove();
     $("input[type='number']").re;
     $('#telas').html($('#' + lista_telas_opcoes[nextPageOption]).html());
-    
+
     $("input[type='number']").inputSpinner();
 
     if (lista_telas_opcoes[nextPageOption] === 'page_option_opcoes') {
@@ -307,20 +309,20 @@ function navnext() {
                 foto = foto.toString().substring(foto.length - 3, foto.length);
                 imagem = codigo + ".png";
             }
-                                                //parei aqui ver opcção de selecionar os produtos divisiveis para adicionar ao consumo (montado)
+            //parei aqui ver opcção de selecionar os produtos divisiveis para adicionar ao consumo (montado)
             $('#lst-prod-opcoes').append(
-                    '<li class="nav-item1" style="margin-left: 0!important;" id="' + i + '_id" onclick="prodSelecionado(this.id,0)" >  ' +
-                    '<a class="nav-link " id="pills-home-tab-icon" data-toggle="pill" href="#" data-transition="slide" data-direction="reverse" ' +
-                    'role="tab" aria-controls="pills-destaques-icon" aria-selected="true" style="padding: 0;">' +
-                    '<img src="images/produtos/' + imagem + '" class=" float-left rounded-circle" />' +
-                    '<p >  ' + lista_opcoes[i]['PRODUTO'] + '</p>   ' +
-                    '<h4 >  ' + acompanhamento + ' </h4>  ' +
-                    '<h5  >R$ ' + preco + '</h5>' +
-                    '</br>'+
-                    '<input style="position: absolute; right: 10px;" class="form-check-input me-1" type="checkbox" value="">'+
-                    '</a>             ' +
-                    '</li>          '
-                    );
+                '<li class="nav-item1" style="margin-left: 0!important;" id="' + i + '_id" onclick="prodSelecionado(this.id,0)" >  ' +
+                '<a class="nav-link " id="pills-home-tab-icon" data-toggle="pill" href="#" data-transition="slide" data-direction="reverse" ' +
+                'role="tab" aria-controls="pills-destaques-icon" aria-selected="true" style="padding: 0;">' +
+                '<img src="images/produtos/' + imagem + '" class=" float-left rounded-circle" />' +
+                '<p >  ' + lista_opcoes[i]['PRODUTO'] + '</p>   ' +
+                '<h4 >  ' + acompanhamento + ' </h4>  ' +
+                '<h5  >R$ ' + preco + '</h5>' +
+                '</br>' +
+                '<input style="position: absolute; right: 10px;" class="form-check-input me-1" type="checkbox" value="">' +
+                '</a>             ' +
+                '</li>          '
+            );
             i++;
         }
     }
@@ -330,11 +332,11 @@ function navnext() {
         $('#lista-opcionais').html('');
         while (lista_prod_opcionais[i]) {
             $('#lista-opcionais').append(
-                    '<label class="list-group-item">' +
-                    lista_prod_opcionais[i]['NOME'] +
-                    '<input style="position: absolute; right: 10px;" class="form-check-input me-1 ckbopcionais" type="checkbox" value="' + lista_prod_opcionais[i]['CODIGO'] + '">' +
-                    '</label> '
-                    );
+                '<label class="list-group-item">' +
+                lista_prod_opcionais[i]['NOME'] +
+                '<input style="position: absolute; right: 10px;" class="form-check-input me-1 ckbopcionais" type="checkbox" value="' + lista_prod_opcionais[i]['CODIGO'] + '">' +
+                '</label> '
+            );
             i++;
         }
     }
@@ -344,15 +346,15 @@ function navnext() {
         $('#lista-adicionais').html('');
         while (lista_prod_adicionais[i]) {
             $('#lista-adicionais').append(
-                    '<label class="list-group-item">' +
-                    lista_prod_adicionais[i]['PRODUTO'] +
-                    '<input id="' + i + '" style="position: absolute; right: 10px;" class="form-check-input me-1 ckbadicionais" type="checkbox" value="' + lista_prod_adicionais[i]['CODIGO'] + '" onclick="actionAdicionais();">' +
-                    '</label> '
-                    );
+                '<label class="list-group-item">' +
+                lista_prod_adicionais[i]['PRODUTO'] +
+                '<input id="' + i + '" style="position: absolute; right: 10px;" class="form-check-input me-1 ckbadicionais" type="checkbox" value="' + lista_prod_adicionais[i]['CODIGO'] + '" onclick="actionAdicionais();">' +
+                '</label> '
+            );
             i++;
         }
     }
-    
+
     nextPageOption++;
 
     var $changedInput = $("input#quantidade");
@@ -396,7 +398,7 @@ var actionAdicionais = function () {
         i++;
         var pos = $(this).prop('id');
         var preco = lista_prod_adicionais[pos]['PRECOVENDA'];
-        var adicional = {CODADICIONAL: $(this).val(), QTDE: 1, PRECO: preco, CODITEM: i, CONSUMO: 0};
+        var adicional = { CODADICIONAL: $(this).val(), QTDE: 1, PRECO: preco, CODITEM: i, CONSUMO: 0 };
         lista_prod_adicionais_selecionado.push(adicional);
         totalAdicionais += preco;
     });
@@ -487,18 +489,18 @@ var carregarItensCarrinho = function () {
         }
 
         $('#lst-carr').append(
-                '<li class="nav-item1" style="margin-left: 0!important;" id="' + i + '_id" >  ' +
-                '<a class="nav-link " id="pills-home-tab-icon" data-toggle="pill" href="#" data-transition="slide" data-direction="reverse" ' +
-                'role="tab" aria-controls="pills-destaques-icon" aria-selected="true" style="padding: 0;">' +
-                '<img src="images/produtos/' + imagem + '" class=" float-left rounded-circle" />' +
-                '<p >  ' + consumo_list[i]['PRODUTO'] + '</p>   ' +
-                '<h4 >  ' + acompanhamento + ' </h4>  ' +
-                '<i class="bi bi-trash lixeira" id="' + i + '_cid" onclick="deleteConsumoLista(this.id);" ></i> ' +
-                ' <div> <p class="qtde">Qtde. ' + consumo_list[i]['QTDE'] + '</p>' +
-                '<h5  >Total R$ ' + preco + '</h5> </div>' +
-                '</a>             ' +
-                '</li>          '
-                );
+            '<li class="nav-item1" style="margin-left: 0!important;" id="' + i + '_id" >  ' +
+            '<a class="nav-link " id="pills-home-tab-icon" data-toggle="pill" href="#" data-transition="slide" data-direction="reverse" ' +
+            'role="tab" aria-controls="pills-destaques-icon" aria-selected="true" style="padding: 0;">' +
+            '<img src="images/produtos/' + imagem + '" class=" float-left rounded-circle" />' +
+            '<p >  ' + consumo_list[i]['PRODUTO'] + '</p>   ' +
+            '<h4 >  ' + acompanhamento + ' </h4>  ' +
+            '<i class="bi bi-trash lixeira" id="' + i + '_cid" onclick="deleteConsumoLista(this.id);" ></i> ' +
+            ' <div> <p class="qtde">Qtde. ' + consumo_list[i]['QTDE'] + '</p>' +
+            '<h5  >Total R$ ' + preco + '</h5> </div>' +
+            '</a>             ' +
+            '</li>          '
+        );
         i++;
 
     }

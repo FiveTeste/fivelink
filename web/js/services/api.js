@@ -1,5 +1,14 @@
 const urlBase = `${window.baseUrl}/index.php?r=site/`;
 
 export function api(input, options) {
-  return fetch(`${urlBase}${input}`, options).then((result) => result.json());
+  const currentOptions = options || {};
+  const currentHeaders = currentOptions.headers || {};
+
+  return fetch(`${urlBase}${input}`, {
+    ...currentOptions,
+    headers: {
+      ...currentHeaders,
+      'X-Requested-With': 'XMLHttpRequest'
+    }
+  }).then((result) => result.json());
 }
