@@ -2,11 +2,40 @@
 $this->title = 'Kyosk online';
 ?>
 
-<header>
-    <h1>Kyosk Online</h1>
-</header>
+<page-content></page-content>
 
-<main></main>
+<!-- PAGE CONTENT TEMPLATE -->
+<template id="page-content">
+    <link href="/web/css/new/page-content.css" rel="stylesheet" />
+
+    <div class="page">
+        <header class="page__header">
+            <h1 class="page__title">Kyosk Online</h1>
+        </header>
+
+        <main class="page__content"><slot name="content"></slot></main>
+
+        <footer class="page__footer">
+            <nav class="navbar">
+                <a href="/web/" class="navbar__item">
+                    <object
+                        type="image/svg+xml"
+                        data="/web/icons/home.svg" 
+                        data-type="svg-icon" 
+                        data-icon-stroke="red" 
+                    ></object>
+                </a>
+                <a href="/web/carrinho" class="navbar__item">
+                    <object
+                        type="image/svg+xml"
+                        data="/web/icons/shopping-cart.svg" 
+                        data-type="svg-icon" 
+                    ></object>
+                </a>
+            </nav>
+        </footer>
+    </div>
+</template>
 
 <!-- HOME PAGE TEMPLATE -->
 <template id="home-page">
@@ -45,4 +74,5 @@ $this->title = 'Kyosk online';
 </script>
 
 <script type="module" src="/web/js/imports.js"></script>
+<script type="module" defer src="/web/js/components/PageContent.js"></script>
 <script type="module" defer src="/web/js/router.js"></script>

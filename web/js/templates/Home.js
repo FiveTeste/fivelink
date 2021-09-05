@@ -9,7 +9,16 @@ class HomeTemplate extends HTMLElement {
     shadow.appendChild(content);
   }
 
-  connectedCallback() {}
+  onChange(value) {
+    console.log("alterou", value);
+  }
+  connectedCallback() {
+    this.store.addListener(this.onChange);
+    this.setAttribute("slot", "content");
+  }
+  disconnectedCallback() {
+    this.store.removeListener(this.onChange);
+  }
 }
 
 export const { name, component } = registerComponent({

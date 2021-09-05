@@ -27,24 +27,3 @@ body {
   width: 100vw;
   background-color: #F6F6F6;
 }
-
-header {
-  height: 5.4rem;
-  background-color: #fff;
-  display: flex;
-  align-items: center;
-  padding: 0 1.5rem;
-  border-radius: 0 0 0.3rem 0.3rem;
-  box-shadow: 0rem 0.1rem 0.4rem rgba(194, 194, 203, 0.822);
-}
-
-header h1 {
-  font-family: var(--font-artifika);
-  font-weight: normal;
-  font-size: 2.4rem;
-  color: #BF4816;
-}
-
-main {
-  margin-top: 1rem;
-}

@@ -6,6 +6,11 @@ import { api } from "../services/api.js";
 class HomePage extends HTMLElement {
   constructor() {
     super();
+
+    const pageTemplate = document.createElement(HomeTemplate);
+
+    this.attachShadow({ mode: "open" });
+    this.shadowRoot.appendChild(pageTemplate);
   }
 
   async loadItems() {
@@ -13,8 +18,7 @@ class HomePage extends HTMLElement {
       method: "GET"
     });
 
-    const container = this.firstChild;
-
+    const container = this.shadowRoot.firstChild;
     data.forEach((item) => {
       const groupName = item.GRUPO || "";
       const imageUrl = "/web/images/new/food.jpg";
@@ -36,11 +40,7 @@ class HomePage extends HTMLElement {
 
   connectedCallback() {
     this.loadItems();
-
-    this.innerHTML = "";
-
-    const pageTemplate = document.createElement(HomeTemplate);
-    this.appendChild(pageTemplate);
+    fireEvent("change-navbar", { show: true });
   }
 }
 

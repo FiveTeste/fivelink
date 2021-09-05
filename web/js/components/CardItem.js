@@ -1,3 +1,5 @@
+import { addItem } from "../store/actions.js";
+
 class CardItem extends HTMLElement {
   constructor() {
     super();
@@ -11,6 +13,8 @@ class CardItem extends HTMLElement {
 
   onClick() {
     const url = `/web/products/${this.code}${location.search}`;
+    this.store.dispatchAction(addItem(this.code));
+
     Router.go(url);
   }
 

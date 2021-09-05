@@ -5,9 +5,9 @@ class ProductsPage extends HTMLElement {
     super();
   }
 
-
-
   connectedCallback() {
+    fireEvent("change-navbar", { show: false });
+
     this.innerHTML = "";
 
     const itemCode = this.location.params.code;
