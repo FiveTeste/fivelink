@@ -77,11 +77,11 @@ $this->title = 'Kyosk online';
     
     <li class="item">
         <img class="item__image" loading="lazy" />
-        <div class="item__name"><slot name="name"></slot></div>
-        <div>
+        <div class="item__detail">
+            <div class="item__name"><slot name="name"></slot></div>
             <div class="item__preco"><slot name="preco"></slot></div>
         </div>
-    </li> 
+    </li>
 </template>
 
 
