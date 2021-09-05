@@ -18,7 +18,6 @@
   filter: brightness(85%);
 }
 
-
 .card .card__name {
   font-family: var(--font-poppins);
   font-style: normal;

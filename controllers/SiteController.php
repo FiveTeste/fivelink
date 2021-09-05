@@ -246,13 +246,13 @@ class SiteController extends Controller {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $req = Yii::$app->request;
 
-        if ($req->isAjax) {
+         if ($req->isAjax) {
             $grupo = $req->get('codgrupo');
             $model = \app\models\Produto::findAll(['MOSTRA_KYOSK_APP' => 1, 'CODGRUPO' => $grupo, 'SITUACAO' => 0]);
             return $model;
-        } else {
-            return [];
-        }
+         } else {
+             return [];
+         }
     }
 
     public function actionProdutobysubgrupo() {
