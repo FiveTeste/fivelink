@@ -1,15 +1,13 @@
-import { name as ProductsTemplate } from "../templates/Products.js";
-import { name as ProductItem } from "../components/ProductItem.js";
-
-import { formatMoney } from "../utils/numberFormat.js";
+import { name as CategoriesTemplate } from "../templates/Categories.js";
+import { name as CategoryItem } from "../components/CategoryItem.js";
 
 import { api } from "../services/api.js";
 
-class ProductsPage extends HTMLElement {
+class CategoriesPage extends HTMLElement {
   constructor() {
     super();
 
-    const pageTemplate = document.createElement(ProductsTemplate);
+    const pageTemplate = document.createElement(CategoriesTemplate);
 
     this.attachShadow({ mode: "open" });
     this.shadowRoot.appendChild(pageTemplate);
@@ -19,22 +17,19 @@ class ProductsPage extends HTMLElement {
     const groupCode = this.location.params.code;
     const container = this.shadowRoot.firstChild;
 
-    const data = await api(`produtobygrupo&codgrupo=${groupCode}`, {
+    const data = await api(`subgrupo&codgrupo=${groupCode}`, {
       method: "GET"
     });
 
     data.forEach((item) => {
-      const subGrupoName = item.PRODUTO || "";
-      const preco = item.PRECOVENDA || "";
+      const subGrupoName = item.SUBGRUPO || "";
       const imageUrl = "/web/images/new/food.jpg";
 
-      const element = document.createElement(ProductItem);
+      const element = document.createElement(CategoryItem);
 
       const slotsHtml = html`<span slot="name">${subGrupoName.toLowerCase()}</span>`;
-      const slotsPreco = html`<span slot="preco">${formatMoney(preco)}</span>`;
 
       element.appendChild(slotsHtml);
-      element.appendChild(slotsPreco);  
       element.image = imageUrl;
       element.slot = "items";
 
@@ -49,6 +44,6 @@ class ProductsPage extends HTMLElement {
 }
 
 export const { name, component } = registerComponent({
-  name: "products-page",
-  component: ProductsPage
+  name: "categories-page",
+  component: CategoriesPage
 });

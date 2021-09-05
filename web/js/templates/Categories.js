@@ -1,8 +1,8 @@
-class ProductsTemplate extends HTMLElement {
+class CategoriesTemplate extends HTMLElement {
   constructor() {
     super();
 
-    const template = document.getElementById("products-page");
+    const template = document.getElementById("categories-page");
     const content = template.content.cloneNode(true);
     
     this.attachShadow({ mode: "open" });
@@ -15,6 +15,6 @@ class ProductsTemplate extends HTMLElement {
 }
 
 export const { name, component } = registerComponent({
-  name: "products-template",
-  component: ProductsTemplate,
+  name: "categories-template",
+  component: CategoriesTemplate,
 });

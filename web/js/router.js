@@ -1,5 +1,6 @@
 import { name as homePage } from "./pages/Home.js";
 import { name as productsPage } from "./pages/Products.js";
+import { name as categoriesPage } from "./pages/Categories.js";
 
 const routerSlot = document.querySelector("page-content");
 const router = new Router(routerSlot, { baseUrl: "/web/" });
@@ -27,8 +28,12 @@ router.setRoutes([
     component: homePage
   },
   {
-    path: "/products/:code",
+    path: ":code/produtos",
     component: productsPage
+  },
+  {
+    path: ":code/categorias",
+    component: categoriesPage
   }
 ]);
 

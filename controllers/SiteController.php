@@ -11,6 +11,7 @@ use app\models\LoginForm;
 use app\models\ContactForm;
 use Ramsey\Uuid\Uuid;
 use ReallySimpleJWT\Token;
+use yii\helpers\Json;
 
 class SiteController extends Controller {
 
@@ -207,10 +208,17 @@ class SiteController extends Controller {
 
         if ($req->isGet) {
             $model = \app\models\Grupo::findAll(['NAO_MOSTRA_KYOSK' => 'N']);
-            foreach ($model as $g){               
-                $g->NAO_MOSTRA_KYOSK = \app\models\Subgrupo::findAll(['CODGRUPO'=>$g->CODIGO]);
+            $grupos = json_decode(Json::encode($model), true);
+            
+            $response = array();
+            foreach ($grupos as $grupo) {
+                $codigo = $grupo["CODIGO"];
+                $NAO_MOSTRA_KYOSK = \app\models\Subgrupo::findAll(['CODGRUPO'=>$codigo, 'NAO_MOSTRA_KYOSK' => 'N']);
+
+                $grupo["TEM_SUBGRUPO"] = empty($NAO_MOSTRA_KYOSK) === false;
+                array_push($response, $grupo);
             }
-            return $model;
+            return $response;
         } else {
             return [];
         }

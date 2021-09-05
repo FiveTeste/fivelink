@@ -12,8 +12,13 @@ class CardItem extends HTMLElement {
   }
 
   onClick() {
-    const url = `/web/products/${this.code}${location.search}`;
-    this.store.dispatchAction(addItem(this.code));
+    const group = this.group;
+
+    const url = group.TEM_SUBGRUPO 
+      ? `/web/${group.CODIGO}/categorias${location.search}` 
+      : `/web/${group.CODIGO}/produtos${location.search}`;
+
+    this.store.dispatchAction(addItem(group));
 
     Router.go(url);
   }

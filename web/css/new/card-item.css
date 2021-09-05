@@ -18,7 +18,7 @@
 }
 
 .card .card__name {
-
+  color: #333;
   font-family: var(--font-poppins);
   font-style: normal;
   font-weight: 500;

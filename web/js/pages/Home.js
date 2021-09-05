@@ -30,7 +30,7 @@ class HomePage extends HTMLElement {
 
       element.appendChild(slotsHtml);
       element.image = imageUrl;
-      element.code = item.CODIGO;
+      element.group = item;
       element.slot = "items";
 
       container.appendChild(element);

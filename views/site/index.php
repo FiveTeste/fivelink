@@ -85,6 +85,26 @@ $this->title = 'Kyosk online';
 </template>
 
 
+<!-- CATEGORIES PAGE TEMPLATE -->
+<template id="categories-page">
+    <link rel="stylesheet" href="/web/css/new/categories-page.css">
+    
+    <ul class="content">
+        <slot name="items"></slot>
+    </ul>
+</template>
+
+<!-- CATEGORY ITEM TEMPLATE -->
+<template id="category-item">
+    <link rel="stylesheet" href="/web/css/new/category-item.css">
+    
+    <li class="item">
+        <img class="item__image" loading="lazy" />
+        <div class="item__name"><slot name="name"></slot></div>
+    </li>
+</template>
+
+
 <script type="text/javascript">
     window.baseUrl = '<?php echo Yii::$app->request->baseUrl; ?>';
     window.nummesa = '<?php echo $mesa ?>';

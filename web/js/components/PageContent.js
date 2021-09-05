@@ -54,7 +54,7 @@ class PageContent extends HTMLElement {
       if (link.getAttribute("href") === currentPage) {
         icon.setAttribute("data-icon-stroke", "#BF4816");
       } else {
-        icon.setAttribute("data-icon-stroke", "currentcolor");
+        icon.setAttribute("data-icon-stroke", "#333");
       }
     });
   }

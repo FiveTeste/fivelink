@@ -24,26 +24,12 @@
   border-radius: 0.7rem;
 }
 
-.item .item__detail {
-  display: flex;
-  flex: 1;
-  justify-content: space-between;
-  margin-left: 1rem;
-}
-
 .item .item__name {
+  margin-left: 1rem;
   font-family: var(--font-poppins);
   font-size: 1.6rem;
   color: #333;
   font-style: normal;
   font-weight: 500;
-  text-transform: capitalize;
-}
-
-.item .item__preco {
-  font-family: var(--font-poppins);
-  font-style: normal;
-  font-weight: 500;
-  color: #FAB559;
   text-transform: capitalize;
 }
