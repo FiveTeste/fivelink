@@ -20,7 +20,9 @@
         "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
 		"edgardmessias/yii2-firebird": "*",
         "ramsey/uuid": "^3.9",
-        "rbdwllr/reallysimplejwt": "^2.1"
+        "rbdwllr/reallysimplejwt": "^2.1",
+        "fxp/composer-asset-plugin": "",
+        "ext-gd": ""
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
