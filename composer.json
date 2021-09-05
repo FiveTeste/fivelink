@@ -21,8 +21,7 @@
 		"edgardmessias/yii2-firebird": "*",
         "ramsey/uuid": "^3.9",
         "rbdwllr/reallysimplejwt": "^2.1",
-        "fxp/composer-asset-plugin": "",
-        "ext-gd": ""
+        "fxp/composer-asset-plugin": "^1.4.6"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
