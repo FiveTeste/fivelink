@@ -37,6 +37,7 @@ class ProductsPage extends HTMLElement {
       element.appendChild(slotsPreco);  
       element.image = imageUrl;
       element.slot = "items";
+      element.product = item;
 
       container.appendChild(element);
     });

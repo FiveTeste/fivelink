@@ -10,6 +10,7 @@
   background-color: #fff;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 0 1.5rem;
   border-radius: 0 0 0.3rem 0.3rem;
   box-shadow: 0rem 0.1rem 0.4rem rgba(194, 194, 203, 0.822);
@@ -20,13 +21,13 @@
   font-weight: normal;
   font-size: 2.4rem;
   color: #BF4816;
+  pointer-events: none;
 }
 
 .page .page__content {
   margin-top: 1rem;
   overflow-y: scroll;
 }
-
 
 .page .page__footer {
   background-color: #fff;
@@ -48,5 +49,18 @@
 }
 
 object[data-type="svg-icon"] {
+  pointer-events: none;
+}
+
+.cart {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.cart .cart__price {
+  font-family: var(--font-poppins);
+  margin-right: 0.5rem;
+  color: #0E252B;
   pointer-events: none;
 }

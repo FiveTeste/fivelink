@@ -21,9 +21,6 @@ services:
     ports:
       - 3306:3306
 
-    networks:
-      - sema-dev-network
-
   app:
     build:
       context: .
@@ -32,12 +29,17 @@ services:
       - ./:/var/www/html/
     ports:
       - 8000:80
-    networks:
-      - sema-dev-network
     depends_on:
       mysql:
         condition: service_healthy
 
-networks:
-  sema-dev-network:
-    driver: 'bridge'
+  app_bkp:
+    build:
+      context: ./bkp
+    volumes:
+      - ./bkp:/var/www/html/
+    ports:
+      - 8080:80
+    depends_on:
+      mysql:
+        condition: service_healthy

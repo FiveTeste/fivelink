@@ -10,7 +10,21 @@ $this->title = 'Kyosk online';
 
     <div class="page">
         <header class="page__header">
-            <h1 class="page__title">Kyosk Online</h1>
+            <a href="/web/" class="cart">
+                <h1 class="page__title">Kyosk Online</h1>
+            </a>
+            
+            <a href="/web/carrinho" class="cart">
+                <div class="cart__price">
+                    <span id="cart_value">R$ 00,00</span>
+                </div>
+                <object
+                    type="image/svg+xml"
+                    data="/web/icons/shopping-cart.svg" 
+                    data-type="svg-icon" 
+                    data-icon-stroke="#0E252B"
+                ></object>
+            </a>
         </header>
 
         <main class="page__content"><slot name="content"></slot></main>
@@ -62,15 +76,6 @@ $this->title = 'Kyosk online';
 </template>
 
 
-<!-- PRODUCTS PAGE TEMPLATE -->
-<template id="products-page">
-    <link rel="stylesheet" href="/web/css/new/products-page.css">
-    
-    <ul class="content">
-        <slot name="items"></slot>
-    </ul>
-</template>
-    
     <!-- PRODUCT ITEM TEMPLATE -->
 <template id="product-item">
     <link rel="stylesheet" href="/web/css/new/product-item.css">
@@ -85,15 +90,6 @@ $this->title = 'Kyosk online';
 </template>
 
 
-<!-- CATEGORIES PAGE TEMPLATE -->
-<template id="categories-page">
-    <link rel="stylesheet" href="/web/css/new/categories-page.css">
-    
-    <ul class="content">
-        <slot name="items"></slot>
-    </ul>
-</template>
-
 <!-- CATEGORY ITEM TEMPLATE -->
 <template id="category-item">
     <link rel="stylesheet" href="/web/css/new/category-item.css">
@@ -102,6 +98,119 @@ $this->title = 'Kyosk online';
         <img class="item__image" loading="lazy" />
         <div class="item__name"><slot name="name"></slot></div>
     </li>
+</template>
+
+
+<!-- CATEGORIES PAGE TEMPLATE -->
+<template id="product-page">
+    <link rel="stylesheet" href="/web/css/new/product.css">
+
+    <div class="product">
+        <img class="product__image" src="/web/images/new/food.jpg" />
+        <div class="product__info">
+            <div class="product__detail">
+                <div class="product__name">
+                    <slot name="name"></slot>
+                </div>
+                <div class="product__description">
+                    <slot name="description"></slot>
+                </div>
+            </div>
+            <div class="product__price price">
+                <span class="price__description">Subtotal:</span>
+                <div class="price__value">
+                    <slot name="price">R$ 00,00</slot>
+                </div>
+            </div>
+        </div>
+        <div class="slider">
+        </div>
+    </div>
+</template>
+
+
+<template id="ponto-carne">
+    <link rel="stylesheet" href="/web/css/new/ponto-carne.css">
+
+    <div class="content">
+        <strong class="content__title">Escolha o ponto da carne:</strong>
+        <ul class="content__list list">
+            <li class="list__item item">
+                <label class="item__radio radio">
+                    <span>Mal passado</span>
+                    <input type="radio" name="ponto" value="Mal passado" />
+                </label>
+            </li>
+            <li class="list__item item">
+                <label class="item__radio radio">
+                    <span>Ao ponto</span>
+                    <input type="radio" name="ponto" value="Ao ponto" />
+                </label>
+            </li>
+            <li class="list__item item">
+                <label class="item__radio radio">
+                    <span>Bem passado</span>
+                    <input type="radio" name="ponto" value="Bem passado" />
+                </label>
+            </li>
+        </ul>
+    </div>
+</template>
+
+<template id="usa-copos">
+    <link rel="stylesheet" href="/web/css/new/usa-copos.css">
+
+    <div class="content">
+        <strong class="content__title">Copos:</strong>
+        <ul class="content__list list">
+            <li class="list__item item">
+                <label class="item__label" for="copo">
+                    <span>Copo</span>
+                    <div class="item__selector">
+                        <quantity-selector name="copo" />
+                    </div>
+                </label>
+            </li>
+            <li class="list__item item">
+                <label class="item__label" for="copo_gelo">
+                    <span>Copo com gelo</span>
+                    <div class="item__selector">
+                        <quantity-selector name="copo_gelo" />
+                    </div>
+                </label>
+            </li>
+            <li class="list__item item">
+                <label class="item__label" for="copo_gelo_limao">
+                    <span>Copo com gelo e limão</span>
+                    <div class="item__selector">
+                        <quantity-selector name="copo_gelo_limao" />
+                    </div>
+                </label>
+            </li>
+        </ul>
+    </div>
+</template>
+
+<template id="form-talheres">
+    <link rel="stylesheet" href="/web/css/new/form-talheres.css">
+
+    <div class="content">
+        <strong class="content__title">Pratos e talheres:</strong>
+        <article class="content__selector selector">
+            <quantity-selector name="talheres" class="selector__input" />
+        </article>
+    </div>
+</template>
+
+<template id="form-quantity">
+    <link rel="stylesheet" href="/web/css/new/form-quantity.css">
+
+    <div class="content">
+        <strong class="content__title">Quantidade:</strong>
+        <article class="content__selector selector">
+            <quantity-selector name="quantity" class="selector__input" />
+        </article>
+    </div>
 </template>
 
 

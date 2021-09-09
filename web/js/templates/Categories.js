@@ -2,9 +2,17 @@ class CategoriesTemplate extends HTMLElement {
   constructor() {
     super();
 
-    const template = document.getElementById("categories-page");
-    const content = template.content.cloneNode(true);
-    
+    const content = html`
+      <style>
+        .content {
+          padding: 0 0.5rem;
+        }
+      </style>
+      <ul class="content">
+        <slot name="items"></slot>
+      </ul>
+    `;
+
     this.attachShadow({ mode: "open" });
     this.shadowRoot.appendChild(content);
   }

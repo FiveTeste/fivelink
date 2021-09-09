@@ -1,3 +1,4 @@
+import { formatMoney } from "../utils/numberFormat.js";
 class PageContent extends HTMLElement {
   constructor() {
     super();
@@ -46,10 +47,9 @@ class PageContent extends HTMLElement {
   loadLinks(event) {
     const currentPage = event.detail.location.pathname;
 
-    const links = this.shadowRoot.querySelectorAll("a");
-    links.forEach((link) => {
-      link.addEventListener("click", this.goTo);
-      
+    const navContainer = this.shadowRoot.querySelector(".navbar");
+    const navLinks = navContainer.querySelectorAll("a");
+    navLinks.forEach((link) => {
       const icon = link.querySelector("object[data-type='svg-icon']");
       if (link.getAttribute("href") === currentPage) {
         icon.setAttribute("data-icon-stroke", "#BF4816");
@@ -64,15 +64,33 @@ class PageContent extends HTMLElement {
     this.style.setProperty("--v-height", `${height}px`);
   }
 
+  updatedCart(value) {
+    const items = value.items || [];
+
+    const cartValue = items.reduce((acc, item) => acc + item.totalPrice, 0);
+    const container = this.shadowRoot.getElementById("cart_value");
+    container.textContent = formatMoney(cartValue);
+  }
+
   connectedCallback() {
     this.loadViewHeight();
 
+    const links = this.shadowRoot.querySelectorAll("a");
+    links.forEach((link) => link.addEventListener("click", this.goTo));
+
+    this.store.addListener(this.updatedCart.bind(this));
+    
     window.addEventListener("vaadin-router-location-changed", this.loadLinks.bind(this));
     window.addEventListener("kyosk-change-navbar", this.changeNavBar.bind(this));
     window.addEventListener("resize", this.loadViewHeight.bind(this));
   }
 
   disconnectedCallback() {
+    const links = this.shadowRoot.querySelectorAll("a");
+    links.forEach((link) => link.removeEventListener("click", this.goTo));
+
+    this.store.removeListener(this.updatedCart.bind(this));
+
     window.removeEventListener("vaadin-router-location-changed", this.loadLinks.bind(this));
     window.removeEventListener("kyosk-change-navbar", this.loadLinks.bind(this));
     window.removeEventListener("resize", this.loadViewHeight.bind(this));

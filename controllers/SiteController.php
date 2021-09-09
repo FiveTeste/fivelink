@@ -250,6 +250,19 @@ class SiteController extends Controller {
         }
     }
 
+    public function actionProduto() {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $req = Yii::$app->request;
+
+        if ($req->isAjax) {
+            $cod = $req->get('cod');
+            $model = \app\models\Produto::findOne(['CODIGO' => $cod]);
+            return $model;
+        } else {
+            return [];
+        }
+    }
+
     public function actionProdutobygrupo() {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $req = Yii::$app->request;

@@ -1,0 +1,41 @@
+.content .content__title {
+  color: #333;
+  font-weight: 600;
+  padding: 0 0.5rem;
+  margin-bottom: 1rem;
+  display: inline-block;
+}
+
+.content .content__list {
+  list-style-type: none;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin-inline-start: 0;
+  margin-inline-end: 0;
+  padding-inline-start: 0;
+}
+
+.list .list__item {
+  background: #fff;
+  box-shadow: 0rem 0rem 0.4rem rgba(194, 194, 203, 0.75);
+  border-radius: 0.3rem;
+  color: #333;
+}
+
+.list__item:not(:last-of-type) {
+  margin-bottom: .5rem;
+}
+
+.item .item__label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1.5rem;
+}
+
+.item .item__selector {
+  max-width: 16rem;
+  margin-left: 1.5rem;
+}
+

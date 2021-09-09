@@ -18,8 +18,6 @@ class CardItem extends HTMLElement {
       ? `/web/${group.CODIGO}/categorias${location.search}` 
       : `/web/${group.CODIGO}/produtos${location.search}`;
 
-    this.store.dispatchAction(addItem(group));
-
     Router.go(url);
   }
 

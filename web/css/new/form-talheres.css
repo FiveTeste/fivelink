@@ -1,0 +1,23 @@
+.content .content__title {
+  color: #333;
+  font-weight: 600;
+  padding: 0 0.5rem;
+  margin-bottom: 1rem;
+  display: inline-block;
+}
+
+.content .content__selector {
+  background: #fff;
+  box-shadow: 0rem 0rem 0.4rem rgba(194, 194, 203, 0.75);
+  border-radius: 0.3rem;
+  color: #333;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.selector .selector__input {
+  width: 100%;
+}
