@@ -16,7 +16,7 @@ $this->title = 'Kyosk online';
             
             <a href="/web/carrinho" class="cart">
                 <div class="cart__price">
-                    <span id="cart_value">R$ 00,00</span>
+                    <span id="cart_value">R$ 0,00</span>
                 </div>
                 <object
                     type="image/svg+xml"

@@ -10,8 +10,11 @@ class CategoryItem extends HTMLElement {
   }
 
   onClick() {
-    const url = `/web/products/${this.code}${location.search}`;
-    // Router.go(url);
+    const categoryCode = this.category.CODIGO;
+    const groupCode = router.location.params.code;
+
+    const url = `/web/${groupCode}/categorias/${categoryCode}${location.search}`;
+    Router.go(url);
   }
 
   connectedCallback() {

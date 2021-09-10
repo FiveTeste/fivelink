@@ -1,8 +1,8 @@
 class FormSlider extends HTMLElement {
-  currentIndex = 0;
-
   constructor() {
     super();
+
+    this.currentIndex = 0;
 
     const pageHtml = html`
       <style>

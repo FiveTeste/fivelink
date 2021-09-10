@@ -32,6 +32,7 @@ class CategoriesPage extends HTMLElement {
       element.appendChild(slotsHtml);
       element.image = imageUrl;
       element.slot = "items";
+      element.category = item;
 
       container.appendChild(element);
     });

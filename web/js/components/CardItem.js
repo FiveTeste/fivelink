@@ -1,5 +1,3 @@
-import { addItem } from "../store/actions.js";
-
 class CardItem extends HTMLElement {
   constructor() {
     super();

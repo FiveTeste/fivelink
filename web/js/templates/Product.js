@@ -11,16 +11,17 @@ import { addItem } from "../store/actions.js";
 import { formatMoney } from "../utils/numberFormat.js";
 
 class ProductTemplate extends HTMLElement {
-  ponto_carne;
-  copo;
-  copo_gelo;
-  copo_gelo_limao;
-  talheres;
-  observation = "";
-  quantity = 0;
-
   constructor() {
     super();
+
+    this.ponto_carne;
+    this.copo;
+    this.copo_gelo;
+    this.copo_gelo_limao;
+    this.talheres;
+    this.observation = "";
+    this.quantity = 0;
+
 
     const template = document.getElementById("product-page");
     const content = template.content.cloneNode(true);

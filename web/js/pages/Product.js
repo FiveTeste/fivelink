@@ -17,7 +17,6 @@ class ProductPage extends HTMLElement {
       method: "GET",
     });
 
-
     const nameElement = document.createElement("span");
     nameElement.slot = "name";
     nameElement.textContent = product.PRODUTO;
@@ -44,9 +43,35 @@ class ProductPage extends HTMLElement {
     this.shadowRoot.appendChild(pageTemplate);
   }
 
+  async loadCategory() {
+    const categoryCode = this.location.params.categoryCode;
+
+    const subgrupoRequest = api(`getsubgrupo&cod=${categoryCode}`, {
+      method: 'GET',
+    });
+    const productsRequest = api(`produtobysubgrupo&cod=${categoryCode}`, {
+      method: "GET",
+    });
+
+    const [subgrupo, products] = await Promise.all([ 
+      subgrupoRequest, 
+      productsRequest 
+    ]);
+
+    console.log(subgrupo);
+    console.log(products);
+  }
+
+
   connectedCallback() {
     fireEvent("change-navbar", { show: false });
-    this.loadProduto();
+
+    const parent = this.location.route.parent.name;
+    if (parent === "categories") {
+      this.loadCategory();
+    } else {
+      this.loadProduto();
+    }
   }
 
 }

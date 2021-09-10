@@ -1,13 +1,16 @@
 class Store {
-  stored = {
-    state: undefined,
-  };
-  subscribers = [];
+
 
   constructor(reducer, _self = this) {
     if (!reducer || typeof reducer !== 'function') {
       throw new Error("invalid reducer");
     }
+
+    this.stored = {
+      state: undefined,
+    };
+    this.subscribers = [];
+
 
     const handler = {
       set(target, property, value) {
@@ -22,7 +25,6 @@ class Store {
       }
     }
 
-    
     const defaultValue = {
       state: undefined
     }
