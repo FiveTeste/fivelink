@@ -43,7 +43,7 @@ $this->title = 'Kyosk online';
                     <object
                         type="image/svg+xml"
                         data="/web/icons/shopping-cart.svg" 
-                        data-type="svg-icon" 
+                        data-type="svg-icon"
                     ></object>
                 </a>
             </nav>
@@ -75,33 +75,7 @@ $this->title = 'Kyosk online';
     </article>
 </template>
 
-
-    <!-- PRODUCT ITEM TEMPLATE -->
-<template id="product-item">
-    <link rel="stylesheet" href="/web/css/new/product-item.css">
-    
-    <li class="item">
-        <img class="item__image" loading="lazy" />
-        <div class="item__detail">
-            <div class="item__name"><slot name="name"></slot></div>
-            <div class="item__preco"><slot name="preco"></slot></div>
-        </div>
-    </li>
-</template>
-
-
-<!-- CATEGORY ITEM TEMPLATE -->
-<template id="category-item">
-    <link rel="stylesheet" href="/web/css/new/category-item.css">
-    
-    <li class="item">
-        <img class="item__image" loading="lazy" />
-        <div class="item__name"><slot name="name"></slot></div>
-    </li>
-</template>
-
-
-<!-- CATEGORIES PAGE TEMPLATE -->
+<!-- PRODUCT PAGE TEMPLATE -->
 <template id="product-page">
     <link rel="stylesheet" href="/web/css/new/product.css">
 
@@ -126,6 +100,29 @@ $this->title = 'Kyosk online';
         <div class="slider">
         </div>
     </div>
+</template>
+
+<!-- PRODUCT ITEM TEMPLATE -->
+<template id="product-item">
+    <link rel="stylesheet" href="/web/css/new/product-item.css">
+    
+    <li class="item">
+        <img class="item__image" loading="lazy" />
+        <div class="item__detail">
+            <div class="item__name"><slot name="name"></slot></div>
+            <div class="item__preco"><slot name="preco"></slot></div>
+        </div>
+    </li>
+</template>
+
+<!-- CATEGORY ITEM TEMPLATE -->
+<template id="category-item">
+    <link rel="stylesheet" href="/web/css/new/category-item.css">
+    
+    <li class="item">
+        <img class="item__image" loading="lazy" />
+        <div class="item__name"><slot name="name"></slot></div>
+    </li>
 </template>
 
 
@@ -213,6 +210,46 @@ $this->title = 'Kyosk online';
     </div>
 </template>
 
+<!-- CARRINHO PAGE -->
+<template id="cart-page">
+    
+    <ul class="content" style="padding: 1rem;">
+        <slot name="items"></slot>
+    </ul>
+</template>
+
+<!-- CARRINHO ITEM -->
+<template id="cart-item">
+    <link rel="stylesheet" href="/web/css/new/cart-item.css">
+
+        <div class="container">
+            <li class="item">
+                <img class="item__image" loading="lazy" />
+                <div class="item__detail">
+                    <div class="item__name"><slot name="name"></slot></div>
+                    <div class="item__preco">R$ 9,00<slot name="preco"></slot></div>
+                </div>
+                <div class="item__quantity">
+                    <button class="button__add">+</button>
+                    <label class="item__order-quantity">1<slot name="order-quantity"></slot></label>
+                    <button class="button__remove">-</button>
+                </div>
+            </li>
+            <div class="item__icon">
+                <button class="item__button-remove">
+                    <a href="/web/carrinho">
+                        <object
+                            type="image/svg+xml"
+                            data="/web/icons/trash.svg" 
+                            data-type="svg-icon"
+                            data-icon-stroke="#BF4816">
+                        </object>
+                    </a>
+                </button>
+            </div>
+        </div>
+
+</template>
 
 <script type="text/javascript">
     window.baseUrl = '<?php echo Yii::$app->request->baseUrl; ?>';

@@ -1,0 +1,123 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 1.5rem;
+}
+
+.item {
+  height: 100%;
+  width: 100vw;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.5rem;
+  background-color: #fff;
+  box-shadow: 0rem 0rem 0.4rem rgb(194 194 203 / 75%);
+  display: flex;
+  overflow: hidden;
+  user-select: none;
+  transition: all .3s ease;
+}
+
+.item__image {
+  height: 8rem;
+  width: 8rem;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 0.7rem;
+}
+
+.item__detail {
+  display: grid;
+  flex: 1;
+  justify-content: space-between;
+  margin-left: 0.5rem;
+}
+
+.item__name {
+  color: #333;
+  font-family: var(--font-poppins);
+  font-size: 1.6rem;
+  font-style: normal;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.item__preco {
+  font-family: var(--font-poppins);
+  font-style: normal;
+  font-weight: 500;
+  color: #FAB559;
+  text-transform: capitalize;
+}
+
+.item__quantity {
+  font-family: var(--font-poppins);
+  display: grid;
+  text-align: center;
+  border: 0.1rem solid #cccccc;
+  border-radius: 3rem;
+}
+
+.button__add {
+  height: 3rem;
+  width: 3rem;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: #000000;
+  display: flex;
+  border-radius: 50%;
+  text-decoration: none;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.button__add:hover {
+  background: #cccccc;
+  transition: all .3s ease;
+}
+
+.item__order-quantity {
+  font-size: 1.2rem;
+}
+
+.button__remove {
+  height: 3rem;
+  width: 3rem;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: #000000;
+  display: flex;
+  border-radius: 50%;
+  text-decoration: none;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.button__remove:hover {
+  background: #cccccc;
+  transition: all .3s ease;
+}
+
+.item__icon {
+  display: flex;
+  text-align: center;
+}
+
+.item__button-remove {
+  border: 0;
+  outline: none;
+  background: transparent;
+  padding: 0.5rem;
+  display: flex;
+  text-decoration: none;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+object[data-type="svg-icon"] {
+  pointer-events: none;
+}

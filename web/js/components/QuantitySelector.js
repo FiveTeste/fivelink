@@ -6,6 +6,14 @@ class QuantitySelector extends HTMLElement {
 
     const style = html`
       <style>
+        input {
+          border: none;
+          border-width: 0;
+          box-shadow: none;
+          outline: none;
+          font-family: var(--font-poppins);
+        }
+
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
           -webkit-appearance: none;
@@ -14,7 +22,27 @@ class QuantitySelector extends HTMLElement {
         }
 
         button {
+          height: 4.2rem;
+          width: 4.2rem;
+          border: 0;
+          outline: none;
+          background: #0393BE;
+          color: #FFFFFF;
+          padding: 1rem;
+          display: flex;
+          border-radius: 50%;
+          text-decoration: none;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          font-family: var(--font-poppins);
+          font-size: 1.6rem;
           cursor: pointer;
+        }
+        
+        button:hover{
+          background: #005E7A;
+          transition: all .3s ease;
         }
       </style>
     `
