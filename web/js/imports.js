@@ -3,7 +3,8 @@ import { registerComponent } from "./utils/registerComponent.js";
 import { createHtmlElement } from "./utils/createHtmlElement.js";
 import { fireEvent } from "./utils/fireEvent.js";
 
-window.Router = Router;
-window.registerComponent = registerComponent;
-window.html = createHtmlElement;
-window.fireEvent = fireEvent;
+
+  window.Router = Router;
+  window.registerComponent = registerComponent;
+  window.html = createHtmlElement;
+  window.fireEvent = fireEvent;

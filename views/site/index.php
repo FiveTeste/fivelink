@@ -16,7 +16,7 @@ $this->title = 'Kyosk online';
             
             <a href="/web/carrinho" class="cart">
                 <div class="cart__price">
-                    <span id="cart_value">R$ 00,00</span>
+                    <span id="cart_value">R$ 0,00</span>
                 </div>
                 <object
                     type="image/svg+xml"
@@ -93,7 +93,7 @@ $this->title = 'Kyosk online';
             <div class="product__price price">
                 <span class="price__description">Subtotal:</span>
                 <div class="price__value">
-                    <slot name="price">R$ 00,00</slot>
+                    <slot name="price">R$ 0,00</slot>
                 </div>
             </div>
         </div>

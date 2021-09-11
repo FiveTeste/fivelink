@@ -1,4 +1,5 @@
 import { name as ProductTemplate } from "../templates/Product.js";
+import { name as CategoryTemplate } from "../templates/Category.js";
 
 import { api } from "../services/api.js";
 
@@ -16,7 +17,6 @@ class ProductPage extends HTMLElement {
     const product = await api(`produto&cod=${code}`, {
       method: "GET",
     });
-
 
     const nameElement = document.createElement("span");
     nameElement.slot = "name";
@@ -44,9 +44,42 @@ class ProductPage extends HTMLElement {
     this.shadowRoot.appendChild(pageTemplate);
   }
 
+  async loadCategory() {
+    const categoryCode = this.location.params.categoryCode;
+
+    const subgrupoRequest = api(`getsubgrupo&cod=${categoryCode}`, {
+      method: 'GET',
+    });
+    const productsRequest = api(`produtobysubgrupo&cod=${categoryCode}`, {
+      method: "GET",
+    });
+
+    const [subgrupo, products] = await Promise.all([ 
+      subgrupoRequest, 
+      productsRequest 
+    ]);
+
+    const nameElement = document.createElement("span");
+    nameElement.slot = "name";
+    nameElement.textContent = subgrupo.SUBGRUPO;
+
+    const pageTemplate = document.createElement(ProductTemplate);
+    pageTemplate.product = subgrupo;
+    pageTemplate.productList = products;
+    pageTemplate.appendChild(nameElement);
+
+    this.shadowRoot.appendChild(pageTemplate);
+  }
+
   connectedCallback() {
     fireEvent("change-navbar", { show: false });
-    this.loadProduto();
+
+    const parent = this.location.route.parent.name;
+    if (parent === "categories") {
+      this.loadCategory();
+    } else {
+      this.loadProduto();
+    }
   }
 
 }

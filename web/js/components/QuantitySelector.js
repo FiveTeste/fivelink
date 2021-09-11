@@ -1,8 +1,9 @@
 class QuantitySelector extends HTMLElement {
-  value = 0;
 
   constructor() {
     super();
+
+    this.value = 0;
 
     const style = html`
       <style>

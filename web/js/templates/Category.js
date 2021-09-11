@@ -5,13 +5,12 @@ import { name as UsaCopos } from "../components/UsaCopos.js";
 import { name as FormTalheres } from "../components/FormTalheres.js";
 import { name as ObservationForm } from "../components/ObservationForm.js";
 import { name as FormQuantity } from "../components/FormQuantity.js";
-import { name as ProductsForm } from "../components/ProductsForm.js";
 
 import { addItem } from "../store/actions.js";
 
 import { formatMoney } from "../utils/numberFormat.js";
 
-class ProductTemplate extends HTMLElement {
+class CategoryTemplate extends HTMLElement {
   constructor() {
     super();
 
@@ -22,9 +21,7 @@ class ProductTemplate extends HTMLElement {
     this.talheres;
     this.observation = "";
     this.quantity = 0;
-    this.products = [];
 
-    this.productsForm = document.createElement(ProductsForm);
 
     const template = document.getElementById("product-page");
     const content = template.content.cloneNode(true);
@@ -106,21 +103,6 @@ class ProductTemplate extends HTMLElement {
     this.quantity = quantity;
   }
 
-  handleProducts(event) {
-    const selectedItems = event.detail.value;
-    this.products = selectedItems;
-  }
-
-  getDefaulForms() {
-    const observationForm = document.createElement(ObservationForm);
-    observationForm.addEventListener("kyosk-change", this.handleObservation.bind(this));
-
-    const quantityForm = document.createElement(FormQuantity);
-    quantityForm.addEventListener("kyosk-change", this.handleQuantity.bind(this));
-
-    return [observationForm, quantityForm];
-  }
-
   getSliderForms() {
     const product = this.product;
     const forms = [];
@@ -144,23 +126,23 @@ class ProductTemplate extends HTMLElement {
       forms.push(element);
     }
 
-    return [...forms];
+    const observationForm = document.createElement(ObservationForm);
+    observationForm.addEventListener("kyosk-change", this.handleObservation.bind(this));
+
+    const quantityForm = document.createElement(FormQuantity);
+    quantityForm.addEventListener("kyosk-change", this.handleQuantity.bind(this));
+
+    return [...forms, observationForm, quantityForm];
   }
 
   connectedCallback() {
+    console.log(this.productList);
+
+
     const sliderContainer = this.shadowRoot.querySelector(".slider");
     const slider = document.createElement(FormSlider);
+    slider.items = this.getSliderForms();
     
-    const pathName = router.location.route.parent.name;
-    if (pathName === "categories") {
-      this.productsForm.products = this.productList;
-      this.productsForm.addEventListener("kyosk-change", this.handleProducts.bind(this));
-
-      slider.items = [this.productsForm, ...this.getDefaulForms()];
-    } else {
-      slider.items = [...this.getSliderForms(), ...this.getDefaulForms()];
-    }
-
     sliderContainer.appendChild(slider);
     slider.addEventListener("finish", this.handleFinish.bind(this));
   }
@@ -169,6 +151,6 @@ class ProductTemplate extends HTMLElement {
 }
 
 export const { name, component } = registerComponent({
-  name: "product-template",
-  component: ProductTemplate,
+  name: "category-template",
+  component: CategoryTemplate,
 });
