@@ -119,7 +119,7 @@ $this->title = 'Kyosk online';
             <div class="product__price price">
                 <span class="price__description">Subtotal:</span>
                 <div class="price__value">
-                    <slot name="price">R$ 00,00</slot>
+                    <slot name="price">R$ 0,00</slot>
                 </div>
             </div>
         </div>

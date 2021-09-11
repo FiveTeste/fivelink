@@ -1,5 +1,3 @@
-console.log("por aqui");
-
 import { Router } from 'https://unpkg.com/@vaadin/router@1.7.4/dist/vaadin-router.js';
 import { registerComponent } from "./utils/registerComponent.js";
 import { createHtmlElement } from "./utils/createHtmlElement.js";

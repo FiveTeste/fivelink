@@ -10,11 +10,8 @@ class ProductItem extends HTMLElement {
   }
 
   onClick() {
-    const productCode = this.product.CODIGO;
-    const groupCode = router.location.params.code;
-
-    const url = `/web/${groupCode}/produtos/${productCode}${location.search}`;
-    Router.go(url);
+    const detail = { value: this.product };
+    this.dispatchEvent(new CustomEvent("kyosk-click", { detail }));
   }
 
   connectedCallback() {

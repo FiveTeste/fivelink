@@ -15,6 +15,16 @@ class ProductsPage extends HTMLElement {
     this.shadowRoot.appendChild(pageTemplate);
   }
 
+  handleClickItem(event) {
+    const product = event.detail.value;
+
+    const productCode = product.CODIGO;
+    const groupCode = this.location.params.code;
+
+    const url = `/web/${groupCode}/produtos/${productCode}${location.search}`;
+    Router.go(url);
+  }
+
   async loadItems() {
     const groupCode = this.location.params.code;
     const container = this.shadowRoot.firstChild;
@@ -29,6 +39,7 @@ class ProductsPage extends HTMLElement {
       const imageUrl = "/web/images/new/food.jpg";
 
       const element = document.createElement(ProductItem);
+      element.addEventListener("kyosk-click", this.handleClickItem.bind(this));
 
       const slotsHtml = html`<span slot="name">${subGrupoName.toLowerCase()}</span>`;
       const slotsPreco = html`<span slot="preco">${formatMoney(preco)}</span>`;

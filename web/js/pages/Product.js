@@ -1,4 +1,5 @@
 import { name as ProductTemplate } from "../templates/Product.js";
+import { name as CategoryTemplate } from "../templates/Category.js";
 
 import { api } from "../services/api.js";
 
@@ -58,10 +59,17 @@ class ProductPage extends HTMLElement {
       productsRequest 
     ]);
 
-    console.log(subgrupo);
-    console.log(products);
-  }
+    const nameElement = document.createElement("span");
+    nameElement.slot = "name";
+    nameElement.textContent = subgrupo.SUBGRUPO;
 
+    const pageTemplate = document.createElement(ProductTemplate);
+    pageTemplate.product = subgrupo;
+    pageTemplate.productList = products;
+    pageTemplate.appendChild(nameElement);
+
+    this.shadowRoot.appendChild(pageTemplate);
+  }
 
   connectedCallback() {
     fireEvent("change-navbar", { show: false });
