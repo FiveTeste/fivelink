@@ -3,7 +3,7 @@ import { name as CartItem } from "../components/CartItem.js";
 
 import { removeItem } from "../store/actions.js";
 
-// import { api } from "../services/api.js";
+import { formatMoney } from "../utils/numberFormat.js";
 
 class CartPage extends HTMLElement {
   constructor() {
@@ -19,25 +19,29 @@ class CartPage extends HTMLElement {
     const container = this.shadowRoot.firstChild;
     container.innerHTML = "";
 
-    items.forEach(item => {
+    items.forEach((item, index) => {
       const element = document.createElement(CartItem);
 
-      const name = item.product.PRODUTO;
+      const name = item.name;
       const imageUrl = "/web/images/new/food.jpg";
-      const slotsHtml = html`<span slot="name">${name.toLowerCase()}</span>`;
+
+      const slotsHtml = html`
+        <span slot="name">${name.toLowerCase()}</span>
+        <span slot="price">${formatMoney(item.totalPrice)}</span>
+      `;
 
       element.image = imageUrl;
-      element.appendChild(slotsHtml);
+      element.item = item;
+      element.index = index;
       element.slot = "items";
+      element.appendChild(slotsHtml);
 
       container.appendChild(element);
-    })
-
-    console.log(this.store.state); 
+    });
   }
 
   handleUpdateCart(values) {
-    console.log(values);
+    this.loadItems(values.items);
   }
   
   handleDeleteCart(){

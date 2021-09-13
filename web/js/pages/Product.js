@@ -1,5 +1,4 @@
 import { name as ProductTemplate } from "../templates/Product.js";
-import { name as CategoryTemplate } from "../templates/Category.js";
 
 import { api } from "../services/api.js";
 
@@ -64,7 +63,7 @@ class ProductPage extends HTMLElement {
     nameElement.textContent = subgrupo.SUBGRUPO;
 
     const pageTemplate = document.createElement(ProductTemplate);
-    pageTemplate.product = subgrupo;
+    pageTemplate.category = subgrupo;
     pageTemplate.productList = products;
     pageTemplate.appendChild(nameElement);
 

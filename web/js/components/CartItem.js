@@ -1,3 +1,4 @@
+import { removeItem } from "../store/actions.js";
 class CartItem extends HTMLElement {
   constructor(){
     super();
@@ -9,16 +10,19 @@ class CartItem extends HTMLElement {
     shadow.appendChild(content);
   }
 
-  handleDelete() {}
+  handleDelete() {
+    const index = this.index;
+    this.store.dispatchAction(removeItem({ index }));
+  }
 
   connectedCallback() {
     const element = this.shadowRoot.querySelector(".item__image");
     element.src = this.image;
 
-    this.addEventListener("click", this.onclick);
+    const deleteButton = this.shadowRoot.querySelector("button.item__button-remove");
+    deleteButton.addEventListener("click", this.handleDelete.bind(this));
   }
   disconnectedCallback() {
-    this.removeEventListener("click", this.onclick);
   }
 }
 

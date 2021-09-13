@@ -227,7 +227,7 @@ $this->title = 'Kyosk online';
                 <img class="item__image" loading="lazy" />
                 <div class="item__detail">
                     <div class="item__name"><slot name="name"></slot></div>
-                    <div class="item__preco">R$ 9,00<slot name="preco"></slot></div>
+                    <div class="item__preco"><slot name="price">R$ 0,00</slot></div>
                 </div>
                 <div class="item__quantity">
                     <button class="button__add">+</button>
@@ -237,14 +237,12 @@ $this->title = 'Kyosk online';
             </li>
             <div class="item__icon">
                 <button class="item__button-remove">
-                    <a href="/web/carrinho">
-                        <object
-                            type="image/svg+xml"
-                            data="/web/icons/trash.svg" 
-                            data-type="svg-icon"
-                            data-icon-stroke="#BF4816">
-                        </object>
-                    </a>
+                    <object
+                        type="image/svg+xml"
+                        data="/web/icons/trash.svg" 
+                        data-type="svg-icon"
+                        data-icon-stroke="#BF4816">
+                    </object>
                 </button>
             </div>
         </div>
@@ -256,6 +254,7 @@ $this->title = 'Kyosk online';
     window.nummesa = '<?php echo $mesa ?>';
 </script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js" referrerpolicy="no-referrer"></script>
 <script type="module" src="/web/js/imports.js"></script>
 <script type="module" defer src="/web/js/components/PageContent.js"></script>
 <script type="module" defer src="/web/js/router.js"></script>

@@ -21,10 +21,13 @@ class ProductTemplate extends HTMLElement {
     this.copo_gelo_limao;
     this.talheres;
     this.observation = "";
+    this.unitPrice = 0;
     this.quantity = 0;
     this.products = [];
 
-    this.productsForm = document.createElement(ProductsForm);
+    this.options = {};
+
+    this.createForms();
 
     const template = document.getElementById("product-page");
     const content = template.content.cloneNode(true);
@@ -33,29 +36,74 @@ class ProductTemplate extends HTMLElement {
     this.shadowRoot.appendChild(content);
   }
   
+  createForms() {
+    const productsForm = document.createElement(ProductsForm);
+    productsForm.addEventListener("kyosk-change", this.handleProducts.bind(this));
+
+    const pontoCarneForm = document.createElement(PontoCarne);
+    pontoCarneForm.addEventListener("kyosk-change", this.handlePontoCarne.bind(this));
+
+    const usaCoposForm = document.createElement(UsaCopos);
+    usaCoposForm.addEventListener("kyosk-change", this.handleCopos.bind(this));
+
+    const usaTalheresForm = document.createElement(FormTalheres);
+    usaTalheresForm.addEventListener("kyosk-change", this.handleTalheres.bind(this));
+
+    const observationForm = document.createElement(ObservationForm);
+    observationForm.addEventListener("kyosk-change", this.handleObservation.bind(this));
+
+    const quantityForm = document.createElement(FormQuantity);
+    quantityForm.addEventListener("kyosk-change", this.handleQuantity.bind(this));
+
+    const forms = new Map();
+    forms.set("products", { index: 0, element: productsForm });
+    forms.set("ponto-carne", { index: 1, element: pontoCarneForm });
+    forms.set("usa-copos", { index: 2, element: usaCoposForm });
+    forms.set("usa-talheres", { index: 3, element: usaTalheresForm });
+    forms.set("observation", { index: 4, element: observationForm });
+    forms.set("quantity", { index: 5, element: quantityForm });
+
+    this.forms = forms;
+  }
+
   handleFinish() {
     const product = this.product;
-    const totalPrice = product.PRECOVENDA * this.quantity;
+    const options = this.options;
+    const totalPrice = this.unitPrice * this.quantity;
 
-    const carneStr = product.USA_PONTO_CARNE === 1 ? `${this.ponto_carne}`: '';
-    const talheresStr = product.USA_TALHERES === 1 ? `Talheres/Pratos: ${this.talheres}` : '';
+    const carneStr = options.USA_PONTO_CARNE === 1 ? `${this.ponto_carne}`: '';
+    const talheresStr = options.USA_TALHERES === 1 ? `Talheres/Pratos: ${this.talheres}` : '';
 
     const coposStr = (() => {
+      if (options.USA_COPOS !== 1) return "";
+
       return `
         ${this.copo > 0 ? `Copo: ${this.copo}, ` : ''}
         ${this.copo_gelo > 0 ? `Copo com gelo: ${this.copo_gelo}, ` : ''}
         ${this.copo_gelo_limao > 0 ? `Copo com gelo e limão: ${this.copo_gelo_limao}` : ''}
       `
     })();
+
     const detail = `${carneStr}\n${coposStr}\n${talheresStr}`;
+    const normalizedDetail = detail.replace(/\r?\n|\r/g, '. ');
+
+    const currentDate = new Date();
+    const str = `${currentDate.toLocaleString()}${totalPrice}${this.quantity}${window.nummesa}`;
+    const hash = CryptoJS.MD5(str).toString().toUpperCase();
+
+    const name = this.product ? this.product.PRODUTO : this.category.SUBGRUPO;
 
     const finish = {
       product: this.product,
+      subgroup: this.category,
       quantity: this.quantity,
-      unitPrice: this.product.PRECOVENDA,
+      unitPrice: this.unitPrice,
       observation: this.observation,
+      time: currentDate,
+      detail: normalizedDetail,
+      name,
       totalPrice,
-      detail,
+      hash,
     }
 
     this.store.dispatchAction(addItem(finish));
@@ -97,11 +145,18 @@ class ProductTemplate extends HTMLElement {
   handleQuantity(event) {
     const quantity = event.detail.value;
 
-    const price = this.product.PRECOVENDA;
+    const price = this.unitPrice;
     const value = price * quantity;
 
-    const element = this.querySelector("span[slot='price']");
-    element.textContent = formatMoney(value);
+    const existent = this.querySelector("span[slot='price']");
+    if (existent) {
+      existent.textContent = formatMoney(value);
+    } else {
+      const element = document.createElement("span");
+      element.slot = "price";
+      element.textContent = formatMoney(value);
+      this.appendChild(element);
+    }
 
     this.quantity = quantity;
   }
@@ -109,42 +164,83 @@ class ProductTemplate extends HTMLElement {
   handleProducts(event) {
     const selectedItems = event.detail.value;
     this.products = selectedItems;
+
+    const defaultOptions = {
+      PRODUTOS: 1,
+      USA_PONTO_CARNE: 0,
+      USA_COPOS: 0,
+      USA_TALHERES: 0,
+    };
+
+    this.options = this.products.reduce((acc, item) => {
+      const opts = {...acc};
+      if (item.USA_PONTO_CARNE === 1) {
+        opts.USA_PONTO_CARNE = 1;
+      }
+      if (item.USA_COPOS === 1) {
+        opts.USA_COPOS = 1;
+      }
+      if (item.USA_TALHERES === 1) {
+        opts.USA_TALHERES = 1;
+      }
+
+      return {...opts};
+    }, defaultOptions);
+
+    this.slider.items = [...this.getSliderForms()];
+
+    const unitPrice = this.products.reduce((acc, item) => acc + item.PRECOVENDA, 0);
+    this.unitPrice = unitPrice;
+
+    const existent = this.querySelector("span[slot='price']");
+    if (existent) {
+      existent.textContent = formatMoney(this.unitPrice);
+    } else {
+      const element = document.createElement("span");
+      element.slot = "price";
+      element.textContent = formatMoney(this.unitPrice);
+      this.appendChild(element);
+    }
   }
 
   getDefaulForms() {
-    const observationForm = document.createElement(ObservationForm);
-    observationForm.addEventListener("kyosk-change", this.handleObservation.bind(this));
+    const observation = this.forms.get("observation");
+    const quantity = this.forms.get("quantity");
 
-    const quantityForm = document.createElement(FormQuantity);
-    quantityForm.addEventListener("kyosk-change", this.handleQuantity.bind(this));
-
-    return [observationForm, quantityForm];
+    return [observation, quantity];
   }
 
   getSliderForms() {
-    const product = this.product;
-    const forms = [];
+    const forms = this.getDefaulForms();
 
-    if (product.USA_PONTO_CARNE === 1) {
-      const element = document.createElement(PontoCarne);
-      element.addEventListener("kyosk-change", this.handlePontoCarne.bind(this));
-
-      forms.push(element);
+    if (this.options.PRODUTOS === 1) {
+      const form = this.forms.get("products");
+      forms.push(form);
     }
-    if (product.USA_COPOS === 1) {
-      const element = document.createElement(UsaCopos);
-      element.addEventListener("kyosk-change", this.handleCopos.bind(this));
-
-      forms.push(element);
+    if (this.options.USA_PONTO_CARNE === 1) {
+      const form = this.forms.get("ponto-carne");
+      forms.push(form);
     }
-    if (product.USA_TALHERES === 1) {
-      const element = document.createElement(FormTalheres);
-      element.addEventListener("kyosk-change", this.handleTalheres.bind(this));
-
-      forms.push(element);
+    if (this.options.USA_COPOS === 1) {
+      const form = this.forms.get("usa-copos");
+      forms.push(form);
+    }
+    if (this.options.USA_TALHERES === 1) {
+      const form = this.forms.get("usa-talheres");
+      forms.push(form);
     }
 
-    return [...forms];
+    return forms.sort((a, b) => a.index - b.index).map(item => item.element);
+  }
+
+  loadProductOptions() {
+    const options = {
+      USA_PONTO_CARNE: this.product.USA_PONTO_CARNE,
+      USA_COPOS: this.product.USA_COPOS,
+      USA_TALHERES: this.product.USA_TALHERES
+    };
+
+    this.options = options;
   }
 
   connectedCallback() {
@@ -153,19 +249,27 @@ class ProductTemplate extends HTMLElement {
     
     const pathName = router.location.route.parent.name;
     if (pathName === "categories") {
-      this.productsForm.products = this.productList;
-      this.productsForm.addEventListener("kyosk-change", this.handleProducts.bind(this));
+      const { element: form } = this.forms.get("products");
+      form.products = this.productList;
 
-      slider.items = [this.productsForm, ...this.getDefaulForms()];
+      this.options = { PRODUTOS: 1 }
+      slider.items = [...this.getSliderForms()];
     } else {
-      slider.items = [...this.getSliderForms(), ...this.getDefaulForms()];
+      this.loadProductOptions();
+      this.unitPrice = this.product.PRECOVENDA;
+
+      slider.items = [...this.getSliderForms(this.product)];
     }
 
     sliderContainer.appendChild(slider);
     slider.addEventListener("finish", this.handleFinish.bind(this));
+
+    this.slider = slider;
   }
 
-  disconnectedCallback() {}
+  disconnectedCallback() {
+    this.slider.removeEventListener("finish", this.handleFinish.bind(this));
+  }
 }
 
 export const { name, component } = registerComponent({

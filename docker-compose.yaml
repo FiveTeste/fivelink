@@ -33,13 +33,13 @@ services:
       mysql:
         condition: service_healthy
 
-  # app_bkp:
-  #   build:
-  #     context: ./bkp
-  #   volumes:
-  #     - ./bkp:/var/www/html/
-  #   ports:
-  #     - 8080:80
-  #   depends_on:
-  #     mysql:
-  #       condition: service_healthy
+  app_bkp:
+    build:
+      context: ./bkp
+    volumes:
+      - ./bkp:/var/www/html/
+    ports:
+      - 8080:80
+    depends_on:
+      mysql:
+        condition: service_healthy
