@@ -18,12 +18,7 @@ $this->title = 'Kyosk online';
                 <div class="cart__price">
                     <span id="cart_value">R$ 0,00</span>
                 </div>
-                <object
-                    type="image/svg+xml"
-                    data="/web/icons/shopping-cart.svg" 
-                    data-type="svg-icon" 
-                    data-icon-stroke="#0E252B"
-                ></object>
+                <svg-icon src="/web/icons/shopping-cart.svg" style="color: #0E252B" />
             </a>
         </header>
 
@@ -32,22 +27,22 @@ $this->title = 'Kyosk online';
         <footer class="page__footer">
             <nav class="navbar">
                 <a href="/web/" class="navbar__item">
-                    <object
-                        type="image/svg+xml"
-                        data="/web/icons/home.svg" 
-                        data-type="svg-icon" 
-                        data-icon-stroke="red" 
-                    ></object>
+                    <svg-icon src="/web/icons/home.svg" />
                 </a>
                 <a href="/web/carrinho" class="navbar__item">
-                    <object
-                        type="image/svg+xml"
-                        data="/web/icons/shopping-cart.svg" 
-                        data-type="svg-icon"
-                    ></object>
+                    <svg-icon src="/web/icons/shopping-cart.svg" />
                 </a>
             </nav>
         </footer>
+    </div>
+    <div class="modal" style="opacity: 0; visibility: hidden;">
+        <div class="modal__container">
+            <div class="content">
+                <div class="content__icon"></div>
+                <div class="content__message"></div>
+            </div>
+            <button type="button" class="button__close">Ok</button>
+        </div>
     </div>
 </template>
 
@@ -107,10 +102,16 @@ $this->title = 'Kyosk online';
     <link rel="stylesheet" href="/web/css/new/product-item.css">
     
     <li class="item">
-        <img class="item__image" loading="lazy" />
+        <div class="item__image image-container">
+            <svg-icon class="image-container__check" src="/web/icons/check.svg"></svg-icon>
+            <img class="image-container__image" loading="lazy" />
+        </div>
         <div class="item__detail">
             <div class="item__name"><slot name="name"></slot></div>
-            <div class="item__preco"><slot name="preco"></slot></div>
+            <div class="item__price price-container">
+                <div class="item__preco"><slot name="preco"></slot></div>
+                <div class="item__precooriginal"><slot name="preco_original"></slot></div>
+            </div>
         </div>
     </li>
 </template>
@@ -205,17 +206,22 @@ $this->title = 'Kyosk online';
     <div class="content">
         <strong class="content__title">Quantidade:</strong>
         <article class="content__selector selector">
-            <quantity-selector name="quantity" class="selector__input" />
+            <quantity-selector name="quantity" class="selector__input" minvalue="1" />
         </article>
     </div>
 </template>
 
 <!-- CARRINHO PAGE -->
 <template id="cart-page">
+    <link rel="stylesheet" href="/web/css/new/cart.css">
     
-    <ul class="content" style="padding: 1rem;">
-        <slot name="items"></slot>
-    </ul>
+    <div class="content">
+        <ul class="content__list" style="padding: 0;">
+            <slot name="items"></slot>
+        </ul>
+
+        <button class="content__button" id="send_cart">Finalizar pedido</button>
+    </div>
 </template>
 
 <!-- CARRINHO ITEM -->
@@ -226,23 +232,22 @@ $this->title = 'Kyosk online';
             <li class="item">
                 <img class="item__image" loading="lazy" />
                 <div class="item__detail">
-                    <div class="item__name"><slot name="name"></slot></div>
-                    <div class="item__preco"><slot name="price">R$ 0,00</slot></div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <div class="item__name"><slot name="name"></slot></div>
+                        <div class="item__preco"><slot name="price">R$ 0,00</slot></div>
+                    </div>
+                    
+                    <div class="item__observation"><slot name="observation"></slot></div>
                 </div>
                 <div class="item__quantity">
                     <button class="button__add">+</button>
-                    <label class="item__order-quantity">1<slot name="order-quantity"></slot></label>
+                    <label class="item__order-quantity"><slot name="order-quantity"></slot></label>
                     <button class="button__remove">-</button>
                 </div>
             </li>
             <div class="item__icon">
                 <button class="item__button-remove">
-                    <object
-                        type="image/svg+xml"
-                        data="/web/icons/trash.svg" 
-                        data-type="svg-icon"
-                        data-icon-stroke="#BF4816">
-                    </object>
+                    <svg-icon src="/web/icons/trash.svg" style="color: #BF4816" />
                 </button>
             </div>
         </div>
@@ -256,5 +261,5 @@ $this->title = 'Kyosk online';
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js" referrerpolicy="no-referrer"></script>
 <script type="module" src="/web/js/imports.js"></script>
-<script type="module" defer src="/web/js/components/PageContent.js"></script>
+<script type="module" defer src="/web/js/loadGlobalComponents.js"></script>
 <script type="module" defer src="/web/js/router.js"></script>

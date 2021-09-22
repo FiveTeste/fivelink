@@ -13,11 +13,15 @@ class PontoCarne extends HTMLElement {
     const selectedItem = this.shadowRoot.querySelector("input[type='radio'][name='ponto']:checked");
     const detail = { value: selectedItem.value };
     this.dispatchEvent(new CustomEvent("kyosk-change", { detail }));
+
+    fireEvent("toggle-form-slider", { enabled: true });
   }
 
   connectedCallback() {
     const items = this.shadowRoot.querySelectorAll("input[type='radio'][name='ponto']");
     items.forEach((item) => item.addEventListener("click", this.handleSelect.bind(this)));
+
+    fireEvent("toggle-form-slider", { enabled: false });
   }
 
   disconnectedCallback() {

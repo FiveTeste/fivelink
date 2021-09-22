@@ -2,6 +2,7 @@ import { name as ProductsTemplate } from "../templates/Products.js";
 import { name as ProductItem } from "../components/ProductItem.js";
 
 import { formatMoney } from "../utils/numberFormat.js";
+import { isPromotional } from "../utils/isPromotional.js";
 
 import { api } from "../services/api.js";
 
@@ -35,14 +36,22 @@ class ProductsPage extends HTMLElement {
 
     data.forEach((item) => {
       const subGrupoName = item.PRODUTO || "";
-      const preco = item.PRECOVENDA || "";
+
+      const isPromocao = isPromotional(item);
+      const preco = isPromocao ? item.PRECO_PROMOCAO : item.PRECOVENDA;
+
       const imageUrl = "/web/images/new/food.jpg";
 
       const element = document.createElement(ProductItem);
       element.addEventListener("kyosk-click", this.handleClickItem.bind(this));
 
       const slotsHtml = html`<span slot="name">${subGrupoName.toLowerCase()}</span>`;
-      const slotsPreco = html`<span slot="preco">${formatMoney(preco)}</span>`;
+      const slotsPreco = html`<span slot="preco">${formatMoney(preco || "")}</span>`;
+
+      if (isPromocao) {
+        const slotPrecoOriginal = html`<span slot="preco_original">${formatMoney(item.PRECOVENDA || "")}</span>`;
+        element.appendChild(slotPrecoOriginal);
+      }
 
       element.appendChild(slotsHtml);
       element.appendChild(slotsPreco);  

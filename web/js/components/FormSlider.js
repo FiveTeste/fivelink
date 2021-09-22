@@ -29,8 +29,12 @@ class FormSlider extends HTMLElement {
           transition: background .2s ease;
         }
 
-        #next-button:hover {
+        #next-button:not(:disabled):hover {
           background: #277b5c;
+        }
+
+        #next-button:disabled {
+          opacity: 0.75;
         }
       </style>
       <div id="container">
@@ -42,6 +46,8 @@ class FormSlider extends HTMLElement {
 
     this.attachShadow({ mode: "open" });
     this.shadowRoot.appendChild(pageHtml);
+
+    window.addEventListener("kyosk-toggle-form-slider", this.handleToggleNext.bind(this));
   }
 
   showItem(index = this.currentIndex) {
@@ -62,6 +68,13 @@ class FormSlider extends HTMLElement {
     } else if (newIndex === this.items.length) {
       this.dispatchEvent(new CustomEvent("finish"));
     }
+  }
+
+  handleToggleNext(event) {
+    const { enabled } = event.detail;
+
+    const button = this.shadowRoot.getElementById("next-button");
+    button.disabled = !enabled;
   }
 
   connectedCallback() {

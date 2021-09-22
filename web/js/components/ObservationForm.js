@@ -58,6 +58,8 @@ class ObservationForm extends HTMLElement {
   connectedCallback() {
     const field = this.shadowRoot.querySelector(".input__field");
     field.addEventListener("change", this.handleChange.bind(this));
+
+    fireEvent("toggle-form-slider", { enabled: true });
   }
 
   disconnectedCallback() {

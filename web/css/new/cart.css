@@ -1,0 +1,23 @@
+.content {
+  padding: 0 1rem;
+}
+
+.content .content__button {
+  margin-top: 4rem;
+  height: 4rem;
+  width: 100%;
+  background-color: #319A74;
+  color: #fff;
+  font-weight: 600;
+  font-family: var(--font-poppins);
+  font-size: 1.6rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color .2s ease;
+  display: none;
+}
+
+.content .content__button:hover {
+  background-color: #277b5c;
+}

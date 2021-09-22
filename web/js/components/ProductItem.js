@@ -1,4 +1,8 @@
 class ProductItem extends HTMLElement {
+  static get observedAttributes() {
+    return ['checked'];
+  }
+
   constructor() {
     super();
 
@@ -10,12 +14,26 @@ class ProductItem extends HTMLElement {
   }
 
   onClick() {
-    const detail = { value: this.product };
+    const detail = { value: this.product, target: this };
     this.dispatchEvent(new CustomEvent("kyosk-click", { detail }));
   }
 
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === "checked") {
+     const container = this.shadowRoot.querySelector(".item");
+     const isChecked = eval(newValue);
+
+      if (isChecked) {
+        if (container.classList.contains("checked")) return;
+        container.classList.add("checked");
+      } else {
+        container.classList.remove("checked");
+      }
+    }
+  }
+
   connectedCallback() {
-    const element = this.shadowRoot.querySelector(".item__image");
+    const element = this.shadowRoot.querySelector(".image-container__image ");
     element.src = this.image;
 
     this.addEventListener("click", this.onClick);

@@ -1,8 +1,15 @@
 class QuantitySelector extends HTMLElement {
 
+  static get observedAttributes() {
+    return ['minvalue'];
+  }
+
+  get minValue() {
+    return this.getAttribute("minvalue");
+  }
+
   constructor() {
     super();
-
     this.value = 0;
 
     const style = html`
@@ -76,22 +83,34 @@ class QuantitySelector extends HTMLElement {
     this.appendChild(container);
   }
 
+  setValue(value) {
+    const numberValue = +value;
+
+    this.input.value = numberValue;
+    this.value = numberValue;
+    this.dispatchChange();
+  }
+
   dispatchChange() {
     const detail = { value: this.value, name: this.getAttribute("name") };
     const event = new CustomEvent("kyosk-change", { detail });
     this.dispatchEvent(event);
   }
 
-  handleAdd() {
+  handleAdd(event) {
+    event.stopPropagation();
+
     const newValue = this.value + 1;
     this.input.value = newValue;
     this.value = newValue;
     this.dispatchChange();
   }
 
-  handleMinus() {
+  handleMinus(event) {
+    event.stopPropagation();
+
     const newValue = this.value - 1;
-    if (newValue < 0) return;
+    if (newValue < this.minValue) return;
 
     this.input.value = newValue;
     this.value = newValue;
@@ -104,6 +123,15 @@ class QuantitySelector extends HTMLElement {
     const value = this.input.value;
     this.value = +value;
     this.dispatchChange();
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === "minvalue") {
+      const minValue = newValue ? +newValue : 0;
+      if (this.value < minValue) {
+        this.setValue(minValue);
+      }
+    }
   }
 
   connectedCallback() {
@@ -122,4 +150,4 @@ class QuantitySelector extends HTMLElement {
 export const { name, component } = registerComponent({
   name: "quantity-selector",
   component: QuantitySelector
-})
+});

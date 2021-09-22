@@ -378,6 +378,17 @@ class SiteController extends Controller {
                             $opcional->save();
                         }
                     }
+
+                    // inserir montagem
+                    if (isset($consumo['LISTA_MONTAGEM'])) {
+                        $montagem = $consumo['LISTA_MONTAGEM'];
+                        foreach ($montagem as $item) {
+                            $montado = new \app\models\ItemMontado();
+                            $montado->attributes = $item;
+                            $montado->CONSUMO = $consumo_model->CODIGO;
+                            $montado->save();
+                        }
+                    }
                 }
             }
 

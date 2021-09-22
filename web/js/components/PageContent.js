@@ -35,6 +35,45 @@ class PageContent extends HTMLElement {
     }
   }
 
+  showModal(event) {
+    const { type, message } = event.detail;
+
+    const icons = {
+      success: html`<svg-icon src="/web/icons/check-small.svg" style="color: #333" />`,
+      warning: html`<svg-icon src="/web/icons/warning.svg" style="color: #333" />`,
+      error: html`<svg-icon src="/web/icons/error.svg" style="color: #BF4816" />`,
+    }
+
+    const icon = icons[type];
+    const messageElement = html`<p>${message}</p>`;
+
+    const iconContainer = this.shadowRoot.querySelector(".content__icon");
+    const messageContainer = this.shadowRoot.querySelector(".content__message");
+
+    iconContainer.appendChild(icon);
+    messageContainer.appendChild(messageElement);
+
+    const modalContainer = this.shadowRoot.querySelector(".modal");
+    modalContainer.style.removeProperty("opacity");
+    modalContainer.style.removeProperty("visibility");
+  }
+
+  closeModal() {
+    const modalContainer = this.shadowRoot.querySelector(".modal");
+    modalContainer.style.cssText = `
+      opacity: 0;
+      visibility: hidden;
+    `;
+
+    setTimeout(() => {
+      const iconContainer = this.shadowRoot.querySelector(".content__icon");
+      const messageContainer = this.shadowRoot.querySelector(".content__message");
+  
+      iconContainer.innerHTML = "";
+      messageContainer.innerHTML = "";
+    }, 200);
+  }
+
   goTo(event) {
     event.preventDefault();
     const target = event.target.getAttribute("href");
@@ -50,11 +89,13 @@ class PageContent extends HTMLElement {
     const navContainer = this.shadowRoot.querySelector(".navbar");
     const navLinks = navContainer.querySelectorAll("a");
     navLinks.forEach((link) => {
-      const icon = link.querySelector("object[data-type='svg-icon']");
+      const icon = link.querySelector("svg-icon");
       if (link.getAttribute("href") === currentPage) {
-        icon.setAttribute("data-icon-stroke", "#BF4816");
+        icon.style.setProperty("color", "#BF4816");
+        // icon.setAttribute("data-icon-stroke", );
       } else {
-        icon.setAttribute("data-icon-stroke", "#333");
+        icon.style.setProperty("color", "#333");
+        // icon.setAttribute("data-icon-stroke", "#333");
       }
     });
   }
@@ -78,10 +119,14 @@ class PageContent extends HTMLElement {
     const links = this.shadowRoot.querySelectorAll("a");
     links.forEach((link) => link.addEventListener("click", this.goTo));
 
+    const buttonModal = this.shadowRoot.querySelector(".modal .button__close");
+    buttonModal.addEventListener("click", this.closeModal.bind(this));
+
     this.store.addListener(this.updatedCart.bind(this));
     
     window.addEventListener("vaadin-router-location-changed", this.loadLinks.bind(this));
     window.addEventListener("kyosk-change-navbar", this.changeNavBar.bind(this));
+    window.addEventListener("kyosk-show-modal", this.showModal.bind(this));
     window.addEventListener("resize", this.loadViewHeight.bind(this));
   }
 
@@ -89,10 +134,14 @@ class PageContent extends HTMLElement {
     const links = this.shadowRoot.querySelectorAll("a");
     links.forEach((link) => link.removeEventListener("click", this.goTo));
 
+    const buttonModal = this.shadowRoot.querySelector(".modal .button__close");
+    buttonModal.removeEventListener("click", this.closeModal.bind(this));
+
     this.store.removeListener(this.updatedCart.bind(this));
 
     window.removeEventListener("vaadin-router-location-changed", this.loadLinks.bind(this));
     window.removeEventListener("kyosk-change-navbar", this.loadLinks.bind(this));
+    window.removeEventListener("kyosk-show-modal", this.showModal.bind(this));
     window.removeEventListener("resize", this.loadViewHeight.bind(this));
   }
 }

@@ -10,8 +10,8 @@ class CategoryItem extends HTMLElement {
   }
 
   onClick() {
-    const url = `/web/products/${this.code}${location.search}`;
-    // Router.go(url);
+    const detail = { value: this.category };
+    this.dispatchEvent(new CustomEvent("kyosk-click", { detail }));
   }
 
   connectedCallback() {

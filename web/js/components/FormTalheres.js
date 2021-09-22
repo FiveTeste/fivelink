@@ -21,6 +21,8 @@ class FormTalheres extends HTMLElement {
   connectedCallback() {
     const selector = this.shadowRoot.querySelector("quantity-selector");
     selector.addEventListener("kyosk-change", this.handleChange.bind(this));
+
+    fireEvent("toggle-form-slider", { enabled: true });
   }
 }
 

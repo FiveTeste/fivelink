@@ -16,11 +16,17 @@ class FormQuantity extends HTMLElement {
 
     const detail = { value };
     this.dispatchEvent(new CustomEvent("kyosk-change", { detail }));
+
+    if (value > 0) {
+      fireEvent("toggle-form-slider", { enabled: true });
+    }
   }
 
   connectedCallback() {
     const selector = this.shadowRoot.querySelector("quantity-selector");
     selector.addEventListener("kyosk-change", this.handleChange.bind(this));
+
+    fireEvent("toggle-form-slider", { enabled: false });
   }
 }
 

@@ -20,6 +20,8 @@ class UsaCopos extends HTMLElement {
   connectedCallback() {
     const items = this.shadowRoot.querySelectorAll("quantity-selector");
     items.forEach((item) => item.addEventListener("kyosk-change", this.handleSelect.bind(this)));
+
+    fireEvent("toggle-form-slider", { enabled: true });
   }
 
   disconnectedCallback() {

@@ -10,6 +10,7 @@ import { name as ProductsForm } from "../components/ProductsForm.js";
 import { addItem } from "../store/actions.js";
 
 import { formatMoney } from "../utils/numberFormat.js";
+import { isPromotional } from "../utils/isPromotional.js";
 
 class ProductTemplate extends HTMLElement {
   constructor() {
@@ -77,30 +78,52 @@ class ProductTemplate extends HTMLElement {
     const coposStr = (() => {
       if (options.USA_COPOS !== 1) return "";
 
-      return `
-        ${this.copo > 0 ? `Copo: ${this.copo}, ` : ''}
-        ${this.copo_gelo > 0 ? `Copo com gelo: ${this.copo_gelo}, ` : ''}
-        ${this.copo_gelo_limao > 0 ? `Copo com gelo e limão: ${this.copo_gelo_limao}` : ''}
-      `
+      let resultStr = "";
+      if (this.copo > 0) {
+        resultStr = `Copo: ${this.copo}`;
+      }
+      if (this.copo_gelo > 0) {
+        resultStr = `${resultStr}, Copo com gelo: ${this.copo_gelo}`;
+      }
+      if (this.copo_gelo_limao > 0) {
+        resultStr = `${resultStr}, Copo com gelo e limão: ${this.copo_gelo_limao}`;
+      }
+
+      return resultStr;
     })();
 
-    const detail = `${carneStr}\n${coposStr}\n${talheresStr}`;
+    let detail = "";
+    if (carneStr !== "") {
+      detail = carneStr;
+    }
+    if (coposStr !== "") {
+      detail = `${detail}\n${coposStr}`;
+    }
+    if (talheresStr !== "") {
+      detail = `${detail}\n${talheresStr}`;
+    }
+
     const normalizedDetail = detail.replace(/\r?\n|\r/g, '. ');
 
     const currentDate = new Date();
     const str = `${currentDate.toLocaleString()}${totalPrice}${this.quantity}${window.nummesa}`;
     const hash = CryptoJS.MD5(str).toString().toUpperCase();
 
-    const name = this.product ? this.product.PRODUTO : this.category.SUBGRUPO;
+    const name = product ? product.PRODUTO : this.category.SUBGRUPO;
+
+    const uid = Date.now()
+      .toString(36) + Math.random().toString(36).substring(2);
 
     const finish = {
-      product: this.product,
+      uid: uid.toUpperCase(),
+      product: product,
       subgroup: this.category,
       quantity: this.quantity,
       unitPrice: this.unitPrice,
       observation: this.observation,
       time: currentDate,
       detail: normalizedDetail,
+      montagem: this.products,
       name,
       totalPrice,
       hash,
@@ -189,8 +212,13 @@ class ProductTemplate extends HTMLElement {
 
     this.slider.items = [...this.getSliderForms()];
 
-    const unitPrice = this.products.reduce((acc, item) => acc + item.PRECOVENDA, 0);
-    this.unitPrice = unitPrice;
+    const totalProductsPrice = this.products.reduce((acc, item) => {
+      const itemPrice = isPromotional(item) ? item.PRECO_PROMOCAO : item.PRECOVENDA;
+      return acc + itemPrice;
+    }, 0);
+    const unitPrice = totalProductsPrice / this.products.length;
+
+    this.unitPrice = isNaN(unitPrice) ? 0 : unitPrice.toFixed(2);
 
     const existent = this.querySelector("span[slot='price']");
     if (existent) {
@@ -243,6 +271,20 @@ class ProductTemplate extends HTMLElement {
     this.options = options;
   }
 
+  loadUnitPrice() {
+    if (isPromotional(this.product)) {
+      this.unitPrice = this.product.PRECO_PROMOCAO;
+    } else {
+      this.unitPrice = this.product.PRECOVENDA;
+    }
+
+    const existent = this.querySelector("span[slot='price']");
+    const element = existent ? existent : document.createElement("span");
+    element.slot = "price";
+    element.textContent = formatMoney(this.unitPrice);
+    this.appendChild(element);
+  }
+
   connectedCallback() {
     const sliderContainer = this.shadowRoot.querySelector(".slider");
     const slider = document.createElement(FormSlider);
@@ -251,12 +293,13 @@ class ProductTemplate extends HTMLElement {
     if (pathName === "categories") {
       const { element: form } = this.forms.get("products");
       form.products = this.productList;
+      form.max = this.category.QTDE_MAX_KYOSK;
 
       this.options = { PRODUTOS: 1 }
       slider.items = [...this.getSliderForms()];
     } else {
       this.loadProductOptions();
-      this.unitPrice = this.product.PRECOVENDA;
+      this.loadUnitPrice();
 
       slider.items = [...this.getSliderForms(this.product)];
     }

@@ -13,6 +13,16 @@ class CategoriesPage extends HTMLElement {
     this.shadowRoot.appendChild(pageTemplate);
   }
 
+  handleClickItem(event) {
+    const category = event.detail.value;
+
+    const categoryCode = category.CODIGO;
+    const groupCode = this.location.params.code;
+
+    const url = `/web/${groupCode}/categorias/${categoryCode}${location.search}`;
+    Router.go(url);
+  }
+
   async loadItems() {
     const groupCode = this.location.params.code;
     const container = this.shadowRoot.firstChild;
@@ -26,6 +36,7 @@ class CategoriesPage extends HTMLElement {
       const imageUrl = "/web/images/new/food.jpg";
 
       const element = document.createElement(CategoryItem);
+      element.addEventListener("kyosk-click", this.handleClickItem.bind(this));
 
       const slotsHtml = html`<span slot="name">${subGrupoName.toLowerCase()}</span>`;
 

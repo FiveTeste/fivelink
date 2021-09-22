@@ -3,6 +3,7 @@ import { name as ProductTemplate } from "../templates/Product.js";
 import { api } from "../services/api.js";
 
 import { formatMoney } from "../utils/numberFormat.js";
+import { isPromotional } from "../utils/isPromotional.js";
 
 class ProductPage extends HTMLElement {
   constructor() {
@@ -23,7 +24,9 @@ class ProductPage extends HTMLElement {
 
     const priceElement = document.createElement("span");
     priceElement.slot = "price";
-    priceElement.textContent = formatMoney(product.PRECOVENDA);
+
+    const price = isPromotional(product) ? product.PRECO_PROMOCAO : product.PRECOVENDA;
+    priceElement.textContent = formatMoney(price);
 
     const pageTemplate = document.createElement(ProductTemplate);
     pageTemplate.product = product;

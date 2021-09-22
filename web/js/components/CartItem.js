@@ -1,5 +1,9 @@
-import { removeItem } from "../store/actions.js";
+import { removeItem, incrementItem, decrementItem } from "../store/actions.js";
 class CartItem extends HTMLElement {
+  static get observedAttributes() {
+    return ['image-url'];
+  }
+
   constructor(){
     super();
 
@@ -15,14 +19,43 @@ class CartItem extends HTMLElement {
     this.store.dispatchAction(removeItem({ index }));
   }
 
+  handleIncrement() {
+    const index = this.index;
+    this.store.dispatchAction(incrementItem({ index }));
+  }
+
+  handleDecrement() {
+    const index = this.index;
+    this.store.dispatchAction(decrementItem({ index }));
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (name === "image-url") {
+      const imageElement = this.shadowRoot.querySelector(".item__image");
+      imageElement.src = newValue;
+    }
+  }
+
   connectedCallback() {
-    const element = this.shadowRoot.querySelector(".item__image");
-    element.src = this.image;
+    const buttonPlus = this.shadowRoot.querySelector(".item__quantity button.button__add");
+    const buttonMinus = this.shadowRoot.querySelector(".item__quantity button.button__remove");
+
+    buttonPlus.addEventListener("click", this.handleIncrement.bind(this));
+    buttonMinus.addEventListener("click", this.handleDecrement.bind(this));
 
     const deleteButton = this.shadowRoot.querySelector("button.item__button-remove");
     deleteButton.addEventListener("click", this.handleDelete.bind(this));
   }
+
   disconnectedCallback() {
+    const buttonPlus = this.shadowRoot.querySelector(".item__quantity button.button__add");
+    const buttonMinus = this.shadowRoot.querySelector(".item__quantity button.button__remove");
+
+    buttonPlus.removeEventListener("click", this.handleIncrement.bind(this));
+    buttonMinus.removeEventListener("click", this.handleDecrement.bind(this));
+
+    const deleteButton = this.shadowRoot.querySelector("button.item__button-remove");
+    deleteButton.removeEventListener("click", this.handleDelete.bind(this));
   }
 }
 
