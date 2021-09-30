@@ -16,7 +16,7 @@ class CategoryItem extends HTMLElement {
 
   connectedCallback() {
     const element = this.shadowRoot.querySelector(".item__image");
-    element.src = this.image;
+    element.style.setProperty("background-image", `url(${this.image})`);
 
     this.addEventListener("click", this.onClick);
   }

@@ -9,8 +9,11 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
+use DateTime;
+use Exception;
 use Ramsey\Uuid\Uuid;
 use ReallySimpleJWT\Token;
+use yii\db\Query;
 use yii\helpers\Json;
 
 class SiteController extends Controller {
@@ -62,28 +65,43 @@ class SiteController extends Controller {
      */
     public function actionIndex() {
         $mesa = Yii::$app->getRequest()->getQueryParam("mesa");
-        $token = Yii::$app->getRequest()->getQueryParam("token");
 
-        if (!isset($token) && isset($mesa)) {
-            $uuid = Uuid::uuid4();
-            $payload = [
-                'iat' => time(),
-                'uid' => $mesa,
-                'req_uid' => $uuid->toString()
-            ];
-            $token = Token::customPayload($payload, "Hello&MikeFooBar123");
-            return $this->redirect("/web?token=$token");
-        } else if (isset($token)) {
-            $payload = Token::getPayload($token, "Hello&MikeFooBar123");
-            $mesa = $payload["uid"];
-
+        if (isset($mesa)) {
             return $this->render('index', [
-                'mesa' => $mesa,
+                'mesa' => $mesa
             ]);
         } else {
             return $this->render('error');
         }
     }
+
+    public function actionGeneratetoken() {
+        $req = Yii::$app->request;
+        if ($req->isPut) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+
+            $mesa = $req->getBodyParam('mesa');
+            $token = $req->getBodyParam('token', null);
+    
+            if (isset($token) && !Token::validate($token, "Hello&MikeFooBar123")) {
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'invalid token'];
+            }
+    
+            $uuid = Uuid::uuid4();
+            $payload = [
+                'iat' => time(),
+                'uid' => $mesa,
+                'req_uid' => $uuid->toString(),
+            ];
+            $newToken = Token::customPayload($payload, "Hello&MikeFooBar123");
+
+            return ['token' => $newToken];
+        } else {
+            return [];
+        }
+    }
+
     
         public function actionFoto() {
         $re = Yii::$app->request;
@@ -96,15 +114,14 @@ class SiteController extends Controller {
             $fileContent = file_get_contents($_FILES['file']['tmp_name']);
             $codigo = $re->post("produto");
             
-            if ($fileError == UPLOAD_ERR_OK) {
-
-                $path = \Yii::$app->basePath .'/web/images/produtos';
-                //return $path ;
-                $uploaded = move_uploaded_file($fileTemp, $path.'/'.$codigo.'.png');
+            if ($fileError == UPLOAD_ERR_OK) {                
+                $image_path = '/web/images/produtos/'.$codigo.'.png';
+                $uploaded = move_uploaded_file($fileTemp, \Yii::$app->basePath.$image_path);
                 if($uploaded){
                     $model = \app\models\Produto::findOne(['CODIGO'=>$codigo]);
-                    $model->FOTO = $codigo.'.png';
-                    $model->update();
+                    $model->FOTO = $image_path;
+                    $model->save();
+
                 }
                 return $uploaded;
             } else {
@@ -348,11 +365,31 @@ class SiteController extends Controller {
                 $model_mesa->save();
             }
 
+            $model_comanda = \app\models\Comanda::find()
+                ->where('COD_MESA = :mesa AND SITUACAO <> :situacao', ['mesa' => $mesa['COD_MESA'], "situacao" => 2])
+                ->one();
+                
+            if (!isset($model_comanda)) {
+                $now = new DateTime();
+
+                $model_comanda = new \app\models\Comanda();
+                $model_comanda->COD_MESA = $model_mesa["COD_MESA"];
+                $model_comanda->SITUACAO = 0;
+                $model_comanda->DATA_CRIACAO = $now->format('Y-m-d H:i:s');
+                $model_comanda->save();
+            }
+            if ($model_comanda["SITUACAO"] == 1) {
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'order closed'];
+            }
+            
             foreach ($consumo_list as $consumo) {
                 $consumo_model = \app\models\Consumo::findOne(['DISPOSITIVO' => $consumo['DISPOSITIVO']]);
                 if ($consumo_model == null) {
                     $consumo_model = new \app\models\Consumo();
                     $consumo_model->attributes = $consumo;
+                    $consumo_model->COD_COMANDA = $model_comanda["CODIGO"];
+                    
                     if (!$consumo_model->save()) {
                         return ['message' => $consumo_model->errors];
                     }
@@ -391,6 +428,112 @@ class SiteController extends Controller {
                     }
                 }
             }
+
+            $tokenreg = new \app\models\Token();
+            $tokenreg->uuid = $uid;
+            $tokenreg->save();
+
+            return ['message' => 'sucesso'];
+        } else {
+            return [];
+        }
+    }
+
+    public function actionComanda() {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $req = Yii::$app->request;
+
+        if ($req->isAjax) {
+            $mesa = $req->get('codmesa');
+
+            $model_comanda = \app\models\Comanda::find()
+                ->where('COD_MESA = :mesa AND SITUACAO  <> :situacao', ['mesa' => $mesa, "situacao" => 2])
+                ->one();
+
+           
+
+            $consumos = \app\models\Consumo::find()
+                ->with("itemMontados")
+                ->where(["consumo.COD_COMANDA" => $model_comanda["CODIGO"]])
+                ->all();
+            
+            $consumos_ids = [];
+            $consumo_map = [];
+            foreach ($consumos as $consumo) {
+                array_push($consumos_ids, $consumo["CODIGO"]);
+                $consumo_map[$consumo["CODIGO"]] = json_decode(Json::encode($consumo), true);
+            }
+
+            $query = new Query();
+            $command = $query
+                ->select("
+                    item_montado.PRECO, 
+                    item_montado.CONSUMO, 
+                    produto.CODIGO as PRODUTO_CODIGO,
+                    produto.PRODUTO as PRODUTO_NOME
+                ")
+                ->from("item_montado")
+                ->innerJoin("produto", "item_montado.CODPRODUTO = produto.CODIGO")
+                ->where(['IN', 'CONSUMO', $consumos_ids])
+                ->createCommand();
+
+            $montados = $command->queryAll();
+
+            foreach ($montados as $montado) {
+                $item = $consumo_map[$montado["CONSUMO"]];
+
+                if (isset($item["MONTADO"])) {
+                    array_push($item["MONTADO"], $montado);
+                } else {
+                    $item["MONTADO"] = [$montado];
+                }
+
+                $consumo_map[$montado["CONSUMO"]] = $item;
+            }
+
+            return array_values($consumo_map);
+        } else {
+            return [];
+        }
+    }
+
+    public function actionInfocomanda() {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $req = Yii::$app->request;
+
+        if ($req->isAjax) {
+            $mesa = $req->get('codmesa');
+
+            $model_comanda = \app\models\Comanda::find()
+                ->where('COD_MESA = :mesa AND SITUACAO <> :situacao', ['mesa' => $mesa, "situacao" => 2])
+                ->one();
+
+            return $model_comanda;
+        } else {
+            return [];
+        }
+    }
+
+    public function actionFecharcomanda() {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        
+        $req = Yii::$app->request;
+        if ($req->isPost) {
+            $token = $req->post('token');
+
+            $payload = Token::getPayload($token, "Hello&MikeFooBar123");
+            $uid = $payload["req_uid"];
+            $mesa = $payload["uid"];
+
+            $existentToken = \app\models\Token::findOne(['uuid' => $uid]);
+            if ($existentToken != null) {
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'invalid token'];
+            }
+
+            $model_comanda = \app\models\Comanda::findOne(["COD_MESA" => $mesa, "SITUACAO" => 0]);
+            $model_comanda->SITUACAO = 1;
+            $model_comanda->update();
 
             $tokenreg = new \app\models\Token();
             $tokenreg->uuid = $uid;

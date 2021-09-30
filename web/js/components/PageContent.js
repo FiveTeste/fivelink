@@ -1,4 +1,6 @@
 import { formatMoney } from "../utils/numberFormat.js";
+
+import { api } from "../services/api.js";
 class PageContent extends HTMLElement {
   constructor() {
     super();
@@ -35,43 +37,148 @@ class PageContent extends HTMLElement {
     }
   }
 
-  showModal(event) {
-    const { type, message } = event.detail;
+  async generateToken() {
+    const requestData = {
+      mesa: window.nummesa
+    };
 
-    const icons = {
-      success: html`<svg-icon src="/web/icons/check-small.svg" style="color: #333" />`,
-      warning: html`<svg-icon src="/web/icons/warning.svg" style="color: #333" />`,
-      error: html`<svg-icon src="/web/icons/error.svg" style="color: #BF4816" />`,
+    const response = await api("generatetoken", {
+      method: "PUT",
+      body: JSON.stringify(requestData),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    const token = response.token;
+    return token;
+  }
+
+  showQRReader(event) {
+    const { onResult: onResultCallback } = event.detail;
+
+    const container = document.createElement("div");
+    container.classList.add("modal__container");
+
+    const content = document.createElement("div");
+    content.classList.add("content");
+
+    const button = document.createElement("button");
+    button.textContent = "Cancelar";
+    button.classList.add("button__close");
+    button.addEventListener("click", () => {
+      this.closeModal(container);
+    });
+
+    const onResult = async (result) => {
+      button.remove();
+
+      const url = new URL(result);
+      const mesa = url.searchParams.get("mesa");
+
+      if (mesa == window.nummesa) {
+        content.parentElement.style.removeProperty("width");
+        content.style.cssText = `
+          height: 15rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        `;
+        content.innerHTML = `
+          <div class="lds-spinner">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        `;
+
+        await this.generateToken().then(onResultCallback)
+          .catch(() => {
+            fireEvent("show-modal", { 
+              type: "error",
+              message: "Não foi possível gerar um novo token.",
+            });
+          });
+
+        this.closeModal(container);
+      } else {
+        this.closeModal(container);
+      }
     }
 
-    const icon = icons[type];
-    const messageElement = html`<p>${message}</p>`;
+    const video = document.createElement("qr-reader");
+    video.onResult = onResult;
+    content.appendChild(video);
 
-    const iconContainer = this.shadowRoot.querySelector(".content__icon");
-    const messageContainer = this.shadowRoot.querySelector(".content__message");
+    container.style.setProperty("width", "fit-content");
+    container.appendChild(content);
+    container.appendChild(button);
 
-    iconContainer.appendChild(icon);
-    messageContainer.appendChild(messageElement);
+    const modal = this.shadowRoot.querySelector(".modal");
+    modal.appendChild(container);
+    modal.style.removeProperty("opacity");
+    modal.style.removeProperty("visibility");
+  }
 
+  showModal(event) {
     const modalContainer = this.shadowRoot.querySelector(".modal");
+    const container = document.createElement('div');
+
+    const { type, message, onConfirm } = event.detail;
+
+    const icons = {
+      success: '<svg-icon src="/web/icons/check-small.svg" style="color: #333" />',
+      warning: '<svg-icon src="/web/icons/warning.svg" style="color: #333" />',
+      error: '<svg-icon src="/web/icons/error.svg" style="color: #BF4816" />',
+    }
+
+    const htmlStr = html`
+      <div class="content">
+        <div class="content__icon">${icons[type]}</div>
+        <div class="content__message">
+          <p>${message}</p>
+        </div>
+      </div>
+    `;
+
+    const button = document.createElement('button');
+    button.textContent = "Ok";
+    button.classList.add("button__close");
+    button.addEventListener("click", (...args) => {
+      this.closeModal(container);
+      if (onConfirm) onConfirm.apply(this, args);
+    });
+
+    container.classList.add("modal__container");
+    container.appendChild(htmlStr);
+    container.appendChild(button);
+
+    modalContainer.appendChild(container);
     modalContainer.style.removeProperty("opacity");
     modalContainer.style.removeProperty("visibility");
   }
 
-  closeModal() {
+  closeModal(modal) {
+    modal.remove();
+    
     const modalContainer = this.shadowRoot.querySelector(".modal");
-    modalContainer.style.cssText = `
-      opacity: 0;
-      visibility: hidden;
-    `;
+    const childCount = modalContainer.childElementCount;
 
-    setTimeout(() => {
-      const iconContainer = this.shadowRoot.querySelector(".content__icon");
-      const messageContainer = this.shadowRoot.querySelector(".content__message");
-  
-      iconContainer.innerHTML = "";
-      messageContainer.innerHTML = "";
-    }, 200);
+    if (childCount <= 0) {
+      modalContainer.style.cssText = `
+        opacity: 0;
+        visibility: hidden;
+      `;
+    }
   }
 
   goTo(event) {
@@ -92,10 +199,8 @@ class PageContent extends HTMLElement {
       const icon = link.querySelector("svg-icon");
       if (link.getAttribute("href") === currentPage) {
         icon.style.setProperty("color", "#BF4816");
-        // icon.setAttribute("data-icon-stroke", );
       } else {
         icon.style.setProperty("color", "#333");
-        // icon.setAttribute("data-icon-stroke", "#333");
       }
     });
   }
@@ -119,14 +224,12 @@ class PageContent extends HTMLElement {
     const links = this.shadowRoot.querySelectorAll("a");
     links.forEach((link) => link.addEventListener("click", this.goTo));
 
-    const buttonModal = this.shadowRoot.querySelector(".modal .button__close");
-    buttonModal.addEventListener("click", this.closeModal.bind(this));
-
     this.store.addListener(this.updatedCart.bind(this));
     
     window.addEventListener("vaadin-router-location-changed", this.loadLinks.bind(this));
     window.addEventListener("kyosk-change-navbar", this.changeNavBar.bind(this));
     window.addEventListener("kyosk-show-modal", this.showModal.bind(this));
+    window.addEventListener("kyosk-show-qr-reader", this.showQRReader.bind(this));
     window.addEventListener("resize", this.loadViewHeight.bind(this));
   }
 
@@ -134,14 +237,12 @@ class PageContent extends HTMLElement {
     const links = this.shadowRoot.querySelectorAll("a");
     links.forEach((link) => link.removeEventListener("click", this.goTo));
 
-    const buttonModal = this.shadowRoot.querySelector(".modal .button__close");
-    buttonModal.removeEventListener("click", this.closeModal.bind(this));
-
     this.store.removeListener(this.updatedCart.bind(this));
 
     window.removeEventListener("vaadin-router-location-changed", this.loadLinks.bind(this));
     window.removeEventListener("kyosk-change-navbar", this.loadLinks.bind(this));
     window.removeEventListener("kyosk-show-modal", this.showModal.bind(this));
+    window.removeEventListener("kyosk-show-qr-reader", this.showQRReader.bind(this));
     window.removeEventListener("resize", this.loadViewHeight.bind(this));
   }
 }

@@ -32,17 +32,13 @@ $this->title = 'Kyosk online';
                 <a href="/web/carrinho" class="navbar__item">
                     <svg-icon src="/web/icons/shopping-cart.svg" />
                 </a>
+                <a href="/web/conta" class="navbar__item">
+                    <svg-icon src="/web/icons/order-list.svg" />
+                </a>
             </nav>
         </footer>
     </div>
     <div class="modal" style="opacity: 0; visibility: hidden;">
-        <div class="modal__container">
-            <div class="content">
-                <div class="content__icon"></div>
-                <div class="content__message"></div>
-            </div>
-            <button type="button" class="button__close">Ok</button>
-        </div>
     </div>
 </template>
 
@@ -65,7 +61,7 @@ $this->title = 'Kyosk online';
     <link href="/web/css/new/card-item.css" rel="stylesheet" />
 
     <article class="card">
-        <img class="card__image" loading="lazy" />
+        <div class="card__image"></div>
         <div class="card__name"><slot name="name"></slot></div>
     </article>
 </template>
@@ -104,7 +100,7 @@ $this->title = 'Kyosk online';
     <li class="item">
         <div class="item__image image-container">
             <svg-icon class="image-container__check" src="/web/icons/check.svg"></svg-icon>
-            <img class="image-container__image" loading="lazy" />
+            <div class="image-container__image"></div>
         </div>
         <div class="item__detail">
             <div class="item__name"><slot name="name"></slot></div>
@@ -121,7 +117,7 @@ $this->title = 'Kyosk online';
     <link rel="stylesheet" href="/web/css/new/category-item.css">
     
     <li class="item">
-        <img class="item__image" loading="lazy" />
+        <div class="item__image"></div>
         <div class="item__name"><slot name="name"></slot></div>
     </li>
 </template>
@@ -254,11 +250,54 @@ $this->title = 'Kyosk online';
 
 </template>
 
+<!-- COMANDA PAGE -->
+<template id="orders-page">
+    <link rel="stylesheet" href="/web/css/new/orders.css">
+    
+    <div class="container">
+        <div class="price">
+            <span class="price__title">Total:</span>
+            <span class="price__value">
+                <slot name="total">R$ 0,00</slot>
+            </span>
+        </div>
+
+        <button class="send-button" id="close_order">Pedir conta</button>
+
+        <div class="content">
+            <strong class="content__title">Pedidos:</strong>
+            <ul class="content__list" style="padding: 0;">
+                <slot name="items"></slot>
+            </ul>
+        </div>
+    </div>
+</template>
+
+
+<!-- COMANDA ITEM -->
+<template id="order-item">
+    <link rel="stylesheet" href="/web/css/new/order-item.css">
+
+    <li class="item">
+        <img class="item__image" loading="lazy" />
+        <div class="item__detail">
+            <div style="display: flex; justify-content: space-between;">
+                <div class="item__name"><slot name="name"></slot></div>
+                <div class="item__preco"><slot name="price">R$ 0,00</slot></div>
+            </div>
+            
+            <div class="item__observation"><slot name="observation"></slot></div>
+        </div>
+    </li>
+</template>
+
+
 <script type="text/javascript">
     window.baseUrl = '<?php echo Yii::$app->request->baseUrl; ?>';
     window.nummesa = '<?php echo $mesa ?>';
 </script>
 
+<script src="/web/js/jsQR.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js" referrerpolicy="no-referrer"></script>
 <script type="module" src="/web/js/imports.js"></script>
 <script type="module" defer src="/web/js/loadGlobalComponents.js"></script>

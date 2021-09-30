@@ -3,6 +3,7 @@ import { name as productsPage } from "./pages/Products.js";
 import { name as categoriesPage } from "./pages/Categories.js";
 import { name as productPage } from "./pages/Product.js";
 import { name as cartPage } from "./pages/Cart.js";
+import { name as ordersPage } from "./pages/Orders.js";
 
 
 const routerSlot = document.querySelector("page-content");
@@ -29,6 +30,10 @@ router.setRoutes([
   {
     path: "/carrinho",
     component: cartPage
+  },
+  {
+    path: "/conta",
+    component: ordersPage
   },
   {
     path: ":code/produtos",

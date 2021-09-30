@@ -1,0 +1,52 @@
+.container {
+  padding: 0 1rem;
+}
+
+.container .price {
+  font-family: var(--font-poppins);
+  display: flex;
+  flex-direction: column;
+}
+
+.price .price__title {
+  color: #0E252B;
+}
+
+.price .price__value {
+  color: #FAB559;
+  font-weight: 600;
+}
+
+.container .send-button {
+  margin-top: 3rem;
+  height: 4rem;
+  width: 100%;
+  background-color: #319A74;
+  color: #fff;
+  font-weight: 600;
+  font-family: var(--font-poppins);
+  font-size: 1.6rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color .2s ease;
+  display: none;
+}
+
+.container .send-button:hover {
+  background-color: #277b5c;
+}
+
+.container .content {
+  margin-top: 2.4rem;
+}
+
+.content .content__title {
+  font-family: var(--font-poppins);
+  color: #333;
+  font-size: 1.8rem;
+}
+
+.content .content__list {
+  margin-top: 1rem;
+}

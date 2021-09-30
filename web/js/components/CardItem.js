@@ -21,7 +21,7 @@ class CardItem extends HTMLElement {
 
   connectedCallback() {
     const element = this.shadowRoot.querySelector(".card__image");
-    element.src = this.image;
+    element.style.setProperty("background-image", `url(${this.image})`);
 
     this.addEventListener("click", this.onClick);
   }

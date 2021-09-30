@@ -29,7 +29,33 @@
 .card .card__image {
   height: 8.5rem;
   width: 100%;
-  object-fit: cover;
-  object-position: center;
   border-radius: 0 0 0.3rem 0.3rem;
+  background-position: top left;
+  background-size: 120%;
+  background-repeat: no-repeat;
+  animation: 30s linear 0s infinite alternate card__image-slide;
+}
+
+@keyframes card__image-slide {
+  16.5%, 49.5%, 82.5% {
+    background-size: 100%;
+    background-position: center center;
+  }
+
+  0% {
+    background-size: 120%;
+    background-position: top left;
+  }
+  33% {
+    background-size: 120%;
+    background-position: bottom right;
+  }
+  66% {
+    background-size: 120%;
+    background-position: bottom left;
+  }
+  100% {
+    background-size: 120%;
+    background-position: top right;
+  }
 }

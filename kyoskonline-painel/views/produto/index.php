@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                 'attribute' => 'Imagem',
                 'value' => function($model){
-                    return Html::fileInput('foto', $model->imagen,['class'=>'imagens','id'=>$model->CODIGO]);
+                    return Html::fileInput('foto', $model->imagen,['class'=>'imagens','id'=>$model->CODIGO, "src"=>$model->FOTO]);
                 },
                 'format' => 'raw'
             ],

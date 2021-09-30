@@ -26,7 +26,7 @@ class CartTemplate extends HTMLElement {
     }
   }
 
-  async sendCart() {
+  async send(token) {
     const cartItems = this.store.state.items ? this.store.state.items : [];
     const currentDate = new Date();
 
@@ -53,7 +53,7 @@ class CartTemplate extends HTMLElement {
         const itemPrice = isPromotional(product) ? product.PRECO_PROMOCAO : product.PRECOVENDA;
 
         return { 
-          PRODUTO: product.CODIGO,
+          CODPRODUTO: product.CODIGO,
           PRECO: itemPrice
         }
       });
@@ -93,9 +93,6 @@ class CartTemplate extends HTMLElement {
       pedido: finalItems
     }
 
-    const queryParams = new URLSearchParams(window.location.search);
-    const token = queryParams.get("token");
-
     const url = `salvarpedido&&token=${token}`;
 
     try {
@@ -108,21 +105,34 @@ class CartTemplate extends HTMLElement {
       });
 
       if (response.message && response.message === "sucesso") {
-        fireEvent("show-modal", { type: "success", message: "Seu pedido será entregue em instantes. Obrigado!" });
-        this.store.dispatchAction(clear());
+        fireEvent("show-modal", {
+          type: "success", 
+          message: "Seu pedido será entregue em instantes. Obrigado!",
+          onConfirm: () => {
+            this.store.dispatchAction(clear());
 
-        const url = `/web/${location.search}`;
-        Router.go(url);
+            const url = `/web/${location.search}`;
+            Router.go(url);
+          }
+        });
       }
     } catch (err) {
       console.error(err);  
 
       const responseData = err.data;
       if (responseData) {
-        if (responseData.message && responseData.message === "invalid token") {
-          fireEvent("show-modal", { 
-            type: "error", message: "Token inválido, para fazer um pedido escaneie o QRCode presente em sua mesa." 
-          });
+        if (responseData.message) {
+          if (responseData.message === "invalid token") {
+            fireEvent("show-modal", { 
+              type: "error",
+              message: "Token inválido.",
+            });
+          } else if (responseData.message === "order closed") {
+            fireEvent("show-modal", { 
+              type: "error",
+              message: "Comanda fechada, você não pode realizar um novo pedido.",
+            });
+          }
         }
       } else {
         fireEvent("show-modal", { 
@@ -130,6 +140,18 @@ class CartTemplate extends HTMLElement {
         });
       }
     }
+  }
+
+  async sendCart() {
+    fireEvent("show-modal", { 
+      type: "warning",
+      message: "Para fazer um pedido escaneie o QRCode presente em sua mesa.",
+      onConfirm: () => {
+        fireEvent("show-qr-reader", { onResult: this.send.bind(this) });
+      }
+    });
+
+    return;
   }
 
 

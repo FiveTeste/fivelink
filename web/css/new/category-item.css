@@ -19,9 +19,11 @@
 .item .item__image {
   height: 8rem;
   width: 8rem;
-  object-fit: cover;
-  object-position: center;
   border-radius: 0.7rem;
+  background-position: center center;
+  background-size: auto 120%;
+  background-repeat: no-repeat;
+  animation: 30s linear 0s infinite alternate category__image-slide;
 }
 
 .item .item__name {
@@ -32,4 +34,29 @@
   font-style: normal;
   font-weight: 500;
   text-transform: capitalize;
+}
+
+
+@keyframes category__image-slide {
+  16.5%, 49.5%, 82.5% {
+    background-size: auto 100%;
+    background-position: center center;
+  }
+
+  0% {
+    background-size: auto 120%;
+    background-position: top left;
+  }
+  33% {
+    background-size: auto 120%;
+    background-position: bottom right;
+  }
+  66% {
+    background-size: auto 120%;
+    background-position: bottom left;
+  }
+  100% {
+    background-size: auto 120%;
+    background-position: top right;
+  }
 }

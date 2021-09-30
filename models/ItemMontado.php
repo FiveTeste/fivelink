@@ -32,10 +32,10 @@ class ItemMontado extends \yii\db\ActiveRecord
     {
         return [
             [['PRECO'], 'number'],
-            [['PRODUTO'], 'integer'],
+            [['CODPRODUTO'], 'integer'],
             [['CONSUMO'], 'integer'],
             [['CONSUMO'], 'exist', 'skipOnError' => true, 'targetClass' => Consumo::className(), 'targetAttribute' => ['CONSUMO' => 'CODIGO']],
-            [['PRODUTO'], 'exist', 'skipOnError' => true, 'targetClass' => Produto::className(), 'targetAttribute' => ['PRODUTO' => 'CODIGO']],
+            [['CODPRODUTO'], 'exist', 'skipOnError' => true, 'targetClass' => Produto::className(), 'targetAttribute' => ['CODPRODUTO' => 'CODIGO']],
         ];
     }
 
@@ -47,7 +47,7 @@ class ItemMontado extends \yii\db\ActiveRecord
         return [
             'ID' => 'ID',
             'PRECO' => 'Preco',
-            'PRODUTO' => 'Produto',
+            'CODPRODUTO' => 'Produto',
             'CONSUMO' => 'Consumo',
         ];
     }
@@ -63,8 +63,8 @@ class ItemMontado extends \yii\db\ActiveRecord
         /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPRODUTO()
+    public function getCODPRODUTO()
     {
-        return $this->hasOne(Produto::className(), ['CODIGO' => 'PRODUTO']);
+        return $this->hasOne(Produto::className(), ['CODIGO' => 'CODPRODUTO']);
     }
 }
