@@ -7,33 +7,54 @@
 
 .page .page__header {
   height: 5.4rem;
-  background-color: #fff;
+  background: linear-gradient(150deg, #e02f34, #732529,#1c1b18);
+  /* background-color: var(--color-header-background); */
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1.5rem;
+  padding: 0 1rem;
   border-radius: 0 0 0.3rem 0.3rem;
-  box-shadow: 0rem 0.1rem 0.4rem rgba(194, 194, 203, 0.822);
+  box-shadow: var(--header-shadow);
 }
 
-.page .page__title {
-  font-family: var(--font-artifika);
-  font-weight: normal;
-  font-size: 2.4rem;
-  color: #BF4816;
+.header .header__link {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+}
+
+.header .header__logo {
+  width: 5rem;
+  height: 5rem;
+  background: url(/web/images/logo/logo.png) no-repeat center, var(--color-header-background);
+  background-size: contain;
+  border-radius: 50%;
+  box-shadow: 0rem 0rem 0.2rem rgb(128, 128, 128);
   pointer-events: none;
 }
 
+.header .header__title {
+  margin: 0;
+  margin-left: 0.5rem;
+  font-family: var(--font-artifika);
+  font-weight: normal;
+  font-size: 2rem;
+  color: var(--color-highlight);
+  pointer-events: none;
+  align-self: flex-end;
+  margin-bottom: 0.5rem;
+}
+
 .page .page__content {
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   overflow-y: scroll;
 }
 
 .page .page__footer {
-  background-color: #fff;
+  background-color: var(--color-footer-background);
   padding: 0.5rem;
   border-radius: 0.3rem 0.3rem 0 0;
-  box-shadow: 0rem -0.1rem 0.4rem rgba(194, 194, 203, 0.822);
+  box-shadow: var(--footer-shadow);
 }
 
 .navbar {
@@ -49,7 +70,7 @@
 }
 
 .navbar .navbar__item:not(:first-child) {
-  border-left: 1px solid #dde0e4;
+  border-left: 1px solid var(--color-gray-soft);
 }
 
 object[data-type="svg-icon"] {
@@ -65,7 +86,8 @@ object[data-type="svg-icon"] {
 .cart .cart__price {
   font-family: var(--font-poppins);
   margin-right: 0.5rem;
-  color: #0E252B;
+  color: var(--color-black-pearl);
+  color: #ddd8d8;
   pointer-events: none;
 }
 
@@ -85,9 +107,9 @@ object[data-type="svg-icon"] {
 
 .modal .modal__container {
   width: 30rem;
-  background-color: #fff;
+  background-color: var(--color-modal-background);
   border-radius: 1rem;
-  box-shadow: 0rem 0rem 1rem rgba(0, 0, 0, 0.2);
+  box-shadow: var(--modal-shadow);
   overflow: hidden;
 }
 
@@ -103,7 +125,7 @@ object[data-type="svg-icon"] {
 .content .content__message {
   font-family: var(--font-poppins);
   text-align: center;
-  color: #333;
+  color: var(--color-primary-text);
 }
 
 .button__close {
@@ -113,16 +135,16 @@ object[data-type="svg-icon"] {
   width: 100%;
   height: 4.5rem;
   cursor: pointer;
-  border-top: 1px solid #e3e3e5;
+  border-top: 1px solid var(--color-gray-soft);
   font-family: var(--font-poppins);
   font-size: 1.6rem;
-  color: #116cf8;
+  color: var(--color-modal-button-text);
   text-transform: uppercase;
   transition: background 0.2s ease;
 }
 
 .button__close:hover {
-  background: rgba(0, 0, 0, 0.1);
+  background: var(--color-modal-button-hover-background);
 }
 
 
@@ -146,7 +168,7 @@ object[data-type="svg-icon"] {
   width: 6px;
   height: 18px;
   border-radius: 20%;
-  background: #9c9c9c;
+  background: var(--color-spinner);
 }
 .lds-spinner div:nth-child(1) {
   transform: rotate(0deg);

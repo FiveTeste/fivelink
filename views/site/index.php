@@ -1,4 +1,7 @@
 <?php
+
+use app\assets\CssLoader;
+
 $this->title = 'Kyosk online';
 ?>
 
@@ -6,19 +9,20 @@ $this->title = 'Kyosk online';
 
 <!-- PAGE CONTENT TEMPLATE -->
 <template id="page-content">
-    <link href="/web/css/new/page-content.css" rel="stylesheet" />
+    <?= CssLoader::loadCss("new/page-content.css") ?>
 
     <div class="page">
-        <header class="page__header">
-            <a href="/web/" class="cart">
-                <h1 class="page__title">Kyosk Online</h1>
+        <header class="page__header header">
+            <a href="/web/" class="header__link">
+                <div class="header__logo"></div>
+                <!-- <h1 class="header__title">Kyosk</h1> -->
             </a>
             
             <a href="/web/carrinho" class="cart">
                 <div class="cart__price">
                     <span id="cart_value">R$ 0,00</span>
                 </div>
-                <svg-icon src="/web/icons/shopping-cart.svg" style="color: #0E252B" />
+                <svg-icon src="/web/icons/shopping-cart.svg" style="color: #ddd8d8" />
             </a>
         </header>
 
@@ -44,11 +48,20 @@ $this->title = 'Kyosk online';
 
 <!-- HOME PAGE TEMPLATE -->
 <template id="home-page">
-    <link href="/web/css/new/home.css" rel="stylesheet" />
+    <?= CssLoader::loadCss("new/home.css") ?>
 
-    <section class="banner">
-        <div class="banner__logo"></div>
-        <div class="banner__mesa">Mesa: <?php echo $mesa ?></div>
+    <div class="mesa">
+        Mesa: <?php echo $mesa ?>
+    </div>
+
+    <section class="highlights-container">
+        <div class="glide" id="highlights-slider">
+            <div class="glide__track" data-glide-el="track">
+                <ul class="glide__slides highlights">
+                    
+                </ul>
+            </div>
+        </div>
     </section>
 
     <section class="content">
@@ -58,7 +71,7 @@ $this->title = 'Kyosk online';
 
 <!-- CARD ITEM TEMPLATE -->
 <template id="card-item">
-    <link href="/web/css/new/card-item.css" rel="stylesheet" />
+    <?= CssLoader::loadCss("new/card-item.css") ?>
 
     <article class="card">
         <div class="card__image"></div>
@@ -68,10 +81,10 @@ $this->title = 'Kyosk online';
 
 <!-- PRODUCT PAGE TEMPLATE -->
 <template id="product-page">
-    <link rel="stylesheet" href="/web/css/new/product.css">
+    <?= CssLoader::loadCss("new/product.css") ?>
 
     <div class="product">
-        <img class="product__image" src="/web/images/new/food.jpg" />
+        <div class="product__image"></div>
         <div class="product__info">
             <div class="product__detail">
                 <div class="product__name">
@@ -95,7 +108,7 @@ $this->title = 'Kyosk online';
 
 <!-- PRODUCT ITEM TEMPLATE -->
 <template id="product-item">
-    <link rel="stylesheet" href="/web/css/new/product-item.css">
+    <?= CssLoader::loadCss("new/product-item.css") ?>
     
     <li class="item">
         <div class="item__image image-container">
@@ -114,7 +127,7 @@ $this->title = 'Kyosk online';
 
 <!-- CATEGORY ITEM TEMPLATE -->
 <template id="category-item">
-    <link rel="stylesheet" href="/web/css/new/category-item.css">
+    <?= CssLoader::loadCss("new/category-item.css") ?>
     
     <li class="item">
         <div class="item__image"></div>
@@ -124,7 +137,7 @@ $this->title = 'Kyosk online';
 
 
 <template id="ponto-carne">
-    <link rel="stylesheet" href="/web/css/new/ponto-carne.css">
+    <?= CssLoader::loadCss("new/ponto-carne.css") ?>
 
     <div class="content">
         <strong class="content__title">Escolha o ponto da carne:</strong>
@@ -152,7 +165,7 @@ $this->title = 'Kyosk online';
 </template>
 
 <template id="usa-copos">
-    <link rel="stylesheet" href="/web/css/new/usa-copos.css">
+    <?= CssLoader::loadCss("new/usa-copos.css") ?>
 
     <div class="content">
         <strong class="content__title">Copos:</strong>
@@ -186,7 +199,7 @@ $this->title = 'Kyosk online';
 </template>
 
 <template id="form-talheres">
-    <link rel="stylesheet" href="/web/css/new/form-talheres.css">
+    <?= CssLoader::loadCss("new/form-talheres.css") ?>
 
     <div class="content">
         <strong class="content__title">Pratos e talheres:</strong>
@@ -197,7 +210,7 @@ $this->title = 'Kyosk online';
 </template>
 
 <template id="form-quantity">
-    <link rel="stylesheet" href="/web/css/new/form-quantity.css">
+    <?= CssLoader::loadCss("new/form-quantity.css") ?>
 
     <div class="content">
         <strong class="content__title">Quantidade:</strong>
@@ -209,7 +222,7 @@ $this->title = 'Kyosk online';
 
 <!-- CARRINHO PAGE -->
 <template id="cart-page">
-    <link rel="stylesheet" href="/web/css/new/cart.css">
+    <?= CssLoader::loadCss("new/cart.css") ?>
     
     <div class="content">
         <ul class="content__list" style="padding: 0;">
@@ -222,37 +235,37 @@ $this->title = 'Kyosk online';
 
 <!-- CARRINHO ITEM -->
 <template id="cart-item">
-    <link rel="stylesheet" href="/web/css/new/cart-item.css">
+    <?= CssLoader::loadCss("new/cart-item.css") ?>
 
-        <div class="container">
-            <li class="item">
-                <img class="item__image" loading="lazy" />
-                <div class="item__detail">
-                    <div style="display: flex; justify-content: space-between;">
-                        <div class="item__name"><slot name="name"></slot></div>
-                        <div class="item__preco"><slot name="price">R$ 0,00</slot></div>
-                    </div>
-                    
-                    <div class="item__observation"><slot name="observation"></slot></div>
+    <div class="container">
+        <li class="item">
+            <img class="item__image" loading="lazy" />
+            <div class="item__detail">
+                <div style="display: flex; justify-content: space-between;">
+                    <div class="item__name"><slot name="name"></slot></div>
+                    <div class="item__preco"><slot name="price">R$ 0,00</slot></div>
                 </div>
-                <div class="item__quantity">
-                    <button class="button__add">+</button>
-                    <label class="item__order-quantity"><slot name="order-quantity"></slot></label>
-                    <button class="button__remove">-</button>
-                </div>
-            </li>
-            <div class="item__icon">
-                <button class="item__button-remove">
-                    <svg-icon src="/web/icons/trash.svg" style="color: #BF4816" />
-                </button>
+                
+                <div class="item__observation"><slot name="observation"></slot></div>
             </div>
+            <div class="item__quantity">
+                <button class="button__add">+</button>
+                <label class="item__order-quantity"><slot name="order-quantity"></slot></label>
+                <button class="button__remove">-</button>
+            </div>
+        </li>
+        <div class="item__icon">
+            <button class="item__button-remove">
+                <svg-icon src="/web/icons/trash.svg" style="color: #BF4816" />
+            </button>
         </div>
+    </div>
 
 </template>
 
 <!-- COMANDA PAGE -->
 <template id="orders-page">
-    <link rel="stylesheet" href="/web/css/new/orders.css">
+    <?= CssLoader::loadCss("new/orders.css") ?>
     
     <div class="container">
         <div class="price">
@@ -276,7 +289,7 @@ $this->title = 'Kyosk online';
 
 <!-- COMANDA ITEM -->
 <template id="order-item">
-    <link rel="stylesheet" href="/web/css/new/order-item.css">
+    <?= CssLoader::loadCss("new/order-item.css") ?>
 
     <li class="item">
         <img class="item__image" loading="lazy" />
@@ -293,12 +306,14 @@ $this->title = 'Kyosk online';
 
 
 <script type="text/javascript">
-    window.baseUrl = '<?php echo Yii::$app->request->baseUrl; ?>';
-    window.nummesa = '<?php echo $mesa ?>';
+    window.baseUrl = '<?= Yii::$app->request->baseUrl; ?>';
+    window.nummesa = '<?= $mesa ?>';
 </script>
 
 <script src="/web/js/jsQR.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<script src="https://unpkg.com/@glidejs/glide"></script>
+
 <script type="module" src="/web/js/imports.js"></script>
 <script type="module" defer src="/web/js/loadGlobalComponents.js"></script>
 <script type="module" defer src="/web/js/router.js"></script>

@@ -34,8 +34,8 @@ class QuantitySelector extends HTMLElement {
           width: 4.2rem;
           border: 0;
           outline: none;
-          background: #0393BE;
-          color: #FFFFFF;
+          background: var(--color-quantity-button-background);
+          color: var(--color-secondary-text);
           padding: 1rem;
           display: flex;
           border-radius: 50%;
@@ -49,7 +49,7 @@ class QuantitySelector extends HTMLElement {
         }
         
         button:hover{
-          background: #005E7A;
+          background: var(--color-quantity-button-hover-background);
           transition: all .3s ease;
         }
       </style>

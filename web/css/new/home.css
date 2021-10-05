@@ -1,27 +1,82 @@
-.banner {
-  height: 16rem;
-  background: linear-gradient(0deg, rgba(16, 17, 37, 0.5), rgba(16, 17, 37, 0.5)), url(/web/images/new/food.jpg) no-repeat center;
-  background-size: cover;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 1rem 1.5rem;
-}
-
-.banner .banner__logo {
-  width: 8rem;
-  height: 8rem;
-  background: url(/web/images/logo/logo.png) no-repeat center, #fff;
-  background-size: contain;
-  border-radius: 50%;
-}
-
-.banner .banner__mesa {
+.mesa {
   font-family: var(--font-poppins);
   font-style: normal;
   font-weight: 600;
   font-size: 1.8rem;
-  color: #fff;
+  color: var(--color-primary-text);
+  margin-left: 1rem;
+  margin-bottom: 1em;
+}
+
+.highlights-container {
+  overflow: hidden;
+  display: none;
+}
+
+.highlights {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  position: relative;
+
+  width: 100%;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -ms-touch-action: pan-Y;
+  touch-action: pan-Y;
+  white-space: nowrap;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  will-change: transform;
+}
+
+.highlights .highlight__item {
+  cursor: pointer;
+  width: 100%;
+  height: 16rem;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: 120%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+
+  animation: 45s linear 0s infinite alternate highlight__image-slide;
+
+  font-family: var(--font-poppins);
+}
+
+.highlight__item .item__name {
+  color: var(--color-secondary-text);
+  text-transform: capitalize;
+  font-size: 1.8rem;
+}
+
+.price .price__old {
+  text-decoration: line-through;
+  color: var(--color-gray-soft);
+  font-size: 1.4rem;
+}
+
+.price .price__current {
+  color: var(--color-price);
+  font-size: 2rem;
+  font-weight: 600;
+
+  text-shadow: 1rem 1rem 2.5rem #000,
+    -1rem 1rem 2.5rem #000,
+    -1rem -1rem 2.5rem #000,
+    1rem -1rem 2.5rem #000;
+}
+
+.highlight__item .item__price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .content {
@@ -30,4 +85,29 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-gap: 1.5rem;
+}
+
+
+@keyframes highlight__image-slide {
+  16.5%, 49.5%, 82.5% {
+    background-size: 100%;
+    background-position: center center;
+  }
+
+  0% {
+    background-size: 120%;
+    background-position: top left;
+  }
+  33% {
+    background-size: 120%;
+    background-position: bottom right;
+  }
+  66% {
+    background-size: 120%;
+    background-position: bottom left;
+  }
+  100% {
+    background-size: 120%;
+    background-position: top right;
+  }
 }

@@ -294,6 +294,7 @@ class ProductTemplate extends HTMLElement {
       const { element: form } = this.forms.get("products");
       form.products = this.productList;
       form.max = this.category.QTDE_MAX_KYOSK;
+      form.titleText = this.category.TITULO_SELETOR;
 
       this.options = { PRODUTOS: 1 }
       slider.items = [...this.getSliderForms()];

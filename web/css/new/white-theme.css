@@ -1,0 +1,34 @@
+:root {
+  --color-background: #f6f6f6;
+  --color-header-background: #fff;
+  --color-footer-background: #fff;
+  --color-card-background: #fff;
+  --color-modal-background: #fff;
+  --color-checked-item-background: rgba(0, 0, 0, 0.04);
+  
+  --color-modal-button-hover-background: rgba(0, 0, 0, 0.1);
+  --color-confirm-button-background: #319A74;
+  --color-confirm-button-hover-background: #277b5c;
+  --color-quantity-button-background: #0393BE;
+  --color-quantity-button-hover-background: #005E7A;
+  
+  --header-shadow: 0rem 0.1rem 0.4rem rgba(194, 194, 203, 0.822);
+  --footer-shadow: 0rem -0.1rem 0.4rem rgba(194, 194, 203, 0.822);
+  --card-shadow: 0rem 0rem 0.4rem rgba(194, 194, 203, 0.75);
+  --modal-shadow: 0rem 0rem 1rem rgba(0, 0, 0, 0.2);
+  --checked-item-shadow: 0rem 0rem 0.8rem rgba(90, 90, 92, 0.75);
+  
+  --color-spinner: #9c9c9c;
+
+  --color-highlight: #BF4816;
+  --color-primary-text: #333;
+  --color-secondary-text: #fff;
+  --color-modal-button-text: #116cf8;
+  --color-price: #FAB559;
+
+  --color-gray-dark: #3e3c3c;
+  --color-gray: #8D8C8C;
+  --color-gray-soft: #dde0e4;
+  --color-black-pearl: #0E252B;
+  --color-green: #04D361;
+}

@@ -30,6 +30,7 @@ use Yii;
  * @property string $ACOMPANHAMENTO
  * @property string $FOTO
  * @property string $OPCIONAL
+ * @property string $DESTAQUE
  * @property string $PROMO_DIAS_SEMANA
  *
  * @property Consumo[] $consumos
@@ -60,7 +61,7 @@ class Produto extends \yii\db\ActiveRecord
             [['CODIGO', 'CODGRUPO', 'CODSUBGRUPO'], 'string', 'max' => 6],
             [['PRODUTO'], 'string', 'max' => 100],
             [['UNIDADE'], 'string', 'max' => 3],
-            [['ADICIONAL', 'PRODUTO_MONTADO', 'MOSTRA_KYOSK_APP', 'OPCIONAL'], 'string', 'max' => 2],
+            [['ADICIONAL', 'PRODUTO_MONTADO', 'MOSTRA_KYOSK_APP', 'OPCIONAL', 'DESTAQUE'], 'string', 'max' => 2],
             [['DT_INICIO_PROMOCAO', 'DT_FIM_PROMOCAO', 'HORA_INICIO_PROMOCAO', 'HORA_FIM_PROMOCAO', 'PROMO_DIAS_SEMANA'], 'string', 'max' => 45],
             [['ACOMPANHAMENTO', 'FOTO'], 'string', 'max' => 200],
             [['CODIGO'], 'unique'],
@@ -98,6 +99,7 @@ class Produto extends \yii\db\ActiveRecord
             'ACOMPANHAMENTO' => 'Acompanhamento',
             'FOTO' => 'Foto',
             'OPCIONAL' => 'Opcional',
+            'DESTAQUE' => 'Destaque',
             'PROMO_DIAS_SEMANA' => 'Promo Dias Semana',
         ];
     }

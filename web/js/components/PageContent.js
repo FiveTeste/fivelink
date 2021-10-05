@@ -43,7 +43,7 @@ class PageContent extends HTMLElement {
     };
 
     const response = await api("generatetoken", {
-      method: "PUT",
+      method: "POST",
       body: JSON.stringify(requestData),
       headers: {
         "Content-Type": "application/json"
@@ -136,9 +136,9 @@ class PageContent extends HTMLElement {
     const { type, message, onConfirm } = event.detail;
 
     const icons = {
-      success: '<svg-icon src="/web/icons/check-small.svg" style="color: #333" />',
-      warning: '<svg-icon src="/web/icons/warning.svg" style="color: #333" />',
-      error: '<svg-icon src="/web/icons/error.svg" style="color: #BF4816" />',
+      success: '<svg-icon src="/web/icons/check-small.svg" style="color: var(--color-primary-text)" />',
+      warning: '<svg-icon src="/web/icons/warning.svg" style="color: var(--color-primary-text)" />',
+      error: '<svg-icon src="/web/icons/error.svg" style="color: var(--color-highlight)" />',
     }
 
     const htmlStr = html`
@@ -198,9 +198,9 @@ class PageContent extends HTMLElement {
     navLinks.forEach((link) => {
       const icon = link.querySelector("svg-icon");
       if (link.getAttribute("href") === currentPage) {
-        icon.style.setProperty("color", "#BF4816");
+        icon.style.setProperty("color", "var(--color-highlight)");
       } else {
-        icon.style.setProperty("color", "#333");
+        icon.style.setProperty("color", "var(--color-primary-text)");
       }
     });
   }

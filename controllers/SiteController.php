@@ -280,6 +280,18 @@ class SiteController extends Controller {
         }
     }
 
+    public function actionDestaques() {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $req = Yii::$app->request;
+
+        if ($req->isAjax) {
+            $destaques = \app\models\Produto::findAll(["DESTAQUE" => "S"]);
+            return $destaques;
+        } else {
+            return [];
+        }
+    }
+
     public function actionProdutobygrupo() {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $req = Yii::$app->request;

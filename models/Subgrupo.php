@@ -12,6 +12,7 @@ use Yii;
  * @property string $SUBGRUPO
  * @property int $QTDE_MAX_KYOSK
  * @property string $NAO_MOSTRA_KYOSK
+ * @property string $DESTAQUE
  *
  * @property Produto[] $produtos
  */
@@ -34,8 +35,8 @@ class Subgrupo extends \yii\db\ActiveRecord
             [['CODIGO', 'CODGRUPO', 'SUBGRUPO'], 'required'],
             [['QTDE_MAX_KYOSK'], 'integer'],
             [['CODIGO', 'CODGRUPO'], 'string', 'max' => 6],
-            [['SUBGRUPO'], 'string', 'max' => 50],
-            [['NAO_MOSTRA_KYOSK'], 'string', 'max' => 2],
+            [['SUBGRUPO', 'TITULO_SELETOR'], 'string', 'max' => 50],
+            [['NAO_MOSTRA_KYOSK', 'DESTAQUE'], 'string', 'max' => 2],
             [['CODIGO'], 'unique'],
         ];
     }
@@ -49,8 +50,10 @@ class Subgrupo extends \yii\db\ActiveRecord
             'CODIGO' => 'Codigo',
             'CODGRUPO' => 'Codgrupo',
             'SUBGRUPO' => 'Subgrupo',
+            'TITULO_SELETOR' => 'Titulo do Seletor',
             'QTDE_MAX_KYOSK' => 'Qtde Max Kyosk',
             'NAO_MOSTRA_KYOSK' => 'Nao Mostra Kyosk',
+            'DESTAQUE' => 'Destaque'
         ];
     }
 

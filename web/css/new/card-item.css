@@ -1,14 +1,19 @@
 .card {
   height: 100%;
   border-radius: 0.5rem;
-  background-color: #fff;
-  box-shadow: 0rem 0rem 0.4rem rgba(194, 194, 203, 0.75);
+  background-color: var(--color-card-background);
+  box-shadow: var(--card-shadow);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   cursor: pointer;
   user-select: none;
 
+  /* padding-top: 0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem; */
+
+  background: linear-gradient(150deg, #e02f34, #732529);
   transition: all .2s ease;
 }
 
@@ -18,18 +23,19 @@
 }
 
 .card .card__name {
-  color: #333;
+  color: var(--color-primary-text);
   font-family: var(--font-poppins);
   font-style: normal;
   font-weight: 500;
   text-transform: capitalize;
   margin: 0 0.4rem;
+  color: #fff;
 }
 
 .card .card__image {
   height: 8.5rem;
   width: 100%;
-  border-radius: 0 0 0.3rem 0.3rem;
+  border-radius: 0.3rem;
   background-position: top left;
   background-size: 120%;
   background-repeat: no-repeat;

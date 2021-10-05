@@ -16,15 +16,15 @@ class ProductsForm extends HTMLElement {
       padding: 0 0.5rem;
     `;
     
-    const title = document.createElement("strong");
-    title.textContent = "Produtos";
-    title.style.cssText = `
-      color: #333;
+    this.titleElement = document.createElement("strong");
+    this.titleElement.textContent = "Produtos";
+    this.titleElement.style.cssText = `
+      color: var(--color-primary-text);
       font-weight: 600;
       display: block;
     `;
 
-    this.titleContainer.appendChild(title);
+    this.titleContainer.appendChild(this.titleElement);
     container.appendChild(this.titleContainer);
 
     this.listContainer = document.createElement("ul");
@@ -74,13 +74,15 @@ class ProductsForm extends HTMLElement {
 
   connectedCallback() {
     if (this.max || this.max === 0) {
- 
       const maxSpan = html`
-        <span style="color: #3e3c3c; font-size: 1.4rem;">
-          Máximo: ${this.max} produtos
+        <span style="color: var(--color-gray-dark); font-size: 1.4rem;">
+          Máximo: ${this.max} itens
         </span>
       `;
       this.titleContainer.appendChild(maxSpan);
+    }
+    if (this.titleText) {
+      this.titleElement.textContent = this.titleText;
     }
 
     const productList = this.products ? this.products : [];

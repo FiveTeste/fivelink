@@ -2,8 +2,8 @@
   border-radius: 0.5rem;
   margin-bottom: 1.5rem;
   padding: 0.5rem 0.5rem;
-  background-color: #fff;
-  box-shadow: 0rem 0rem 0.4rem rgba(194, 194, 203, 0.75);
+  background-color: var(--color-card-background);
+  box-shadow: var(--card-shadow);
   display: flex;
   overflow: hidden;
   cursor: pointer;
@@ -30,7 +30,7 @@
   margin-left: 1rem;
   font-family: var(--font-poppins);
   font-size: 1.6rem;
-  color: #333;
+  color: var(--color-primary-text);
   font-style: normal;
   font-weight: 500;
   text-transform: capitalize;

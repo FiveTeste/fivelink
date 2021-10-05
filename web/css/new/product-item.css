@@ -2,8 +2,8 @@
   border-radius: 0.5rem;
   margin-bottom: 1.5rem;
   padding: 0.5rem 0.5rem;
-  background-color: #fff;
-  box-shadow: 0rem 0rem 0.4rem rgba(194, 194, 203, 0.75);
+  background-color: var(--color-card-background);
+  box-shadow: var(--card-shadow);
   display: flex;
   overflow: hidden;
   cursor: pointer;
@@ -39,15 +39,15 @@
   position: absolute;
   width: inherit;
   height: inherit;
-  color: #04D361;
+  color: var(--color-green);
   align-items: center;
   justify-content: center;
   z-index: 10;
 }
 
 .item.checked {
-  box-shadow: 0rem 0rem 0.8rem rgba(90, 90, 92, 0.75);
-  background: rgba(0, 0, 0, 0.04);
+  box-shadow: var(--checked-item-shadow);
+  background: var(--color-checked-item-background);
 }
 
 .item.checked .item__image .image-container__image {
@@ -68,7 +68,7 @@
 .item .item__name {
   font-family: var(--font-poppins);
   font-size: 1.6rem;
-  color: #333;
+  color: var(--color-primary-text);
   font-style: normal;
   font-weight: 500;
   text-transform: capitalize;
@@ -84,7 +84,7 @@
   font-family: var(--font-poppins);
   font-style: normal;
   font-weight: 500;
-  color: #FAB559;
+  color: var(--color-price);
   text-transform: capitalize;
 }
 
@@ -92,7 +92,7 @@
   font-family: var(--font-poppins);
   font-style: normal;
   font-size: 1.3rem;
-  color: #8D8C8C;
+  color: var(--color-gray);
   text-decoration: line-through;
   text-transform: capitalize;
 }

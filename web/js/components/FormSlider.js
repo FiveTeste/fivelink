@@ -20,7 +20,7 @@ class FormSlider extends HTMLElement {
           cursor: pointer;
           border: none;
           outline: 0;
-          background: #319A74;
+          background: var(--color-confirm-button-background);
           border-radius: 0.5rem;
           color: #fff;
           font-weight: 600;
@@ -30,7 +30,7 @@ class FormSlider extends HTMLElement {
         }
 
         #next-button:not(:disabled):hover {
-          background: #277b5c;
+          background: var(--color-confirm-button-hover-background);
         }
 
         #next-button:disabled {
@@ -56,6 +56,13 @@ class FormSlider extends HTMLElement {
       const container = this.shadowRoot.getElementById("item");
       container.innerHTML = "";
       container.appendChild(item);
+    }
+
+    const button = this.shadowRoot.getElementById("next-button");
+    if (index === this.items.length -1) {
+      button.textContent = "Finalizar";
+    } else {
+      button.textContent = "Próximo";
     }
   }
 

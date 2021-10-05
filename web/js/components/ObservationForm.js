@@ -9,7 +9,7 @@ class ObservationForm extends HTMLElement {
         }
 
         .content .content__title {
-          color: #333;
+          color: var(--color-primary-text);
           font-weight: 600;
           padding: 0 0.5rem;
           margin-bottom: 1rem;
@@ -17,7 +17,7 @@ class ObservationForm extends HTMLElement {
         }
 
         .input .input__label {
-          color: #333;
+          color: var(--color-primary-text);
           font-size: 1.4rem;
           display: block;
           margin-bottom: 0.5rem;
