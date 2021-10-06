@@ -36,7 +36,7 @@ $this->title = 'Kyosk online';
                 <a href="/web/carrinho" class="navbar__item">
                     <svg-icon src="/web/icons/shopping-cart.svg" />
                 </a>
-                <a href="/web/conta" class="navbar__item">
+                <a href="#" data-action="end-order" class="navbar__item">
                     <svg-icon src="/web/icons/order-list.svg" />
                 </a>
             </nav>
@@ -100,6 +100,10 @@ $this->title = 'Kyosk online';
                     <slot name="price">R$ 0,00</slot>
                 </div>
             </div>
+        </div>
+        <div class="order"> 
+            <strong class="order__title">Pedido:</strong>
+            <span class="order__detail"></span>
         </div>
         <div class="slider">
         </div>
@@ -263,46 +267,6 @@ $this->title = 'Kyosk online';
 
 </template>
 
-<!-- COMANDA PAGE -->
-<template id="orders-page">
-    <?= CssLoader::loadCss("new/orders.css") ?>
-    
-    <div class="container">
-        <div class="price">
-            <span class="price__title">Total:</span>
-            <span class="price__value">
-                <slot name="total">R$ 0,00</slot>
-            </span>
-        </div>
-
-        <button class="send-button" id="close_order">Pedir conta</button>
-
-        <div class="content">
-            <strong class="content__title">Pedidos:</strong>
-            <ul class="content__list" style="padding: 0;">
-                <slot name="items"></slot>
-            </ul>
-        </div>
-    </div>
-</template>
-
-
-<!-- COMANDA ITEM -->
-<template id="order-item">
-    <?= CssLoader::loadCss("new/order-item.css") ?>
-
-    <li class="item">
-        <img class="item__image" loading="lazy" />
-        <div class="item__detail">
-            <div style="display: flex; justify-content: space-between;">
-                <div class="item__name"><slot name="name"></slot></div>
-                <div class="item__preco"><slot name="price">R$ 0,00</slot></div>
-            </div>
-            
-            <div class="item__observation"><slot name="observation"></slot></div>
-        </div>
-    </li>
-</template>
 
 
 <script type="text/javascript">

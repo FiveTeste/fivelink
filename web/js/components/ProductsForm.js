@@ -29,12 +29,11 @@ class ProductsForm extends HTMLElement {
 
     this.listContainer = document.createElement("ul");
     this.listContainer.style.cssText = `
-      padding: 0 0.5rem;
+      padding: 0.5rem;
       max-height: 40rem;
       overflow-y: scroll;
       
       list-style-type: none;
-      padding-inline-start: 0;
       margin-block-start: 0;
       margin-block-end: 0;
       margin-inline-start: 0;
@@ -91,7 +90,7 @@ class ProductsForm extends HTMLElement {
 
       const isPromocao = isPromotional(product);
       const preco = isPromocao ? product.PRECO_PROMOCAO : product.PRECOVENDA;
-      const imageUrl = "/web/images/new/food.jpg";
+      const imageUrl = product.FOTO ? product.FOTO : "/web/images/new/food.jpg";
 
       const element = document.createElement(ProductItem);
       element.addEventListener("kyosk-click", this.handleSelect.bind(this));

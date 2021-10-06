@@ -13,24 +13,39 @@ class FormSlider extends HTMLElement {
         }
 
         #next-button {
-          width: 12rem;
-          height: 3.5rem;
-          margin-top: 1.5rem;
+          position: relative;
+          width: 100%;
+          height: 5rem;
+          font-size: 1.8rem;
+          margin-top: 4rem;
           align-self: flex-end;
           cursor: pointer;
           border: none;
           outline: 0;
-          background: var(--color-confirm-button-background);
+          background: var(--background-gradient);
           border-radius: 0.5rem;
-          color: #fff;
+          color: var(--color-secondary-text);
           font-weight: 600;
           font-family: var(--font-poppins);
-          font-size: 1.4rem;
-          transition: background .2s ease;
+          transition: background 1s ease;
+          z-index: 1;
         }
 
-        #next-button:not(:disabled):hover {
-          background: var(--color-confirm-button-hover-background);
+        #next-button::before {
+          position: absolute;
+          content: "";
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          background: var(--background-gradient-inverted);
+          z-index: -1;
+          transition: opacity 0.3s linear;
+          opacity: 0;
+        }
+
+        #next-button:not(:disabled):hover::before {
+          opacity: 1;
         }
 
         #next-button:disabled {

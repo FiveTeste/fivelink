@@ -77,7 +77,7 @@ class SiteController extends Controller {
 
     public function actionGeneratetoken() {
         $req = Yii::$app->request;
-        if ($req->isPut) {
+        if ($req->isPost) {
             Yii::$app->response->format = Response::FORMAT_JSON;
 
             $mesa = $req->getBodyParam('mesa');
@@ -369,6 +369,11 @@ class SiteController extends Controller {
 
             $model_mesa = \app\models\Mesa::findOne(['COD_MESA' => $mesa['COD_MESA']]);
             if ($model_mesa != null) {
+                if ($model_mesa["SITUACAO"] !== 0) {
+                    Yii::$app->response->statusCode = 400;
+                    return ['message' => 'order closed'];
+                }
+
                 $model_mesa->attributes = $mesa;
                 $model_mesa->update();
             } else {
@@ -377,30 +382,12 @@ class SiteController extends Controller {
                 $model_mesa->save();
             }
 
-            $model_comanda = \app\models\Comanda::find()
-                ->where('COD_MESA = :mesa AND SITUACAO <> :situacao', ['mesa' => $mesa['COD_MESA'], "situacao" => 2])
-                ->one();
-                
-            if (!isset($model_comanda)) {
-                $now = new DateTime();
-
-                $model_comanda = new \app\models\Comanda();
-                $model_comanda->COD_MESA = $model_mesa["COD_MESA"];
-                $model_comanda->SITUACAO = 0;
-                $model_comanda->DATA_CRIACAO = $now->format('Y-m-d H:i:s');
-                $model_comanda->save();
-            }
-            if ($model_comanda["SITUACAO"] == 1) {
-                Yii::$app->response->statusCode = 400;
-                return ['message' => 'order closed'];
-            }
             
             foreach ($consumo_list as $consumo) {
                 $consumo_model = \app\models\Consumo::findOne(['DISPOSITIVO' => $consumo['DISPOSITIVO']]);
                 if ($consumo_model == null) {
                     $consumo_model = new \app\models\Consumo();
                     $consumo_model->attributes = $consumo;
-                    $consumo_model->COD_COMANDA = $model_comanda["CODIGO"];
                     
                     if (!$consumo_model->save()) {
                         return ['message' => $consumo_model->errors];
@@ -451,87 +438,13 @@ class SiteController extends Controller {
         }
     }
 
-    public function actionComanda() {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $req = Yii::$app->request;
-
-        if ($req->isAjax) {
-            $mesa = $req->get('codmesa');
-
-            $model_comanda = \app\models\Comanda::find()
-                ->where('COD_MESA = :mesa AND SITUACAO  <> :situacao', ['mesa' => $mesa, "situacao" => 2])
-                ->one();
-
-           
-
-            $consumos = \app\models\Consumo::find()
-                ->with("itemMontados")
-                ->where(["consumo.COD_COMANDA" => $model_comanda["CODIGO"]])
-                ->all();
-            
-            $consumos_ids = [];
-            $consumo_map = [];
-            foreach ($consumos as $consumo) {
-                array_push($consumos_ids, $consumo["CODIGO"]);
-                $consumo_map[$consumo["CODIGO"]] = json_decode(Json::encode($consumo), true);
-            }
-
-            $query = new Query();
-            $command = $query
-                ->select("
-                    item_montado.PRECO, 
-                    item_montado.CONSUMO, 
-                    produto.CODIGO as PRODUTO_CODIGO,
-                    produto.PRODUTO as PRODUTO_NOME
-                ")
-                ->from("item_montado")
-                ->innerJoin("produto", "item_montado.CODPRODUTO = produto.CODIGO")
-                ->where(['IN', 'CONSUMO', $consumos_ids])
-                ->createCommand();
-
-            $montados = $command->queryAll();
-
-            foreach ($montados as $montado) {
-                $item = $consumo_map[$montado["CONSUMO"]];
-
-                if (isset($item["MONTADO"])) {
-                    array_push($item["MONTADO"], $montado);
-                } else {
-                    $item["MONTADO"] = [$montado];
-                }
-
-                $consumo_map[$montado["CONSUMO"]] = $item;
-            }
-
-            return array_values($consumo_map);
-        } else {
-            return [];
-        }
-    }
-
-    public function actionInfocomanda() {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        $req = Yii::$app->request;
-
-        if ($req->isAjax) {
-            $mesa = $req->get('codmesa');
-
-            $model_comanda = \app\models\Comanda::find()
-                ->where('COD_MESA = :mesa AND SITUACAO <> :situacao', ['mesa' => $mesa, "situacao" => 2])
-                ->one();
-
-            return $model_comanda;
-        } else {
-            return [];
-        }
-    }
-
-    public function actionFecharcomanda() {
+    public function actionFecharmesa() {
         Yii::$app->response->format = Response::FORMAT_JSON;
         
         $req = Yii::$app->request;
         if ($req->isPost) {
             $token = $req->post('token');
+            $quantidade = $req->post('quantidade');
 
             $payload = Token::getPayload($token, "Hello&MikeFooBar123");
             $uid = $payload["req_uid"];
@@ -543,13 +456,20 @@ class SiteController extends Controller {
                 return ['message' => 'invalid token'];
             }
 
-            $model_comanda = \app\models\Comanda::findOne(["COD_MESA" => $mesa, "SITUACAO" => 0]);
-            $model_comanda->SITUACAO = 1;
-            $model_comanda->update();
+            $model_mesa = \app\models\Mesa::findOne(['COD_MESA' => $mesa, 'SITUACAO' => 0]);
+            if (isset($model_mesa)) {
+                $model_mesa->QUANT_DIVIDIR_CONTA = $quantidade;
+                $model_mesa->SITUACAO = 1;
+                $model_mesa->update();
 
-            $tokenreg = new \app\models\Token();
-            $tokenreg->uuid = $uid;
-            $tokenreg->save();
+                $tokenreg = new \app\models\Token();
+                $tokenreg->uuid = $uid;
+                $tokenreg->save();
+            } else {
+                Yii::$app->response->statusCode = 400;
+                return ['message' => 'mesa nao encontrada'];
+            }
+
 
             return ['message' => 'sucesso'];
         } else {

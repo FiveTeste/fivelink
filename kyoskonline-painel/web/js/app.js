@@ -1,5 +1,5 @@
 $(function(){
-    base_url = '/kyoskonline/web/index.php?r=';
+    base_url = '/web/index.php?r=';
     idselecionado = '';
 });
 

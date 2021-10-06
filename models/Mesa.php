@@ -36,7 +36,7 @@ class Mesa extends \yii\db\ActiveRecord
     {
         return [
             [['COD_MESA'], 'required'],
-            [['COD_MESA', 'NUM_MESA_ACOMODACAO', 'SITUACAO'], 'integer'],
+            [['COD_MESA', 'NUM_MESA_ACOMODACAO', 'SITUACAO', 'QUANT_DIVIDIR_CONTA'], 'integer'],
             [['ACRESCIMO'], 'number'],
             [['DATA', 'COD_FUNCIONARIO'], 'string', 'max' => 45],
             [['HORA'], 'string', 'max' => 10],
@@ -57,6 +57,7 @@ class Mesa extends \yii\db\ActiveRecord
             'HORA' => 'Hora',
             'COD_FUNCIONARIO' => 'Cod Funcionario',
             'NUM_MESA_ACOMODACAO' => 'Num Mesa Acomodacao',
+            'QUANT_DIVIDIR_CONTA' => 'Quant Dividir Conta',
             'ACRESCIMO' => 'Acrescimo',
             'SITUACAO' => 'Situacao',
             'EMPRESA' => 'Empresa',

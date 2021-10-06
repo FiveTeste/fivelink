@@ -14,7 +14,7 @@ class QuantitySelector extends HTMLElement {
 
     const style = html`
       <style>
-        input {
+        .quantity-selector__input {
           border: none;
           border-width: 0;
           box-shadow: none;
@@ -22,14 +22,14 @@ class QuantitySelector extends HTMLElement {
           font-family: var(--font-poppins);
         }
 
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
+        .quantity-selector__input::-webkit-outer-spin-button,
+        .quantity-selector__input::-webkit-inner-spin-button {
           -webkit-appearance: none;
           -moz-appearance:textfield;
           margin: 0;
         }
 
-        button {
+        .quantity-selector__button {
           height: 4.2rem;
           width: 4.2rem;
           border: 0;
@@ -48,7 +48,7 @@ class QuantitySelector extends HTMLElement {
           cursor: pointer;
         }
         
-        button:hover{
+        .quantity-selector__button:hover{
           background: var(--color-quantity-button-hover-background);
           transition: all .3s ease;
         }
@@ -65,11 +65,14 @@ class QuantitySelector extends HTMLElement {
 
     this.buttonAdd = document.createElement("button");
     this.buttonAdd.textContent = "+";
+    this.buttonAdd.classList.add("quantity-selector__button");
 
     this.buttonMinus = document.createElement("button");
     this.buttonMinus.textContent = "-";
+    this.buttonMinus.classList.add("quantity-selector__button");
 
     this.input = document.createElement("input");
+    this.input.classList.add("quantity-selector__input");
     this.input.type = "number";
     this.input.id = this.getAttribute("name");
     this.input.value = 0;

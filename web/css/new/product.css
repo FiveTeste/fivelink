@@ -55,6 +55,26 @@
   margin-top: 2rem;
 }
 
+.order {
+  display: none;
+  margin: 0.5rem;
+  padding: 0 0.5rem;
+  background: var(--color-card-background);
+  margin-top: 1rem;
+  border: 1px solid var(--color-gray);
+  font-family: var(--font-poppins);
+}
+
+.order .order__title {
+  display: block;
+}
+
+.order .order__detail {
+  font-size: 1.4rem;
+  color: var(--color-gray-dark);
+  text-transform: capitalize;
+}
+
 
 @keyframes product__image-slide {
   16.5%, 49.5%, 82.5% {

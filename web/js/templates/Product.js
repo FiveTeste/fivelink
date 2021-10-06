@@ -67,13 +67,40 @@ class ProductTemplate extends HTMLElement {
     this.forms = forms;
   }
 
-  handleFinish() {
-    const product = this.product;
-    const options = this.options;
-    const totalPrice = this.unitPrice * this.quantity;
+  createSelectionStr() {
+    let finalStr = "";
 
-    const carneStr = options.USA_PONTO_CARNE === 1 ? `${this.ponto_carne}`: '';
-    const talheresStr = options.USA_TALHERES === 1 ? `Talheres/Pratos: ${this.talheres}` : '';
+    if (this.products && this.products.length > 0) {
+      const str = this.products.reduce((acc, montagemItem, index) => {
+        if (index > 0) return `${acc}, ${montagemItem.PRODUTO}`;
+
+        return montagemItem.PRODUTO;
+      }, "");
+
+      finalStr = str;
+    }
+
+    const detail = this.createDetail();
+    if (detail !== "") {
+      finalStr = `${finalStr}<br />${detail}`;
+    }
+
+    const orderElement = this.shadowRoot.querySelector(".order");
+    const detailElement = orderElement.querySelector(".order__detail");
+    detailElement.innerHTML = finalStr.toLowerCase();
+
+    if (finalStr !== "") {
+      orderElement.style.setProperty("display", "block");
+    } else {
+      orderElement.style.setProperty("display", "none");
+    }
+  }
+
+  createDetail() {
+    const options = this.options;
+
+    const carneStr = options.USA_PONTO_CARNE === 1 && this.ponto_carne ? `${this.ponto_carne}`: '';
+    const talheresStr = options.USA_TALHERES === 1 && this.talheres ? `Talheres/Pratos: ${this.talheres}` : '';
 
     const coposStr = (() => {
       if (options.USA_COPOS !== 1) return "";
@@ -103,13 +130,19 @@ class ProductTemplate extends HTMLElement {
       detail = `${detail}\n${talheresStr}`;
     }
 
-    const normalizedDetail = detail.replace(/\r?\n|\r/g, '. ');
+    return detail.replace(/\r?\n|\r/g, '. ');
+  }
+ 
+  handleFinish() {
+    const product = this.product;
+    const totalPrice = this.unitPrice * this.quantity;
 
     const currentDate = new Date();
     const str = `${currentDate.toLocaleString()}${totalPrice}${this.quantity}${window.nummesa}`;
     const hash = CryptoJS.MD5(str).toString().toUpperCase();
 
     const name = product ? product.PRODUTO : this.category.SUBGRUPO;
+    const detail = this.createDetail();
 
     const uid = Date.now()
       .toString(36) + Math.random().toString(36).substring(2);
@@ -122,8 +155,8 @@ class ProductTemplate extends HTMLElement {
       unitPrice: this.unitPrice,
       observation: this.observation,
       time: currentDate,
-      detail: normalizedDetail,
       montagem: this.products,
+      detail,
       name,
       totalPrice,
       hash,
@@ -131,12 +164,25 @@ class ProductTemplate extends HTMLElement {
 
     this.store.dispatchAction(addItem(finish));
 
-    const url = `/web/carrinho${window.location.search}`;
-    Router.go(url);
+    fireEvent("show-confirm", {
+      message: "Deseja continuar pedindo?",
+      confirmText: "Pedir mais",
+      cancelText: "Ir para o carrinho",
+      onConfirm: () => {
+        const url = `/web/${window.location.search}`;
+        Router.go(url);
+      }, 
+      onCancel: () => {
+        const url = `/web/carrinho${window.location.search}`;
+        Router.go(url);
+      }
+    });
+
   }
 
   handlePontoCarne(event) {
     this.ponto_carne = event.detail.value;
+    this.createSelectionStr();
   }
 
   handleCopos(event) {
@@ -154,15 +200,19 @@ class ProductTemplate extends HTMLElement {
         break;
       default:
     }
+
+    this.createSelectionStr();
   }
 
   handleTalheres(event) {
     this.talheres = event.detail.value;
+    this.createSelectionStr();
   }
 
   handleObservation(event) {
     const value = event.detail.value;
     this.observation = value || "";
+    this.createSelectionStr();
   }
 
   handleQuantity(event) {
@@ -229,6 +279,8 @@ class ProductTemplate extends HTMLElement {
       element.textContent = formatMoney(this.unitPrice);
       this.appendChild(element);
     }
+
+    this.createSelectionStr();
   }
 
   getDefaulForms() {
@@ -286,6 +338,8 @@ class ProductTemplate extends HTMLElement {
   }
 
   connectedCallback() {
+    const imageElement = this.shadowRoot.querySelector(".product__image");
+
     const sliderContainer = this.shadowRoot.querySelector(".slider");
     const slider = document.createElement(FormSlider);
     
@@ -298,11 +352,21 @@ class ProductTemplate extends HTMLElement {
 
       this.options = { PRODUTOS: 1 }
       slider.items = [...this.getSliderForms()];
+
+      const image = this.category.FOTO;
+      if (image) {
+        imageElement.style.setProperty("background-image", `url(${image})`);
+      }
     } else {
       this.loadProductOptions();
       this.loadUnitPrice();
 
       slider.items = [...this.getSliderForms(this.product)];
+
+      const image = this.product.FOTO;
+      if (image) {
+        imageElement.style.setProperty("background-image", `url(${image})`);
+      }
     }
 
     sliderContainer.appendChild(slider);

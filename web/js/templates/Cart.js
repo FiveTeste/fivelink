@@ -130,7 +130,7 @@ class CartTemplate extends HTMLElement {
           } else if (responseData.message === "order closed") {
             fireEvent("show-modal", { 
               type: "error",
-              message: "Comanda fechada, você não pode realizar um novo pedido.",
+              message: "Mesa fechada, você não pode realizar um novo pedido.",
             });
           }
         }

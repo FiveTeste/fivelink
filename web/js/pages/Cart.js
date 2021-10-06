@@ -33,7 +33,15 @@ class CartPage extends HTMLElement {
 
     const newElements = items.reduce((acc, item, index) => {
       const name = item.name;
-      const imageUrl = "/web/images/new/food.jpg";
+
+      const isSubgrupo = !!item.subgroup;
+
+      let imageUrl = "/web/images/new/food.jpg";
+      if (isSubgrupo && item.subgroup.FOTO) {
+        imageUrl = item.subgroup.FOTO;
+      } else if (item.product && item.product.FOTO) {
+        imageUrl = item.product.FOTO;
+      }
 
       const observation = (() => {
         let finalStr = "";

@@ -1,4 +1,8 @@
 :root {
+  --card-gradient: linear-gradient(150deg, #e02f34, #732529);
+  --background-gradient: linear-gradient(150deg, #e02f34, #732529,#1c1b18);
+  --background-gradient-inverted: linear-gradient(150deg, #1c1b18, #732529, #e02f34);
+
   --color-background: #f6f6f6;
   --color-header-background: #fff;
   --color-footer-background: #fff;

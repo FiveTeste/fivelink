@@ -40,7 +40,7 @@ class ProductsPage extends HTMLElement {
       const isPromocao = isPromotional(item);
       const preco = isPromocao ? item.PRECO_PROMOCAO : item.PRECOVENDA;
 
-      const imageUrl = "/web/images/new/food.jpg";
+      const imageUrl = item.FOTO ? item.FOTO : "/web/images/new/food.jpg";
 
       const element = document.createElement(ProductItem);
       element.addEventListener("kyosk-click", this.handleClickItem.bind(this));

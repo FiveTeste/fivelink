@@ -11,6 +11,10 @@
   transition: all .2s ease;
 }
 
+.item::after {
+  content: "";
+}
+
 .item:hover {
   box-shadow: none;
   filter: brightness(85%);

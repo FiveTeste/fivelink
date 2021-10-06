@@ -30,9 +30,7 @@ use Yii;
  * @property string|null $DATA
  * @property string|null $DISPOSITIVO
  * @property string|null $PAGO
- * @property int $COD_COMANDA
  *
- * @property Comanda $cODCOMANDA
  * @property Mesa $cODMESA
  * @property Produto $cODPRODUTO
  * @property ItemAdicional[] $itemAdicionals
@@ -55,8 +53,8 @@ class Consumo extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['COD_MESA', 'COD_COMANDA'], 'required'],
-            [['COD_MESA', 'TRANSF_MESA', 'CANCELADO', 'IMPRESSO', 'NAOSINCRONIZADO', 'COD_COMANDA'], 'integer'],
+            [['COD_MESA'], 'required'],
+            [['COD_MESA', 'TRANSF_MESA', 'CANCELADO', 'IMPRESSO', 'NAOSINCRONIZADO'], 'integer'],
             [['QTDE', 'UNITARIO', 'TOTAL'], 'number'],
             [['COD_USUARIO', 'COD_PRODUTO', 'CODSUBGRUPO'], 'string', 'max' => 6],
             [['PRODUTO', 'COMPLEMENTO'], 'string', 'max' => 100],
@@ -66,7 +64,6 @@ class Consumo extends \yii\db\ActiveRecord
             [['COD_TEMP', 'DATA'], 'string', 'max' => 45],
             [['DISPOSITIVO'], 'string', 'max' => 60],
             [['PAGO'], 'string', 'max' => 5],
-            [['COD_COMANDA'], 'exist', 'skipOnError' => true, 'targetClass' => Comanda::className(), 'targetAttribute' => ['COD_COMANDA' => 'CODIGO']],
             [['COD_MESA'], 'exist', 'skipOnError' => true, 'targetClass' => Mesa::className(), 'targetAttribute' => ['COD_MESA' => 'COD_MESA']],
             [['COD_PRODUTO'], 'exist', 'skipOnError' => true, 'targetClass' => Produto::className(), 'targetAttribute' => ['COD_PRODUTO' => 'CODIGO']],
         ];
@@ -101,19 +98,9 @@ class Consumo extends \yii\db\ActiveRecord
             'DATA' => 'Data',
             'DISPOSITIVO' => 'Dispositivo',
             'PAGO' => 'Pago',
-            'COD_COMANDA' => 'Cod  Comanda',
         ];
     }
 
-    /**
-     * Gets query for [[CODCOMANDA]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCODCOMANDA()
-    {
-        return $this->hasOne(Comanda::className(), ['CODIGO' => 'COD_COMANDA']);
-    }
 
     /**
      * Gets query for [[CODMESA]].

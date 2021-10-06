@@ -33,7 +33,7 @@ class CategoriesPage extends HTMLElement {
 
     data.forEach((item) => {
       const subGrupoName = item.SUBGRUPO || "";
-      const imageUrl = "/web/images/new/food.jpg";
+      const imageUrl = item.FOTO ? item.FOTO : "/web/images/new/food.jpg";
 
       const element = document.createElement(CategoryItem);
       element.addEventListener("kyosk-click", this.handleClickItem.bind(this));

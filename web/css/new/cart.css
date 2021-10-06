@@ -3,10 +3,11 @@
 }
 
 .content .content__button {
-  margin-top: 4rem;
-  height: 4rem;
+  position: relative;
+  margin-top: 5rem;
+  height: 5rem;
   width: 100%;
-  background-color: var(--color-confirm-button-background);
+  background: var(--background-gradient);
   color: var(--color-secondary-text);
   font-weight: 600;
   font-family: var(--font-poppins);
@@ -16,8 +17,24 @@
   cursor: pointer;
   transition: background-color .2s ease;
   display: none;
+  z-index: 1;
 }
 
-.content .content__button:hover {
-  background-color: var(--color-confirm-button-hover-background);
+.content .content__button::before {
+  position: absolute;
+  content: "";
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: var(--background-gradient-inverted);
+  z-index: -1;
+  transition: opacity 0.3s linear;
+  opacity: 0;
+}
+
+
+
+.content .content__button:hover::before {
+  opacity: 1;
 }

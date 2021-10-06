@@ -7,8 +7,7 @@
 
 .page .page__header {
   height: 5.4rem;
-  background: linear-gradient(150deg, #e02f34, #732529,#1c1b18);
-  /* background-color: var(--color-header-background); */
+  background: var(--background-gradient);
   display: flex;
   align-items: center;
   justify-content: space-between;
