@@ -237,13 +237,50 @@ $this->title = 'Kyosk online';
     </div>
 </template>
 
+<!-- ADICIONAL ITEM -->
+<template id="aditional-item">
+    <?= CssLoader::loadCss("new/aditional-item.css") ?>
+
+    <li class="item">
+        <div class="item__detail">
+            <div style="display: flex;">
+                <div class="item__name"><slot name="name"></slot></div>
+                <div class="item__price price"><slot name="price">R$ 0,00</slot></div>
+            </div>
+            
+            <div class="item__observation"><slot name="observation"></slot></div>
+        </div>
+        <div class="item__quantity">
+            <button class="button button__minus">-</button>
+            <span class="quantity"></span>
+            <button class="button button__plus">+</button>
+            <!-- <quantity-selector></quantity-selector> -->
+        </div>
+    </li>
+
+</template>
+
+<!-- OPTIONAL ITEM -->
+<template id="optional-item">
+    <?= CssLoader::loadCss("new/optional-item.css") ?>
+
+    <li class="item">
+        <div class="item__detail">
+            <div class="item__name"><slot name="name"></slot></div>
+        </div>
+        <div class="item__checked checked">
+            <svg-icon class="checked__icon" src="/web/icons/check-small.svg" />
+        </div>
+    </li>
+
+</template>
+
 <!-- CARRINHO ITEM -->
 <template id="cart-item">
     <?= CssLoader::loadCss("new/cart-item.css") ?>
 
     <div class="container">
         <li class="item">
-            <img class="item__image" loading="lazy" />
             <div class="item__detail">
                 <div style="display: flex; justify-content: space-between;">
                     <div class="item__name"><slot name="name"></slot></div>
@@ -264,7 +301,6 @@ $this->title = 'Kyosk online';
             </button>
         </div>
     </div>
-
 </template>
 
 

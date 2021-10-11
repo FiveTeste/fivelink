@@ -1,6 +1,4 @@
 class Store {
-
-
   constructor(reducer, _self = this) {
     if (!reducer || typeof reducer !== 'function') {
       throw new Error("invalid reducer");

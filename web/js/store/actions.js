@@ -31,3 +31,73 @@ export function clear() {
     type: "CLEAR",
   }
 }
+
+
+export function setPontoCarne(payload) {
+  return {
+    type: "SET_PONTO_CARNE",
+    payload
+  }
+}
+
+export function setCopos(payload) {
+  return {
+    type: "SET_COPOS",
+    payload,
+  }
+}
+
+export function setTalheres(payload) {
+  return {
+    type: "SET_TALHERES",
+    payload,
+  }
+}
+
+export function setObservation(payload) {
+  return {
+    type: "SET_OBSERVATION",
+    payload,
+  }
+}
+
+export function setQuantity(payload) {
+  return {
+    type: "SET_QUANTITY",
+    payload,
+  }
+}
+
+export function setProducts(payload) {
+  return {
+    type: "SET_PRODUCTS",
+    payload,
+  }
+}
+
+export function setAdditional(payload) {
+  return {
+    type: "SET_ADDITIONAL",
+    payload,
+  }
+}
+
+export function setOptional(payload) {
+  return {
+    type: "SET_OPTIONAL",
+    payload,
+  }
+}
+
+export function setOpcoes(payload) {
+  return {
+    type: "SET_OPCOES",
+    payload,
+  }
+}
+
+export function clearOrder() {
+  return {
+    type: "CLEAR_ORDER",
+  }
+}

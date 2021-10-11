@@ -13,6 +13,7 @@ use DateTime;
 use Exception;
 use Ramsey\Uuid\Uuid;
 use ReallySimpleJWT\Token;
+use yii\db\ActiveRecord;
 use yii\db\Query;
 use yii\helpers\Json;
 
@@ -274,7 +275,35 @@ class SiteController extends Controller {
         if ($req->isAjax) {
             $cod = $req->get('cod');
             $model = \app\models\Produto::findOne(['CODIGO' => $cod]);
-            return $model;
+
+            $opcoes = (new Query())
+            ->select("produto.*, produto_ingrediente.CODIGO as ISINGREDIENTE_COD, produto_ingrediente.CODINGREDIENTE as ISINGREDIENTE_CODINGREDIENTE")
+            ->from("produto")
+            ->innerJoin("produto_ingrediente", "produto_ingrediente.CODINGREDIENTE = produto.CODIGO")
+            ->where(["produto_ingrediente.CODPRODUTO" => $cod])
+            ->all();
+
+        $adicionais = (new Query())
+            ->select("produto.*, produto_adicional.CODIGO as ISADICIONAL_COD")
+            ->from("produto")
+            ->innerJoin("produto_adicional", "produto_adicional.PROD_ADICIONAL = produto.CODIGO")
+            ->where(["produto_adicional.CODPRODUTO" => $cod])
+            ->all();
+
+
+        $opcionais = (new Query())
+            ->select("produto.*, produto_opcional.CODIGO as ISOPCIONAL_COD")
+            ->from("produto")
+            ->innerJoin("produto_opcional", "produto_opcional.CODOPCIONAL = produto.CODIGO")
+            ->where(["produto_opcional.CODPRODUTO" => $cod])
+            ->all();
+
+            $result = json_decode(Json::encode($model), true);
+            $result['opcoes'] = $opcoes;
+            $result['adicionais'] = $adicionais;
+            $result['opcionais'] = $opcionais;
+
+            return $result;
         } else {
             return [];
         }
@@ -312,7 +341,42 @@ class SiteController extends Controller {
         if ($req->isAjax) {
             $subgrupo = $req->get('cod');
             $model = \app\models\Produto::findAll(['MOSTRA_KYOSK_APP' => 1, 'CODSUBGRUPO' => $subgrupo, 'SITUACAO' => 0]);
-            return $model;
+
+            $response = array();
+            foreach ($model as $produto) {
+                $result = json_decode(Json::encode($produto), true);
+                $codproduto = $produto['CODIGO'];
+
+                $opcoes = (new Query())
+                    ->select("produto.*, produto_ingrediente.CODIGO as ISINGREDIENTE_COD, produto_ingrediente.CODINGREDIENTE as ISINGREDIENTE_CODINGREDIENTE")
+                    ->from("produto")
+                    ->innerJoin("produto_ingrediente", "produto_ingrediente.CODINGREDIENTE = produto.CODIGO")
+                    ->where(["produto_ingrediente.CODPRODUTO" => $codproduto])
+                    ->all();
+
+                $adicionais = (new Query())
+                    ->select("produto.*, produto_adicional.CODIGO as ISADICIONAL_COD")
+                    ->from("produto")
+                    ->innerJoin("produto_adicional", "produto_adicional.PROD_ADICIONAL = produto.CODIGO")
+                    ->where(["produto_adicional.CODPRODUTO" => $codproduto])
+                    ->all();
+
+
+                $opcionais = (new Query())
+                    ->select("produto.*, produto_opcional.CODIGO as ISOPCIONAL_COD")
+                    ->from("produto")
+                    ->innerJoin("produto_opcional", "produto_opcional.CODOPCIONAL = produto.CODIGO")
+                    ->where(["produto_opcional.CODPRODUTO" => $codproduto])
+                    ->all();
+
+                $result['opcoes'] = $opcoes;
+                $result['adicionais'] = $adicionais;
+                $result['opcionais'] = $opcionais;
+
+                array_push($response, $result);
+            }
+
+            return $response;
         } else {
             return [];
         }
@@ -404,14 +468,25 @@ class SiteController extends Controller {
                         }
                     }
 
-                    // inserir opcionais
+                    // inserir opcionais  
                     if (isset($consumo['LISTA_OPCIONAIS'])) {
                         $opcionais = $consumo['LISTA_OPCIONAIS'];
                         foreach ($opcionais as $op) {
-                            $opcional = new \app\models\Itemingrediente();
+                            $opcional = new \app\models\Itemopcional();
                             $opcional->attributes = $op;
                             $opcional->CONSUMO = $consumo_model->CODIGO;
                             $opcional->save();
+                        }
+                    }
+
+                    // inserir opcoes
+                    if (isset($consumo['LISTA_OPCOES'])) {
+                        $opcoes = $consumo['LISTA_OPCOES'];
+                        foreach ($opcoes as $op) {
+                            $opcao = new \app\models\Itemingrediente();
+                            $opcao->attributes = $op;
+                            $opcao->CONSUMO = $consumo_model->CODIGO;
+                            $opcao->save();
                         }
                     }
 

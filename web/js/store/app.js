@@ -1,5 +1,7 @@
 import { Store } from "../utils/store.js";
 
+import { calcAdditionalPrice } from "../utils/calcs.js";
+
 const INITIAL_STATE = {
   items: []
 }
@@ -25,11 +27,14 @@ export const appStore = new Store((state = INITIAL_STATE, action) => {
       const newQuantity = currentItem.quantity + 1;
       const totalPrice = currentItem.unitPrice * newQuantity;
 
+      const additionalPrice = calcAdditionalPrice(currentItem.additional);
+      const finalPrice = parseFloat(totalPrice) + parseFloat(additionalPrice);
+
       const currentDate = new Date();
-      const str = `${currentDate.toLocaleString()}${totalPrice}${newQuantity}${window.nummesa}`;
+      const str = `${currentDate.toLocaleString()}${finalPrice}${newQuantity}${window.nummesa}`;
       const hash = CryptoJS.MD5(str).toString().toUpperCase();
 
-      const newItem = { ...currentItem, quantity: newQuantity, totalPrice, hash };
+      const newItem = { ...currentItem, quantity: newQuantity, totalPrice: finalPrice, hash };
       newItems.splice(index, 1, newItem);
 
       return { items: [...newItems] }
@@ -44,11 +49,14 @@ export const appStore = new Store((state = INITIAL_STATE, action) => {
       if (newQuantity <= 0) return state;
 
       const totalPrice = currentItem.unitPrice * newQuantity;
+      const additionalPrice = calcAdditionalPrice(currentItem.additional);
+      const finalPrice = parseFloat(totalPrice) + parseFloat(additionalPrice);
+
       const currentDate = new Date();
-      const str = `${currentDate.toLocaleString()}${totalPrice}${newQuantity}${window.nummesa}`;
+      const str = `${currentDate.toLocaleString()}${finalPrice}${newQuantity}${window.nummesa}`;
       const hash = CryptoJS.MD5(str).toString().toUpperCase();
 
-      const newItem = { ...currentItem, quantity: newQuantity, totalPrice, hash };
+      const newItem = { ...currentItem, quantity: newQuantity, totalPrice: finalPrice, hash };
       newItems.splice(index, 1, newItem);
 
       return { items: [...newItems] }

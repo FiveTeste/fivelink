@@ -2,6 +2,7 @@ import { name as CartTemplate } from "../templates/Cart.js";
 import { name as CartItem } from "../components/CartItem.js";
 
 import { formatMoney } from "../utils/numberFormat.js";
+import { createProductsDetail } from "../utils/renderOrder.js";
 
 class CartPage extends HTMLElement {
   constructor() {
@@ -44,26 +45,18 @@ class CartPage extends HTMLElement {
       }
 
       const observation = (() => {
-        let finalStr = "";
+        const productsDetail = createProductsDetail({ 
+          products: item.montagem || [], 
+          additional: item.additional || [],
+          optional: item.optional || [],
+          opcoes: item.opcoes || []
+        });
 
-        if (item.montagem && item.montagem.length > 0) {
-          const str = item.montagem.reduce((acc, montagemItem, index) => {
-            if (index > 0) return `${acc}, ${montagemItem.PRODUTO}`;
-
-            return montagemItem.PRODUTO;
-          }, "");
-
-          finalStr = str;
-        }
-
-        if (item.observation !== "") {
-          finalStr = `${finalStr}<br />${item.observation}`;
-        }
         if (item.detail !== "") {
-          finalStr = `${finalStr}<br />${item.detail}`;
+          return `${productsDetail}<br />${item.detail}`;
         }
 
-        return finalStr;
+        return productsDetail;
       })();
 
       const existentElement = currentItems[item.uid];

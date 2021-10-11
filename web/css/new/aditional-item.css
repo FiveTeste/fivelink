@@ -1,20 +1,14 @@
-.container {
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 1.5rem;
-}
-
 .item {
-  height: 100%;
-  width: 100vw;
-  border-radius: 0.5rem;
-  padding: 0.5rem 0.5rem;
-  background-color: var(--color-card-background);
+  background: var(--color-card-background);
   box-shadow: var(--card-shadow);
-  display: flex;
-  overflow: hidden;
-  user-select: none;
-  transition: all .3s ease;
+  border-radius: 0.3rem;
+  color: var(--color-primary-text);
+  margin-bottom: 1rem;
+  cursor: pointer;
+  display: grid;
+  grid-template-columns: 1fr 30%;
+  align-items: center;
+  padding: 0.5rem 1rem;
 }
 
 .item__detail {
@@ -34,33 +28,31 @@
   text-transform: capitalize;
 }
 
-.item__observation {
-  color: var(--color-gray);
+.item__price {
+  margin-left: 2rem;
   font-family: var(--font-poppins);
-  font-size: 1.2rem;
   font-style: normal;
+  font-size: 1.4rem;
+  color: var(--color-gray);
   text-transform: capitalize;
+  display: flex;
+  align-items: center;
+  text-align: center;
 }
 
-.item__preco {
-  font-family: var(--font-poppins);
-  font-style: normal;
-  font-weight: 500;
-  color: var(--color-price);
-  text-transform: capitalize;
-}
 
 .item__quantity {
   font-family: var(--font-poppins);
   display: grid;
+  grid-template-columns: repeat(3, 1fr);
   text-align: center;
   border: 0.1rem solid var(--color-gray-soft);
   border-radius: 3rem;
 }
 
-.button__add {
-  height: 3rem;
-  width: 3rem;
+.item__quantity .button {
+  height: 4rem;
+  width: 4rem;
   border: 0;
   outline: none;
   background: transparent;
@@ -71,36 +63,25 @@
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  font-size: 1.6rem;
 }
 
-.button__add:hover {
+.item__quantity .button:hover {
   background: var(--color-gray-soft);
   transition: all .3s ease;
 }
 
-.item__order-quantity {
-  font-size: 1.2rem;
-}
-
-.button__remove {
-  height: 3rem;
-  width: 3rem;
-  border: 0;
-  outline: none;
-  background: transparent;
-  color: var(--color-primary-text);
+.item__quantity .quantity {
+  font-size: 1.4rem;
   display: flex;
-  border-radius: 50%;
-  text-decoration: none;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
 }
 
-.button__remove:hover {
-  background: var(--color-gray-soft);
-  transition: all .3s ease;
+.item__quantity .button.button__plus {
+  justify-self: flex-end;
 }
+
 
 .item__icon {
   display: flex;
@@ -116,8 +97,4 @@
   justify-content: center;
   align-items: center;
   cursor: pointer;
-}
-
-object[data-type="svg-icon"] {
-  pointer-events: none;
 }

@@ -1,9 +1,5 @@
 import { removeItem, incrementItem, decrementItem } from "../store/actions.js";
 class CartItem extends HTMLElement {
-  static get observedAttributes() {
-    return ['image-url'];
-  }
-
   constructor(){
     super();
 
@@ -27,13 +23,6 @@ class CartItem extends HTMLElement {
   handleDecrement() {
     const index = this.index;
     this.store.dispatchAction(decrementItem({ index }));
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    if (name === "image-url") {
-      const imageElement = this.shadowRoot.querySelector(".item__image");
-      imageElement.src = newValue;
-    }
   }
 
   connectedCallback() {
