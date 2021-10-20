@@ -49,6 +49,16 @@ export const createProductsDetail = (state) => {
 
     finalStr = str;
   }
+  if (optional && optional.length > 0) {
+    const str = optional.reduce((acc, item, index) => {
+      if (index > 0) return `${acc}, ${item.PRODUTO}`;
+
+      return `${item.PRODUTO}`;
+    }, "");
+
+    finalStr = `${finalStr}<br />Opcionais: ${str}`;
+  }
+
   if (additional && additional.length > 0) {
     const str = additional.reduce((acc, item, index) => {
       const { product, quantity } = item;
@@ -59,15 +69,7 @@ export const createProductsDetail = (state) => {
 
     finalStr = `${finalStr}<br />Adicionais: ${str}`;
   }
-  if (optional && optional.length > 0) {
-    const str = optional.reduce((acc, item, index) => {
-      if (index > 0) return `${acc}, ${item.PRODUTO}`;
 
-      return `${item.PRODUTO}`;
-    }, "");
-
-    finalStr = `${finalStr}<br />Opcionais: ${str}`;
-  }
   if (opcoes && opcoes.length > 0) {
     const str = opcoes.reduce((acc, item, index) => {
       if (index > 0) return `${acc}, ${item.PRODUTO}`;
@@ -121,9 +123,11 @@ const filterProductOptions = (current, newItems) => {
     return exist === -1;
   });
 }
-export const getProductsConfig = (productList) => {
+export const getProductsConfig = (productList, category) => {
+  const hasProducts = !!category ? 1 : 0;
+
   const defaultOptions = {
-    PRODUTOS: 1,
+    PRODUTOS: hasProducts,
     USA_PONTO_CARNE: 0,
     USA_COPOS: 0,
     USA_TALHERES: 0,
@@ -140,12 +144,24 @@ export const getProductsConfig = (productList) => {
       opts.adicionais = [...currentAdicionais, ...filteredAdicionais];
     }
     if (item.opcionais && item.opcionais.length > 0) {
+      const currentMaxOpcionais = +opts.QTDE_MAX_OPCIONAL || 0;
+      const itemMaxOpcionais = +item.QTDE_MAX_OPCIONAL || 0;
+
+      const newMaxOpcionais = Math.max(currentMaxOpcionais, itemMaxOpcionais);
+
       const filteredOpcionais = filterProductOptions(currentOpcionais, item.opcionais);
       opts.opcionais = [...currentOpcionais, ...filteredOpcionais];
+      opts.QTDE_MAX_OPCIONAL = newMaxOpcionais;
     }
     if (item.opcoes && item.opcoes.length > 0) {
+      const currentMaxOpcoes = +opts.QTDE_MAX_OPCOES || 0;
+      const itemMaxOpcoes = +item.QTDE_MAX_OPCOES || 0;
+
+      const newMaxOpcoes = Math.max(currentMaxOpcoes, itemMaxOpcoes);
+
       const filteredOpcoes = filterProductOptions(currentOpcoes, item.opcoes);
       opts.opcoes = [...currentOpcoes, ...filteredOpcoes];
+      opts.QTDE_MAX_OPCOES = newMaxOpcoes;
     }
 
     if (item.USA_PONTO_CARNE === 1) {
@@ -205,8 +221,8 @@ export const createForms = () => {
 
   const forms = new Map();
   forms.set("products", { index: 0, element: productsForm });
-  forms.set("additional", { index: 1, element: adicionalForm });
-  forms.set("opcionais", { index: 2, element: opcionaisForm });
+  forms.set("opcionais", { index: 1, element: opcionaisForm });
+  forms.set("additional", { index: 2, element: adicionalForm });
   forms.set("opcoes", { index: 3, element: opcoesForm });
   forms.set("ponto-carne", { index: 4, element: pontoCarneForm });
   forms.set("usa-copos", { index: 5, element: usaCoposForm });
@@ -246,15 +262,21 @@ export const getSliderForms = (options, forms) => {
 
     resultForms.push(form);
   }
-  if (options.opcionais && options.opcionais.length > 0) {
+
+  const maxOpcional = +options.QTDE_MAX_OPCIONAL;
+  if (options.opcionais && options.opcionais.length > 0 && maxOpcional > 0) {
     const form = forms.get("opcionais");
     form.element.loadProducts(options.opcionais);
+    form.element.setMax(maxOpcional);
 
     resultForms.push(form);
   }
-  if (options.opcoes && options.opcoes.length > 0) {
+
+  const maxOpcoes = +options.QTDE_MAX_OPCOES;
+  if (options.opcoes && options.opcoes.length > 0 && maxOpcoes > 0) {
     const form = forms.get("opcoes");
     form.element.loadProducts(options.opcoes);
+    form.element.setMax(maxOpcoes);
 
     resultForms.push(form);
   }

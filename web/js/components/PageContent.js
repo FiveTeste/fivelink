@@ -324,7 +324,7 @@ class PageContent extends HTMLElement {
   updatedCart(value) {
     const items = value.items || [];
 
-    const cartValue = items.reduce((acc, item) => acc + item.totalPrice, 0);
+    const cartValue = items.reduce((acc, item) => acc + parseFloat(item.totalPrice), 0);
     const container = this.shadowRoot.getElementById("cart_value");
     container.textContent = formatMoney(cartValue);
   }

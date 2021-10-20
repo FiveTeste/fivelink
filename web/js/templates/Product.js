@@ -74,12 +74,11 @@ class ProductTemplate extends HTMLElement {
   }
 
   onChangeProducts(state) {
-    if (!this.category) return;
-
     const { products = [], additional = [] } = state;
+    const productsArr = this.category ? products : [this.product];
 
-    const productList = [...products, ...additional];
-    this.options = getProductsConfig(productList);
+    const productList = [...productsArr, ...additional];
+    this.options = getProductsConfig(productList, this.category);
     this.slider.items = [...getSliderForms(this.options, this.forms)];
 
     this.unitPrice = calcProductsUnitPrice(products);

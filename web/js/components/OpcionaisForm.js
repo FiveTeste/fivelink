@@ -6,6 +6,7 @@ class OpcionaisForm extends HTMLElement {
   constructor() {
     super();
     this.selectedProducts = [];
+    this.max = 0;
 
     const style = html`
       <style>
@@ -36,6 +37,9 @@ class OpcionaisForm extends HTMLElement {
         <div>
           <div class='title__container'>
             <strong class="title">Opcionais</strong>
+            <span style="color: var(--color-gray-dark); font-size: 1.4rem; display: none;" id="quant_info">
+              Máximo: <span id="quant_max">0</span> itens
+            </span>
           </div>
           <ul class="list__container">
             <slot name="items"></slot>
@@ -58,11 +62,26 @@ class OpcionaisForm extends HTMLElement {
     if (exist !== -1) {
       this.selectedProducts.splice(exist, 1);  
     } else {
+      if (this.selectedProducts.length === this.max) return;
       this.selectedProducts.push(product);
     }
 
     const detail = { value: this.selectedProducts };
     this.dispatchEvent(new CustomEvent("kyosk-change", { detail }));
+  }
+
+  setMax(max) {
+    this.max = +max;
+
+    const maxContainer = this.shadowRoot.querySelector("#quant_info");
+    const maxElement = maxContainer.querySelector("#quant_max");
+    if (this.max > 0) {
+      maxContainer.style.setProperty("display", "block");
+      maxElement.textContent = this.max;
+    } else {
+      maxContainer.style.setProperty("display", "none");
+      maxElement.textContent = 0;
+    }
   }
 
   loadProducts(list = []) {

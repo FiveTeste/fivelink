@@ -27,9 +27,6 @@ class OptionalItem extends HTMLElement {
   }
 
   handleClick() {
-    const newValue = !this.checked;
-
-    this.handleCheck(newValue);
     const detail = { value: this.product };
     this.dispatchEvent(new CustomEvent("kyosk-change", { detail }));
   }

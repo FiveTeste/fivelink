@@ -3,7 +3,9 @@ import { isPromotional } from "./isPromotional.js";
 export const calcAdditionalPrice = (additional = []) => {
   const price = additional.reduce((acc, item) => {
     const itemUnitPrice = loadProductPrice(item.product);
-    const itemPrice = itemUnitPrice * item.quantity;
+    const parsedValue = parseFloat(itemUnitPrice);
+
+    const itemPrice = parsedValue * item.quantity;
 
     return acc + itemPrice;
   }, 0);
@@ -14,7 +16,8 @@ export const calcAdditionalPrice = (additional = []) => {
 export const calcProductsUnitPrice = (productList) => {
   const totalProductsPrice = productList.reduce((acc, item) => {
     const itemPrice = loadProductPrice(item);
-    return acc + itemPrice;
+    const parsedValue = parseFloat(itemPrice);
+    return acc + parsedValue;
   }, 0);
   
   const unitPrice = totalProductsPrice / productList.length;
