@@ -139,8 +139,14 @@ export const getProductsConfig = (productList, category) => {
     const currentOpcoes = opts.opcoes || [];
 
     if (item.adicionais && item.adicionais.length > 0) {
+      const currentMaxAdicionais = +opts.QTDE_MAX_ADICIONAL || 0;
+      const itemMaxAdicionais = +item.QTDE_MAX_ADICIONAL || 0;
+
+      const newMaxAdicionais = Math.max(currentMaxAdicionais, itemMaxAdicionais);
+
       const filteredAdicionais = filterProductOptions(currentAdicionais, item.adicionais);
       opts.adicionais = [...currentAdicionais, ...filteredAdicionais];
+      opts.QTDE_MAX_ADICIONAL = newMaxAdicionais;
     }
     if (item.opcionais && item.opcionais.length > 0) {
       const currentMaxOpcionais = +opts.QTDE_MAX_OPCIONAL || 0;
