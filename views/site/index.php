@@ -267,6 +267,10 @@ $this->title = 'Kyosk online';
     <li class="item">
         <div class="item__detail">
             <div class="item__name"><slot name="name"></slot></div>
+            <div class="item__price price">
+                <div class="price__current"><slot name="price"></slot></div>
+                <div class="price__original"><slot name="original_price"></slot></div>
+            </div>
         </div>
         <div class="item__checked checked">
             <svg-icon class="checked__icon" src="/web/icons/check-small.svg" />

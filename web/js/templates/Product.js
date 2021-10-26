@@ -74,14 +74,13 @@ class ProductTemplate extends HTMLElement {
   }
 
   onChangeProducts(state) {
-    const { products = [], additional = [] } = state;
+    const { products = [] } = state;
     const productsArr = this.category ? products : [this.product];
 
-    const productList = [...productsArr, ...additional];
-    this.options = getProductsConfig(productList, this.category);
+    this.options = getProductsConfig(productsArr, this.category);
     this.slider.items = [...getSliderForms(this.options, this.forms)];
 
-    this.unitPrice = calcProductsUnitPrice(products);
+    this.unitPrice = calcProductsUnitPrice(productsArr);
     const existent = this.querySelector("span[slot='price']");
     if (existent) {
       existent.textContent = formatMoney(this.unitPrice);

@@ -61,10 +61,9 @@ export const createProductsDetail = (state) => {
 
   if (additional && additional.length > 0) {
     const str = additional.reduce((acc, item, index) => {
-      const { product, quantity } = item;
-      if (index > 0) return `${acc}, (${quantity}x) ${product.PRODUTO}`;
+      if (index > 0) return `${acc}, ${item.PRODUTO}`;
 
-      return `(${quantity}x) ${product.PRODUTO}`;
+      return `${item.PRODUTO}`;
     }, "");
 
     finalStr = `${finalStr}<br />Adicionais: ${str}`;
@@ -189,7 +188,10 @@ export const createForms = () => {
   const productsForm = document.createElement(ProductsForm);
   productsForm.addEventListener("kyosk-change", dispatchStore(setProducts));
 
-  const adicionalForm = document.createElement(AditionalForm);
+  const adicionalForm = document.createElement(OpcionaisForm);
+  adicionalForm.storeKey = "additional";
+  adicionalForm.titleText = "Adicionais";
+  adicionalForm.showPrice = true;
   adicionalForm.addEventListener("kyosk-change", dispatchStore(setAdditional));
 
   const opcionaisForm = document.createElement(OpcionaisForm);
@@ -256,9 +258,12 @@ export const getSliderForms = (options, forms) => {
     const form = forms.get("usa-talheres");
     resultForms.push(form);
   }
-  if (options.adicionais && options.adicionais.length > 0) {
+
+  const maxAdicional = +options.QTDE_MAX_ADICIONAL;
+  if (options.adicionais && options.adicionais.length > 0 && maxAdicional > 0) {
     const form = forms.get("additional");
     form.element.loadProducts(options.adicionais);
+    form.element.setMax(maxAdicional);
 
     resultForms.push(form);
   }

@@ -1,5 +1,8 @@
 import { name as OptionalItem } from "./OptionalItem.js";
 
+import { formatMoney } from "../utils/numberFormat.js";
+import { isPromotional } from "../utils/isPromotional.js";
+
 import { orderStore } from "../store/order.js";
 
 class OpcionaisForm extends HTMLElement {
@@ -97,6 +100,18 @@ class OpcionaisForm extends HTMLElement {
       element.addEventListener("kyosk-change", this.handleSelect.bind(this));
 
       const slotsHtml = html`<span slot="name">${name.toLowerCase()}</span>`;
+
+      if (this.showPrice) {
+        const isPromocao = isPromotional(product);
+        const preco = isPromocao ? product.PRECO_PROMOCAO : product.PRECOVENDA;
+
+        const priceSlots = html`
+          <span slot="price">${formatMoney(preco)}</span>
+          ${isPromocao ? `<span slot="original_price">${formatMoney(product.PRECOVENDA)}</span>` : ''}
+        `;
+
+        element.appendChild(priceSlots);
+      }
 
       const existent = currentItems.find(item => item.CODIGO === product.CODIGO);
       element.setAttribute("checked", !!existent);

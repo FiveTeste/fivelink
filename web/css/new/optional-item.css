@@ -36,6 +36,29 @@
   text-transform: capitalize;
 }
 
+.item .item__price {
+  display: flex;
+  flex-direction: row;
+}
+
+.price .price__current {
+  font-family: var(--font-poppins);
+  font-style: normal;
+  font-weight: 500;
+  color: var(--color-price);
+  text-transform: capitalize;
+}
+
+.price .price__original {
+  font-family: var(--font-poppins);
+  font-style: normal;
+  font-size: 1.3rem;
+  margin-left: 0.5rem;
+  color: var(--color-gray);
+  text-decoration: line-through;
+  text-transform: capitalize;
+}
+
 .item__checked {
   display: none;
   margin-right: 1rem;

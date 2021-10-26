@@ -2,12 +2,10 @@ import { isPromotional } from "./isPromotional.js";
 
 export const calcAdditionalPrice = (additional = []) => {
   const price = additional.reduce((acc, item) => {
-    const itemUnitPrice = loadProductPrice(item.product);
+    const itemUnitPrice = loadProductPrice(item);
     const parsedValue = parseFloat(itemUnitPrice);
 
-    const itemPrice = parsedValue * item.quantity;
-
-    return acc + itemPrice;
+    return acc + parsedValue;
   }, 0);
 
   return isNaN(price) ? 0 : price.toFixed(2);

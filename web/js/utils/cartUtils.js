@@ -14,16 +14,13 @@ const createMontadoObject = (item) => {
 }
 
 const createAdditionalObject = (item) => {
-  const { quantity, product } = item;
-
-  const itemPrice = isPromotional(product) ? product.PRECO_PROMOCAO : product.PRECOVENDA;
-  const totalPrice = parseFloat(itemPrice) * parseFloat(quantity);
+  const itemPrice = isPromotional(item) ? item.PRECO_PROMOCAO : item.PRECOVENDA;
 
   return {
-    CODADICIONAL: product.CODIGO,
-    QTDE: quantity,
-    PRECO: totalPrice.toFixed(2),
-    CODITEM: product.ISADICIONAL_COD
+    CODADICIONAL: item.CODIGO,
+    QTDE: 1,
+    PRECO: itemPrice.toFixed(2),
+    CODITEM: item.ISADICIONAL_COD
   }
 }
 
