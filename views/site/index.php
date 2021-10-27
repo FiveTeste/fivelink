@@ -9,7 +9,7 @@ $this->title = 'Kyosk online';
 
 <!-- PAGE CONTENT TEMPLATE -->
 <template id="page-content">
-    <?= CssLoader::loadCss("new/page-content.css") ?>
+    <?= CssLoader::loadCss("page-content.css") ?>
 
     <div class="page">
         <header class="page__header header">
@@ -48,7 +48,7 @@ $this->title = 'Kyosk online';
 
 <!-- HOME PAGE TEMPLATE -->
 <template id="home-page">
-    <?= CssLoader::loadCss("new/home.css") ?>
+    <?= CssLoader::loadCss("home.css") ?>
 
     <div class="mesa">
         Mesa: <?php echo $mesa ?>
@@ -71,7 +71,7 @@ $this->title = 'Kyosk online';
 
 <!-- CARD ITEM TEMPLATE -->
 <template id="card-item">
-    <?= CssLoader::loadCss("new/card-item.css") ?>
+    <?= CssLoader::loadCss("card-item.css") ?>
 
     <article class="card">
         <div class="card__image"></div>
@@ -81,7 +81,7 @@ $this->title = 'Kyosk online';
 
 <!-- PRODUCT PAGE TEMPLATE -->
 <template id="product-page">
-    <?= CssLoader::loadCss("new/product.css") ?>
+    <?= CssLoader::loadCss("product.css") ?>
 
     <div class="product">
         <div class="product__image"></div>
@@ -112,7 +112,7 @@ $this->title = 'Kyosk online';
 
 <!-- PRODUCT ITEM TEMPLATE -->
 <template id="product-item">
-    <?= CssLoader::loadCss("new/product-item.css") ?>
+    <?= CssLoader::loadCss("product-item.css") ?>
     
     <li class="item">
         <div class="item__image image-container">
@@ -131,7 +131,7 @@ $this->title = 'Kyosk online';
 
 <!-- CATEGORY ITEM TEMPLATE -->
 <template id="category-item">
-    <?= CssLoader::loadCss("new/category-item.css") ?>
+    <?= CssLoader::loadCss("category-item.css") ?>
     
     <li class="item">
         <div class="item__image"></div>
@@ -141,7 +141,7 @@ $this->title = 'Kyosk online';
 
 
 <template id="ponto-carne">
-    <?= CssLoader::loadCss("new/ponto-carne.css") ?>
+    <?= CssLoader::loadCss("ponto-carne.css") ?>
 
     <div class="content">
         <strong class="content__title">Escolha o ponto da carne:</strong>
@@ -169,7 +169,7 @@ $this->title = 'Kyosk online';
 </template>
 
 <template id="usa-copos">
-    <?= CssLoader::loadCss("new/usa-copos.css") ?>
+    <?= CssLoader::loadCss("usa-copos.css") ?>
 
     <div class="content">
         <strong class="content__title">Copos:</strong>
@@ -203,7 +203,7 @@ $this->title = 'Kyosk online';
 </template>
 
 <template id="form-talheres">
-    <?= CssLoader::loadCss("new/form-talheres.css") ?>
+    <?= CssLoader::loadCss("form-talheres.css") ?>
 
     <div class="content">
         <strong class="content__title">Pratos e talheres:</strong>
@@ -214,7 +214,7 @@ $this->title = 'Kyosk online';
 </template>
 
 <template id="form-quantity">
-    <?= CssLoader::loadCss("new/form-quantity.css") ?>
+    <?= CssLoader::loadCss("form-quantity.css") ?>
 
     <div class="content">
         <strong class="content__title">Quantidade:</strong>
@@ -226,7 +226,7 @@ $this->title = 'Kyosk online';
 
 <!-- CARRINHO PAGE -->
 <template id="cart-page">
-    <?= CssLoader::loadCss("new/cart.css") ?>
+    <?= CssLoader::loadCss("cart.css") ?>
     
     <div class="content">
         <ul class="content__list" style="padding: 0;">
@@ -239,7 +239,7 @@ $this->title = 'Kyosk online';
 
 <!-- ADICIONAL ITEM -->
 <template id="aditional-item">
-    <?= CssLoader::loadCss("new/aditional-item.css") ?>
+    <?= CssLoader::loadCss("aditional-item.css") ?>
 
     <li class="item">
         <div class="item__detail">
@@ -262,7 +262,7 @@ $this->title = 'Kyosk online';
 
 <!-- OPTIONAL ITEM -->
 <template id="optional-item">
-    <?= CssLoader::loadCss("new/optional-item.css") ?>
+    <?= CssLoader::loadCss("optional-item.css") ?>
 
     <li class="item">
         <div class="item__detail">
@@ -281,7 +281,7 @@ $this->title = 'Kyosk online';
 
 <!-- CARRINHO ITEM -->
 <template id="cart-item">
-    <?= CssLoader::loadCss("new/cart-item.css") ?>
+    <?= CssLoader::loadCss("cart-item.css") ?>
 
     <div class="container">
         <li class="item">
@@ -314,9 +314,9 @@ $this->title = 'Kyosk online';
     window.nummesa = '<?= $mesa ?>';
 </script>
 
-<script src="/web/js/jsQR.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
-<script src="https://unpkg.com/@glidejs/glide"></script>
+<script src="/web/js/dependencies/jsQR.js"></script>
+<script src="/web/js/dependencies/crypto-js.min.js"></script>
+<script src="/web/js/dependencies/glide.min.js"></script>
 
 <script type="module" src="/web/js/imports.js"></script>
 <script type="module" defer src="/web/js/loadGlobalComponents.js"></script>

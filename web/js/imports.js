@@ -1,7 +1,6 @@
-import { Router } from 'https://unpkg.com/@vaadin/router@1.7.4/dist/vaadin-router.js';
-import { registerComponent } from "./utils/registerComponent.js";
-import { createHtmlElement } from "./utils/createHtmlElement.js";
-import { fireEvent } from "./utils/fireEvent.js";
+import { Router } from './dependencies/vaadin-router.js';
+import { registerComponent, createHtmlElement, fireEvent } from "./utils/utils.js";
+
 
 window.Router = Router;
 window.registerComponent = registerComponent;
