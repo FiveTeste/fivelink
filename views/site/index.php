@@ -385,7 +385,7 @@ $this->title = 'Kyosk online';
             <label class="form__item">
                 <span>Telefone:</span>
                 <div class="input-container">
-                    <input id="phone" name="telefone" required />
+                    <input id="phone" name="telefone" pattern="\d*" inputmode="numeric" required />
                 </div>
             </label>
 

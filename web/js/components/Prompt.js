@@ -143,12 +143,14 @@ class Prompt extends HTMLElement {
     input.required = true;
 
     if (type === "numeric") {
-      input.pattern = "\\d*";
+      input.setAttribute("pattern", "\\d*");
+      input.setAttribute("inputmode", "numeric");
     }
 
     if (mask) {
       if (mask === "phone") {
-        input.pattern = "\\d*";
+        input.setAttribute("pattern", "\\d*");
+        input.setAttribute("inputmode", "numeric");
       }
 
       input.addEventListener("input", this.handleMask(mask));
