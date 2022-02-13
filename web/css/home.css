@@ -1,13 +1,3 @@
-.mesa {
-  font-family: var(--font-poppins);
-  font-style: normal;
-  font-weight: 600;
-  font-size: 1.8rem;
-  color: var(--color-primary-text);
-  margin-left: 1rem;
-  margin-bottom: 1em;
-}
-
 .highlights-container {
   overflow: hidden;
   display: none;

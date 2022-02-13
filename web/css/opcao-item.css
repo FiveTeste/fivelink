@@ -1,0 +1,52 @@
+.item {
+  background: var(--color-card-background);
+  box-shadow: var(--card-shadow);
+  border-radius: 0.3rem;
+  color: var(--color-primary-text);
+  margin-bottom: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.item.checked {
+  box-shadow: var(--checked-item-shadow);
+  background: var(--color-checked-item-background);
+}
+
+
+.item__detail {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-left: 0.5rem;
+  margin-right: 2rem;
+}
+
+.item__name {
+  color: var(--color-primary-text);
+  font-family: var(--font-poppins);
+  font-size: 1.6rem;
+  font-style: normal;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+
+.item__checked {
+  display: none;
+  margin-right: 1rem;
+}
+
+.item.checked .item__checked {
+  display: block;
+}
+
+.item__checked .checked__icon {
+  display: flex;
+  text-align: center;
+}

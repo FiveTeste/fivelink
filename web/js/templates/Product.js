@@ -95,8 +95,6 @@ class ProductTemplate extends HTMLElement {
   loadProductOptions() {
     const options = {
       USA_PONTO_CARNE: this.product.USA_PONTO_CARNE,
-      USA_COPOS: this.product.USA_COPOS,
-      USA_TALHERES: this.product.USA_TALHERES,
       adicionais: this.product.adicionais
     };
 

@@ -37,7 +37,7 @@ class CartPage extends HTMLElement {
 
       const isSubgrupo = !!item.subgroup;
 
-      let imageUrl = "/web/images/new/food.jpg";
+      let imageUrl = "../web/images/new/food.jpg";
       if (isSubgrupo && item.subgroup.FOTO) {
         imageUrl = item.subgroup.FOTO;
       } else if (item.product && item.product.FOTO) {

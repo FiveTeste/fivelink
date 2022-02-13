@@ -13,16 +13,18 @@ $this->title = 'Kyosk online';
 
     <div class="page">
         <header class="page__header header">
-            <a href="/web/" class="header__link">
-                <div class="header__logo"></div>
-                <!-- <h1 class="header__title">Kyosk</h1> -->
+            <a href="/" class="header__link">
+                <div 
+                    class="header__logo" 
+                    style="background-image: url(<?= Yii::$app->request->baseUrl?>/images/logo/logo.png)"
+                ></div>
             </a>
             
-            <a href="/web/carrinho" class="cart">
+            <a href="/carrinho" class="cart">
                 <div class="cart__price">
                     <span id="cart_value">R$ 0,00</span>
                 </div>
-                <svg-icon src="/web/icons/shopping-cart.svg" style="color: #ddd8d8" />
+                <svg-icon src="shopping-cart.svg" style="color: #ddd8d8" />
             </a>
         </header>
 
@@ -30,30 +32,43 @@ $this->title = 'Kyosk online';
 
         <footer class="page__footer">
             <nav class="navbar">
-                <a href="/web/" class="navbar__item">
-                    <svg-icon src="/web/icons/home.svg" />
+                <a href="/" data-href="<?= Yii::$app->request->baseUrl?>/" class="navbar__item">
+                    <svg-icon src="home.svg" />
                 </a>
-                <a href="/web/carrinho" class="navbar__item">
-                    <svg-icon src="/web/icons/shopping-cart.svg" />
-                </a>
-                <a href="#" data-action="end-order" class="navbar__item">
-                    <svg-icon src="/web/icons/order-list.svg" />
+                <a href="/carrinho" data-href="<?= Yii::$app->request->baseUrl?>/carrinho" class="navbar__item">
+                    <svg-icon src="shopping-cart.svg" />
                 </a>
             </nav>
         </footer>
     </div>
-    <div class="modal" style="opacity: 0; visibility: hidden;">
+    <div class="modal" style="opacity: 0; visibility: hidden;"></div>
+    <prompt-modal></prompt-modal>
+    <app-loader></app-loader>
+</template>
+
+<template id="loader-template">
+    <?= CssLoader::loadCss("loader.css") ?>
+    <div class="container">
+        <div class="lds-spinner">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
     </div>
 </template>
 
 <!-- HOME PAGE TEMPLATE -->
 <template id="home-page">
     <?= CssLoader::loadCss("home.css") ?>
-
-    <div class="mesa">
-        Mesa: <?php echo $mesa ?>
-    </div>
-
     <section class="highlights-container">
         <div class="glide" id="highlights-slider">
             <div class="glide__track" data-glide-el="track">
@@ -116,7 +131,7 @@ $this->title = 'Kyosk online';
     
     <li class="item">
         <div class="item__image image-container">
-            <svg-icon class="image-container__check" src="/web/icons/check.svg"></svg-icon>
+            <svg-icon class="image-container__check" src="check.svg"></svg-icon>
             <div class="image-container__image"></div>
         </div>
         <div class="item__detail">
@@ -237,6 +252,35 @@ $this->title = 'Kyosk online';
     </div>
 </template>
 
+<template id="finish-page">
+    <?= CssLoader::loadCss("finish.css") ?>
+    
+    <div class="content">
+        <div class="detail">
+            <div class="detail__item contact">
+                <client-card></client-card>
+            </div>
+
+            <div class="detail__item">
+                <span class="detail__title">Entrega</span>
+                <shipping-card></shipping-card>
+            </div>
+
+            <div class="detail__item">
+                <span class="detail__title">Pagamento</span>
+                <payment-card></payment-card>
+            </div>
+
+            <div class="detail__item">
+                <span class="detail__title">Resumo</span>
+                <order-summary></order-summary>
+            </div>
+        </div>
+
+        <button class="content__button" id="send_cart">Finalizar</button>
+    </div>
+</template>
+
 <!-- ADICIONAL ITEM -->
 <template id="aditional-item">
     <?= CssLoader::loadCss("aditional-item.css") ?>
@@ -273,7 +317,23 @@ $this->title = 'Kyosk online';
             </div>
         </div>
         <div class="item__checked checked">
-            <svg-icon class="checked__icon" src="/web/icons/check-small.svg" />
+            <svg-icon class="checked__icon" src="check-small.svg" />
+        </div>
+    </li>
+
+</template>
+
+
+<!-- OPTIONAL ITEM -->
+<template id="opcao-item">
+    <?= CssLoader::loadCss("opcao-item.css") ?>
+
+    <li class="item">
+        <div class="item__detail">
+            <div class="item__name"><slot name="name"></slot></div>
+        </div>
+        <div class="item__checked checked">
+            <svg-icon class="checked__icon" src="check-small.svg" />
         </div>
     </li>
 
@@ -301,23 +361,176 @@ $this->title = 'Kyosk online';
         </li>
         <div class="item__icon">
             <button class="item__button-remove">
-                <svg-icon src="/web/icons/trash.svg" style="color: #BF4816" />
+                <svg-icon src="trash.svg" style="color: #BF4816" />
             </button>
         </div>
     </div>
 </template>
 
 
+<!-- REGISTER PAGE TEMPLATE -->
+<template id="register-page">
+    <?= CssLoader::loadCss("register.css") ?>
+
+    <div class="page">
+        <h1 class="page__title" id="page_title">Faça seu cadastro</h1>
+        <form class="form">
+            <label class="form__item">
+                <span>Nome:</span>
+                <div class="input-container">
+                    <input name="nome" required />
+                </div>
+            </label>
+
+            <label class="form__item">
+                <span>Telefone:</span>
+                <div class="input-container">
+                    <input id="phone" name="telefone" required />
+                </div>
+            </label>
+
+            <label class="form__item">
+                <span>Bairro:</span>
+                <div class="input-container">
+                    <select name="bairro_id" required >
+                        <option></option>
+                    </select>
+                </div>
+            </label>
+
+            <label class="form__item">
+                <span>Seu endereço (Rua):</span>
+                <div class="input-container">
+                    <input name="endereco"  required />
+                </div>
+            </label>
+
+            <label class="form__item">
+                <span>Número:</span>
+                <div class="input-container">
+                    <input name="numero" required />
+                </div>
+            </label>
+
+            <label class="form__item">
+                <span>Complemento:</span>
+                <div class="input-container">
+                    <input name="complemento" />
+                </div>
+            </label>
+
+            <button class="form__button" id="send_cart">Finalizar</button>
+        </form>
+    </div>
+</template>
+
+
+<template id="client-card">
+    <?= CssLoader::loadCss("client-card.css") ?>
+    <div class="container">
+        <span class="contact__item title" id="client_name"></span>
+
+        <div class="contact__item phone">
+            <strong>Telefone:</strong>
+            <span id="client_phone"></span>
+        </div>
+
+        <div class="contact__item address">
+            <strong>Endereço:</strong>
+            <span id="client_address"></span>
+        </div>
+
+        <div class="actions">
+            <button class="action__item" id="change_phone">Alterar telefone</button>
+            <button class="action__item" id="update_registration">Atualizar cadastro</button>
+        </div>
+    </div>
+</template>
+
+
+<template id="payment-card">
+    <?= CssLoader::loadCss("payment-card.css") ?>
+    <div class="form">
+        <label class="form__item">
+            <span>Forma de pagamento:</span>
+            <div class="input-container">
+                <select name="payment_type" required >
+                    <option></option>
+                    <option value="Cartao de credito">Cartão de crédito</option>
+                    <option value="Dinheiro">Dinheiro</option>
+                    <option value="Cartao de debito">Cartão de débito</option>
+                    <option value="Pix">PIX</option>
+                </select>
+            </div>
+        </label>
+    </div>
+
+    <button class="button-add-cupom" id="add-cupom">
+        <svg-icon src="plus.svg" style="display: flex; margin-right: 0.5rem;"></svg-icon>  Adicionar cupom
+    </button>
+    <div class="cupom" id="cupom-detail">
+        <div class="cupom__container">
+            <div class="cupom__description cupom__item">
+                <span class="cupom__name" id="cupom-name"></span>
+                <span class="cupom__value" id="cupom-value"></span>
+            </div>
+            <button class="cupom__item" id="remove-cupom">Remover cupom</button>
+        </div>
+    </div>
+</template>
+
+
+<template id="shipping-card">
+    <?= CssLoader::loadCss("shipping-card.css") ?>
+    <ul class="content__list list">
+        <li class="list__item item">
+            <label class="item__radio radio">
+                <span id="address"></span>
+                <input type="radio" name="shipping" value="1" />
+            </label>
+        </li>
+        <li class="list__item item">
+            <label class="item__radio radio">
+                <span>Retirar no local</span>
+                <input type="radio" name="shipping" value="0" />
+            </label>
+        </li>
+    </ul>
+</template>
+
+
+<template id="order-summary">
+    <?= CssLoader::loadCss("order-summary.css") ?>
+    <div class="container">
+        <div class="container__item">
+            <strong>Total dos itens:</strong>
+            <span id="total-value"></span>
+        </div>
+
+        <div class="container__item">
+            <strong>Taxa de entrega:</strong>
+            <span id="shipping-tax"></span>
+        </div>
+
+        <div class="container__item">
+            <strong>Descontos:</strong>
+            <span id="discount"></span>
+        </div>
+
+        <div class="container__item">
+            <strong>Total:</strong>
+            <span id="total-final"></span>
+        </div>
+    </div>
+</template>
 
 <script type="text/javascript">
     window.baseUrl = '<?= Yii::$app->request->baseUrl; ?>';
-    window.nummesa = '<?= $mesa ?>';
 </script>
 
-<script src="/web/js/dependencies/jsQR.js"></script>
-<script src="/web/js/dependencies/crypto-js.min.js"></script>
-<script src="/web/js/dependencies/glide.min.js"></script>
+<script src="<?= Yii::$app->request->baseUrl?>/js/dependencies/crypto-js.min.js"></script>
+<script src="<?= Yii::$app->request->baseUrl?>/js/dependencies/glide.min.js"></script>
 
-<script type="module" src="/web/js/imports.js"></script>
-<script type="module" defer src="/web/js/loadGlobalComponents.js"></script>
-<script type="module" defer src="/web/js/router.js"></script>
+<script type="module" src="<?= Yii::$app->request->baseUrl?>/js/imports.js"></script>
+<script type="module" defer src="<?= Yii::$app->request->baseUrl?>/js/loadGlobalComponents.js"></script>
+<script type="module" defer src="<?= Yii::$app->request->baseUrl?>/js/router.js"></script>

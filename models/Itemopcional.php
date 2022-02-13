@@ -8,9 +8,9 @@ use Yii;
  * This is the model class for table "item_opcional".
  *
  * @property int $ID
- * @property string $CODOPCIONAL
- * @property string $CODITEM
- * @property int $CONSUMO
+ * @property string|null $CODOPCIONAL
+ * @property string|null $CODITEM
+ * @property int|null $CONSUMO
  *
  * @property Consumo $cONSUMO
  */
@@ -50,6 +50,8 @@ class Itemopcional extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[CONSUMO]].
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getCONSUMO()

@@ -1,5 +1,5 @@
-import { Router } from './dependencies/vaadin-router.js';
-import { registerComponent, createHtmlElement, fireEvent } from "./utils/utils.js";
+import { Router } from '/web/js/dependencies/vaadin-router.js';
+import { registerComponent, createHtmlElement, fireEvent, moduleImport } from "/web/js/utils/utils.js";
 
 
 window.Router = Router;

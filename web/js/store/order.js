@@ -9,13 +9,6 @@ export const orderStore = new Store((state = INITIAL_STATE, action) => {
     case "SET_PONTO_CARNE": {
       return { ...state, ponto_carne: action.payload }
     }
-    case "SET_COPOS": {
-      const { name, value } = action.payload;
-      return { ...state, [name]: value }
-    }
-    case "SET_TALHERES": {
-      return { ...state, talheres: action.payload }
-    }
     case "SET_OBSERVATION": {
       return { ...state, observation: action.payload }
     }

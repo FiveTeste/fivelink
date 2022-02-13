@@ -22,7 +22,7 @@ class ProductsPage extends HTMLElement {
     const productCode = product.CODIGO;
     const groupCode = this.location.params.code;
 
-    const url = `/web/${groupCode}/produtos/${productCode}${location.search}`;
+    const url = `/${groupCode}/produtos/${productCode}${location.search}`;
     Router.go(url);
   }
 
@@ -40,7 +40,7 @@ class ProductsPage extends HTMLElement {
       const isPromocao = isPromotional(item);
       const preco = isPromocao ? item.PRECO_PROMOCAO : item.PRECOVENDA;
 
-      const imageUrl = item.FOTO ? item.FOTO : "/web/images/new/food.jpg";
+      const imageUrl = item.FOTO ? item.FOTO : "../web/images/new/food.jpg";
 
       const element = document.createElement(ProductItem);
       element.addEventListener("kyosk-click", this.handleClickItem.bind(this));

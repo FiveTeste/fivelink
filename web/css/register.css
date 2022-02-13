@@ -1,0 +1,125 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  padding: 0 0.5rem;
+  font-family: var(--font-poppins);
+}
+
+.page .page__title {
+  color: var(--color-gray-dark);
+  font-weight: 400;
+  font-size: 2rem;
+  padding: 0 0.5rem;
+  margin-bottom: 1rem;
+  display: inline-block;
+}
+
+.form .form__item {
+  display: block;
+}
+
+.form .form__item:not(:last-child) {
+  margin-bottom: 1.5rem;
+}
+
+.form__item span {
+  color: var(--color-gray-dark);
+}
+
+.form__item .input-container {
+  position: relative;
+  display: flex;
+  z-index: 1;
+  flex: 1;
+  height: 5rem;
+  padding: 0.2rem;
+  margin: auto;
+  margin-bottom: 1rem;
+  box-sizing: border-box;
+  border-radius: 0.5rem;
+  -webkit-transition: all 0.2s;
+  transition: all 0.2s;
+}
+
+.form__item .input-container::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  bottom: 0;
+  left: 0;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  opacity: 0.8;
+  border-radius: inherit;
+  background: var(--color-gray-dark);
+  -webkit-transition: all 0.2s;
+  transition: all 0.2s;
+}
+
+.form__item .input-container:focus-within {
+  padding: 0.3rem;
+}
+
+.form__item .input-container:focus-within::after {
+  background: var(--background-gradient);
+  -webkit-filter: blur(0.1rem);
+  -moz-filter: blur(0.1rem);
+  -o-filter: blur(0.1rem);
+  -ms-filter: blur(0.1rem);
+  filter: blur(0.1rem);
+}
+
+.form__item .input-container input,
+.form__item .input-container select {
+  flex: 1;
+  outline: 0;
+  border: 0;
+  padding: 0 1rem;
+  font-family: var(--font-poppins);
+  font-size: 1.6rem;
+  color: var(--color-gray-dark);
+  -moz-appearance: textfield;
+}
+
+.form__item .input-container input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.form .form__button {
+  position: relative;
+  margin-top: 1.5rem;
+  height: 5rem;
+  width: 100%;
+  background: var(--background-gradient);
+  color: var(--color-secondary-text);
+  font-weight: 600;
+  font-family: var(--font-poppins);
+  font-size: 1.6rem;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color .2s ease;
+  z-index: 1;
+}
+
+.form .form__button::before {
+  position: absolute;
+  border-radius: 0.5rem;
+  content: "";
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: var(--background-gradient-inverted);
+  z-index: -1;
+  transition: opacity 0.3s linear;
+  opacity: 0;
+}
+
+
+.form .form__button:hover::before {
+  opacity: 1;
+}

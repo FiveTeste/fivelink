@@ -38,6 +38,7 @@ class FormSlider extends HTMLElement {
           right: 0;
           bottom: 0;
           left: 0;
+          border-radius: 0.5rem;
           background: var(--background-gradient-inverted);
           z-index: -1;
           transition: opacity 0.3s linear;

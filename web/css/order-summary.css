@@ -1,0 +1,7 @@
+.container .container__item {
+  font-size: 1.45rem;
+}
+
+.container .container__item:not(.detail__title) {
+  margin-top: 0.5rem;
+}

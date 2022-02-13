@@ -27,3 +27,7 @@ export function createHtmlElement(strings, ...values) {
 export function fireEvent(type, value) {
   window.dispatchEvent(new CustomEvent(`kyosk-${type}`, { detail: value }));
 }
+
+export function moduleImport(module) {
+  return import(`/web/js/${module}`);
+}

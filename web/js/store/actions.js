@@ -26,6 +26,62 @@ export function decrementItem(payload) {
   }
 }
 
+export function addCupom(payload) {
+  return {
+    type: "ADD_CUPOM",
+    payload,
+  }
+}
+
+export function removeCupom(payload) {
+  return {
+    type: "REMOVE_CUPOM",
+    payload,
+  }
+}
+
+export function setShipping(payload) {
+  return {
+    type: "SET_SHIPPING",
+    payload,
+  }
+}
+
+export function setRetirarLocal(payload) {
+  return {
+    type: "SET_RETIRAR_LOCAL",
+    payload,
+  }
+}
+
+export function setPayment(payload) {
+  return {
+    type: "SET_PAYMENT",
+    payload,
+  }
+}
+
+export function setTroco(payload) {
+  return {
+    type: "SET_TROCO",
+    payload,
+  }
+}
+
+export function setRecibo(payload) {
+  return {
+    type: "SET_RECIBO",
+    payload,
+  }
+}
+
+export function setInfoRecibo(payload) {
+  return {
+    type: "SET_INFO_RECIBO",
+    payload,
+  }
+}
+
 export function clear() {
   return {
     type: "CLEAR",
@@ -40,19 +96,6 @@ export function setPontoCarne(payload) {
   }
 }
 
-export function setCopos(payload) {
-  return {
-    type: "SET_COPOS",
-    payload,
-  }
-}
-
-export function setTalheres(payload) {
-  return {
-    type: "SET_TALHERES",
-    payload,
-  }
-}
 
 export function setObservation(payload) {
   return {

@@ -8,14 +8,14 @@ use Yii;
  * This is the model class for table "item_ingrediente".
  *
  * @property int $ID
- * @property string $CODIGO
- * @property int $CODVENDA
- * @property string $CODPRODUTO
- * @property string $CODINGREDIENTE
- * @property string $CODITEM
- * @property int $CANCELADO
- * @property string $PAGO
- * @property int $CONSUMO
+ * @property string|null $CODIGO
+ * @property int|null $CODVENDA
+ * @property string|null $CODPRODUTO
+ * @property string|null $CODINGREDIENTE
+ * @property string|null $CODITEM
+ * @property int|null $CANCELADO
+ * @property string|null $PAGO
+ * @property int|null $CONSUMO
  *
  * @property Consumo $cONSUMO
  */
@@ -62,6 +62,8 @@ class Itemingrediente extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[CONSUMO]].
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getCONSUMO()

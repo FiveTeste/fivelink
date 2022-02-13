@@ -90,7 +90,7 @@ class ProductsForm extends HTMLElement {
 
       const isPromocao = isPromotional(product);
       const preco = isPromocao ? product.PRECO_PROMOCAO : product.PRECOVENDA;
-      const imageUrl = product.FOTO ? product.FOTO : "/web/images/new/food.jpg";
+      const imageUrl = product.FOTO ? product.FOTO : "../web/images/new/food.jpg";
 
       const element = document.createElement(ProductItem);
       element.addEventListener("kyosk-click", this.handleSelect.bind(this));

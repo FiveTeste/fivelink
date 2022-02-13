@@ -8,14 +8,14 @@ use Yii;
  * This is the model class for table "item_montado".
  *
  * @property int $ID
- * @property string $PRODUTO
- * @property double $PRECO
- * @property int $CONSUMO
+ * @property string|null $CODPRODUTO
+ * @property float|null $PRECO
+ * @property int|null $CONSUMO
  *
- * @property Consumo $CONSUMO
- *  * @property Consumo $CONSUMO
+ * @property Consumo $cONSUMO
+ * @property Produto $cODPRODUTO
  */
-class ItemMontado extends \yii\db\ActiveRecord
+class Itemmontado extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -32,8 +32,8 @@ class ItemMontado extends \yii\db\ActiveRecord
     {
         return [
             [['PRECO'], 'number'],
-            [['CODPRODUTO'], 'integer'],
             [['CONSUMO'], 'integer'],
+            [['CODPRODUTO'], 'string', 'max' => 6],
             [['CONSUMO'], 'exist', 'skipOnError' => true, 'targetClass' => Consumo::className(), 'targetAttribute' => ['CONSUMO' => 'CODIGO']],
             [['CODPRODUTO'], 'exist', 'skipOnError' => true, 'targetClass' => Produto::className(), 'targetAttribute' => ['CODPRODUTO' => 'CODIGO']],
         ];
@@ -46,13 +46,15 @@ class ItemMontado extends \yii\db\ActiveRecord
     {
         return [
             'ID' => 'ID',
+            'CODPRODUTO' => 'Codproduto',
             'PRECO' => 'Preco',
-            'CODPRODUTO' => 'Produto',
             'CONSUMO' => 'Consumo',
         ];
     }
 
     /**
+     * Gets query for [[CONSUMO]].
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getCONSUMO()
@@ -60,7 +62,9 @@ class ItemMontado extends \yii\db\ActiveRecord
         return $this->hasOne(Consumo::className(), ['CODIGO' => 'CONSUMO']);
     }
 
-        /**
+    /**
+     * Gets query for [[CODPRODUTO]].
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getCODPRODUTO()

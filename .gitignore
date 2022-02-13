@@ -31,3 +31,5 @@ Thumbs.db
 
 #vagrant folder
 # /.vagrant
+/kyoskonline-painel/vendor/
+/nbproject/private/

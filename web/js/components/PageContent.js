@@ -1,6 +1,5 @@
 import { formatMoney } from "../utils/numberFormat.js";
 
-import { closeOrder } from "../utils/closeOrder.js";
 import { api } from "../services/api.js";
 class PageContent extends HTMLElement {
   constructor() {
@@ -53,81 +52,6 @@ class PageContent extends HTMLElement {
 
     const token = response.token;
     return token;
-  }
-
-  showQRReader(event) {
-    const { onResult: onResultCallback } = event.detail;
-
-    const container = document.createElement("div");
-    container.classList.add("modal__container");
-
-    const content = document.createElement("div");
-    content.classList.add("content");
-
-    const button = document.createElement("button");
-    button.textContent = "Cancelar";
-    button.classList.add("button__close");
-    button.addEventListener("click", () => {
-      this.closeModal(container);
-    });
-
-    const onResult = async (result) => {
-      button.remove();
-
-      const url = new URL(result);
-      const mesa = url.searchParams.get("mesa");
-
-      if (mesa == window.nummesa) {
-        content.parentElement.style.removeProperty("width");
-        content.style.cssText = `
-          height: 15rem;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        `;
-        content.innerHTML = `
-          <div class="lds-spinner">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-          </div>
-        `;
-
-        await this.generateToken().then(onResultCallback)
-          .catch(() => {
-            fireEvent("show-modal", { 
-              type: "error",
-              message: "Não foi possível gerar um novo token.",
-            });
-          });
-
-        this.closeModal(container);
-      } else {
-        this.closeModal(container);
-      }
-    }
-
-    const video = document.createElement("qr-reader");
-    video.onResult = onResult;
-    content.appendChild(video);
-
-    container.style.setProperty("width", "fit-content");
-    container.appendChild(content);
-    container.appendChild(button);
-
-    const modal = this.shadowRoot.querySelector(".modal");
-    modal.appendChild(container);
-    modal.style.removeProperty("opacity");
-    modal.style.removeProperty("visibility");
   }
 
   showQuantityPrompt(event) {
@@ -233,17 +157,20 @@ class PageContent extends HTMLElement {
     const modalContainer = this.shadowRoot.querySelector(".modal");
     const container = document.createElement('div');
 
-    const { type, message, onConfirm } = event.detail;
+    const { type, message, onConfirm, onCancel, textConfirm, textCancel } = event.detail;
+
+    const okText = textConfirm ? textConfirm : "OK";
+    const cancelText = textCancel ? textCancel : "Cancelar";
 
     const icons = {
-      success: '<svg-icon src="/web/icons/check-small.svg" style="color: var(--color-primary-text)" />',
-      warning: '<svg-icon src="/web/icons/warning.svg" style="color: var(--color-primary-text)" />',
-      error: '<svg-icon src="/web/icons/error.svg" style="color: var(--color-highlight)" />',
+      success: '<svg-icon src="check-small.svg" style="color: var(--color-primary-text)" />',
+      warning: '<svg-icon src="warning.svg" style="color: var(--color-primary-text)" />',
+      error: '<svg-icon src="error.svg" style="color: var(--color-highlight)" />',
     }
 
     const htmlStr = html`
       <div class="content">
-        <div class="content__icon">${icons[type]}</div>
+        ${type ? `<div class="content__icon">${icons[type]}</div>` : ''}
         <div class="content__message">
           <p>${message}</p>
         </div>
@@ -251,7 +178,7 @@ class PageContent extends HTMLElement {
     `;
 
     const button = document.createElement('button');
-    button.textContent = "Ok";
+    button.textContent = okText;
     button.classList.add("button__close");
     button.addEventListener("click", (...args) => {
       this.closeModal(container);
@@ -261,6 +188,18 @@ class PageContent extends HTMLElement {
     container.classList.add("modal__container");
     container.appendChild(htmlStr);
     container.appendChild(button);
+
+    if (onCancel) {
+      const cancelButton = document.createElement('button');
+      cancelButton.textContent = cancelText;
+      cancelButton.classList.add("button__close");
+      cancelButton.addEventListener("click", (...args) => {
+        this.closeModal(container);
+        onCancel.apply(this, args);
+      });
+
+      container.appendChild(cancelButton);
+    }
 
     modalContainer.appendChild(container);
     modalContainer.style.removeProperty("opacity");
@@ -290,25 +229,14 @@ class PageContent extends HTMLElement {
     Router.go(url);
   }
 
-  loadEndOrderLink(element) {
-    const icon = element.querySelector("svg-icon");
-    icon.style.setProperty("color", "var(--color-primary-text)");
-    element.onclick = closeOrder;
-  }
-
   loadLinks(event) {
     const currentPage = event.detail.location.pathname;
 
     const navContainer = this.shadowRoot.querySelector(".navbar");
     const navLinks = navContainer.querySelectorAll("a");
     navLinks.forEach((link) => {
-      if (link.getAttribute("data-action") === "end-order") {
-        this.loadEndOrderLink(link);
-        return;
-      }
-
       const icon = link.querySelector("svg-icon");
-      if (link.getAttribute("href") === currentPage) {
+      if (link.getAttribute("data-href") === currentPage) {
         icon.style.setProperty("color", "var(--color-highlight)");
       } else {
         icon.style.setProperty("color", "var(--color-primary-text)");
@@ -342,7 +270,6 @@ class PageContent extends HTMLElement {
     window.addEventListener("kyosk-show-modal", this.showModal.bind(this));
     window.addEventListener("kyosk-show-confirm", this.showConfirm.bind(this));
     window.addEventListener("kyosk-quantity-prompt", this.showQuantityPrompt.bind(this));
-    window.addEventListener("kyosk-show-qr-reader", this.showQRReader.bind(this));
     window.addEventListener("resize", this.loadViewHeight.bind(this));
   }
 
@@ -357,7 +284,6 @@ class PageContent extends HTMLElement {
     window.removeEventListener("kyosk-show-modal", this.showModal.bind(this));
     window.removeEventListener("kyosk-show-confirm", this.showConfirm.bind(this));
     window.removeEventListener("kyosk-quantity-prompt", this.showQuantityPrompt.bind(this));
-    window.removeEventListener("kyosk-show-qr-reader", this.showQRReader.bind(this));
     window.removeEventListener("resize", this.loadViewHeight.bind(this));
   }
 }

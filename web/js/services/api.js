@@ -15,11 +15,17 @@ function handleJson(response) {
 }
 
 async function handleErrors(response) {
+  const result = await handleJson(response);
   if (!response.ok) {
-    const result = await handleJson(response);
     throw new FetchError(response.statusText, result);
   }
-  return response;
+
+  const error = result.error;
+  if (error) {
+    throw new FetchError("bad request", { message: error });
+  }
+
+  return result;
 }
 
 export async function api(input, options) {
@@ -34,5 +40,5 @@ export async function api(input, options) {
     }
   }).then(handleErrors);
 
-  return handleJson(response);
+  return response;
 }

@@ -13,8 +13,8 @@ class CardItem extends HTMLElement {
     const group = this.group;
 
     const url = group.TEM_SUBGRUPO 
-      ? `/web/${group.CODIGO}/categorias${location.search}` 
-      : `/web/${group.CODIGO}/produtos${location.search}`;
+      ? `/${group.CODIGO}/categorias${location.search}` 
+      : `/${group.CODIGO}/produtos${location.search}`;
 
     Router.go(url);
   }

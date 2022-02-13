@@ -24,7 +24,9 @@ class AppAsset extends AssetBundle
         'css/white-theme.css',
     ];
     
-    public $js = [];
+    public $js = [
+        
+    ];
 
     public $depends = [];
 }

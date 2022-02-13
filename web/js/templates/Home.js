@@ -26,7 +26,7 @@ class HomeTemplate extends HTMLElement {
   handleNavigate(product) {
     const { CODIGO, CODGRUPO } = product;
 
-    const url = `/web/${CODGRUPO}/produtos/${CODIGO}${location.search}`;
+    const url = `${CODGRUPO}/produtos/${CODIGO}${location.search}`;
     Router.go(url);
   }
 
@@ -40,7 +40,7 @@ class HomeTemplate extends HTMLElement {
       const isPromocao = isPromotional(item);
       const preco = isPromocao ? item.PRECO_PROMOCAO : item.PRECOVENDA;
 
-      const imageUrl = item.FOTO ? item.FOTO : "/web/images/new/food.jpg";
+      const imageUrl = item.FOTO ? item.FOTO : "../web/images/new/food.jpg";
       const imageBackground = `linear-gradient(0deg, rgba(16, 17, 37, 0.5), rgba(16, 17, 37, 0.5)), url(${imageUrl});`
 
       const itemElement = html`

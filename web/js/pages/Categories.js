@@ -19,7 +19,7 @@ class CategoriesPage extends HTMLElement {
     const categoryCode = category.CODIGO;
     const groupCode = this.location.params.code;
 
-    const url = `/web/${groupCode}/categorias/${categoryCode}${location.search}`;
+    const url = `/${groupCode}/categorias/${categoryCode}${location.search}`;
     Router.go(url);
   }
 
@@ -33,7 +33,7 @@ class CategoriesPage extends HTMLElement {
 
     data.forEach((item) => {
       const subGrupoName = item.SUBGRUPO || "";
-      const imageUrl = item.FOTO ? item.FOTO : "/web/images/new/food.jpg";
+      const imageUrl = item.FOTO ? item.FOTO : "../web/images/new/food.jpg";
 
       const element = document.createElement(CategoryItem);
       element.addEventListener("kyosk-click", this.handleClickItem.bind(this));

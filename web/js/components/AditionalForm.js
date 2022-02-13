@@ -87,7 +87,7 @@ class AdicionalForm extends HTMLElement {
 
       const isPromocao = isPromotional(product);
       const preco = isPromocao ? product.PRECO_PROMOCAO : product.PRECOVENDA;
-      const imageUrl = product.FOTO ? product.FOTO : "/web/images/new/food.jpg";
+      const imageUrl = product.FOTO ? product.FOTO : "../web/images/new/food.jpg";
 
       const element = document.createElement(AditionalItem);
       element.addEventListener("kyosk-change", this.handleSelect.bind(this));

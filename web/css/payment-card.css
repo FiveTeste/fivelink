@@ -1,0 +1,88 @@
+.form .form__item {
+  display: block;
+}
+
+.form .form__item span {
+  color: var(--color-gray-dark);
+}
+
+.form__item .input-container {
+  margin-top: 0.5rem;
+}
+
+.form__item .input-container select {
+  width: 100%;
+  height: 3rem;
+}
+
+.button-add-cupom {
+  border: none;
+  background: none;
+  outline: 0;
+  width: 100%;
+  height: 3.5rem;
+  margin-top: 1.5rem;
+  border-top: 0.1rem solid var(--color-gray-soft);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-family: var(--font-poppins);
+  color: var(--color-primary-text);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-add-cupom:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.cupom {
+  display: none;
+  
+}
+
+.cupom .cupom__container {
+  margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border-top: 0.1rem solid var(--color-gray-soft);
+  border-radius: 0.5rem;
+  padding-top: 0.5rem;
+}
+
+.cupom__container .cupom__item {
+  height: 3rem;
+  background: none;
+  border: none;
+  outline: 0;
+  cursor: pointer;
+  font-family: var(--font-poppins);
+  color: var(--color-primary-text);
+  transition: all 0.2s ease;
+}
+
+.cupom__container button.cupom__item:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.cupom__container .cupom__item:not(:last-child) {
+  border-right: 0.1rem solid var(--color-gray-soft);
+}
+
+.cupom .cupom__description {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cupom .cupom__description .cupom__name {
+  margin-right: 0.5rem;
+  font-weight: 500;
+  font-size: 1.4rem;
+}
+
+.cupom .cupom__description .cupom__value {
+  color: var(--color-price);
+  font-weight: 600;
+}

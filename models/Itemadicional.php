@@ -8,11 +8,11 @@ use Yii;
  * This is the model class for table "item_adicional".
  *
  * @property int $ID
- * @property string $CODADICIONAL
- * @property double $QTDE
- * @property double $PRECO
- * @property string $CODITEM
- * @property int $CONSUMO
+ * @property string|null $CODADICIONAL
+ * @property float|null $QTDE
+ * @property float|null $PRECO
+ * @property string|null $CODITEM
+ * @property int|null $CONSUMO
  *
  * @property Consumo $cONSUMO
  */
@@ -55,6 +55,8 @@ class Itemadicional extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[CONSUMO]].
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getCONSUMO()

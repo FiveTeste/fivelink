@@ -1,0 +1,46 @@
+.container .title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+
+  font-weight: 300;
+  font-size: 1.8rem !important;
+  border-bottom: 0.1rem solid var(--color-gray-dark);
+  margin-bottom: 1rem;
+}
+
+.container .contact__item {
+  font-size: 1.45rem;
+}
+
+.container .contact__item:not(.detail__title) {
+  margin-top: 0.5rem;
+}
+
+.container .actions {
+  margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  border-top: 0.1rem solid var(--color-gray-soft);
+  border-radius: 0.5rem;
+  padding-top: 0.5rem;
+}
+
+.actions .action__item {
+  height: 3rem;
+  background: none;
+  border: none;
+  outline: 0;
+  cursor: pointer;
+  font-family: var(--font-poppins);
+  color: var(--color-primary-text);
+  transition: all 0.2s ease;
+}
+
+.actions .action__item:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.actions .action__item:not(:last-child) {
+  border-right: 0.1rem solid var(--color-gray-soft);
+}

@@ -11,8 +11,6 @@ use app\models\LoginForm;
 use app\models\ContactForm;
 use DateTime;
 use Exception;
-use Ramsey\Uuid\Uuid;
-use ReallySimpleJWT\Token;
 use yii\db\ActiveRecord;
 use yii\db\Query;
 use yii\helpers\Json;
@@ -65,46 +63,31 @@ class SiteController extends Controller {
      * @return string
      */
     public function actionIndex() {
-        $mesa = Yii::$app->getRequest()->getQueryParam("mesa");
+        $current_url = Yii::$app->request->url;
+        $current_path = parse_url($current_url, PHP_URL_PATH);
 
-        if (isset($mesa)) {
-            return $this->render('index', [
-                'mesa' => $mesa
-            ]);
-        } else {
-            return $this->render('error');
-        }
-    }
+        if (preg_match("/(\/index.php)$/", $current_path)) {
+            $newUrl = preg_replace("/(\/index.php)$/", "/", $current_path);
 
-    public function actionGeneratetoken() {
-        $req = Yii::$app->request;
-        if ($req->isPost) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
+            $params = Yii::$app->request->getQueryParams();
+            $paramNames = array_keys($params);
 
-            $mesa = $req->getBodyParam('mesa');
-            $token = $req->getBodyParam('token', null);
-    
-            if (isset($token) && !Token::validate($token, "Hello&MikeFooBar123")) {
-                Yii::$app->response->statusCode = 400;
-                return ['message' => 'invalid token'];
+            $paramsUrl = "";
+            $separador = "";
+            foreach ($paramNames as $paramName) {
+                $param = $params[$paramName];
+                $paramsUrl .= $separador."$paramName=$param";
+                $separador = "&";
             }
-    
-            $uuid = Uuid::uuid4();
-            $payload = [
-                'iat' => time(),
-                'uid' => $mesa,
-                'req_uid' => $uuid->toString(),
-            ];
-            $newToken = Token::customPayload($payload, "Hello&MikeFooBar123");
 
-            return ['token' => $newToken];
-        } else {
-            return [];
+            $newUrl .= "?$paramsUrl";
+            return $this->redirect($newUrl);
         }
+        
+        return $this->render("index");
     }
-
     
-        public function actionFoto() {
+    public function actionFoto() {
         $re = Yii::$app->request;
         if ($re->isAjax) {
             $fileName = $_FILES['file']['name'];
@@ -242,6 +225,136 @@ class SiteController extends Controller {
         }
     }
 
+    public function actionBairros() {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $req = Yii::$app->request;
+     
+        if ($req->isAjax) {
+            $bairros = \app\models\Bairros::find()->all();
+
+            return $bairros;
+        } else {
+            echo "aqui";
+            return [];
+        }
+    }
+
+    public function actionCliente() {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $req = Yii::$app->request;
+     
+        if ($req->isAjax) {
+            $telefone = $req->get('telefone');
+            $parsedPhone = preg_replace('/\D/', '', $telefone);
+
+            $model = \app\models\Cliente::findOne(['telefone' => $parsedPhone]);
+            if ($model == null) {
+                return ['error' => 'client not found'];
+            }
+
+            $bairro = \app\models\Bairros::findOne(["id_bairro" => $model->bairro_id]);
+            if ($bairro != null) {
+                $result = json_decode(Json::encode($model), true);
+                $result['bairro'] = $bairro;
+    
+                return $result;
+            }
+
+            return $model;
+        } else {
+            return [];
+        }
+    }
+
+    public function actionSavecliente() {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $req = Yii::$app->request;
+
+        if ($req->isPost) {
+            $cliente = $req->post("cliente");       
+
+            $telefone = $cliente["telefone"];
+            $telefone = preg_replace('/\D/', '', $telefone);
+
+            $model = new \app\models\Cliente();
+            $model->attributes = $cliente;
+            $model->telefone = $telefone;
+            
+            
+            if (!$model->save()) {
+                return ['message' => $model->errors];
+            }
+            
+            $bairro = \app\models\Bairros::findOne(["id_bairro" => $model->bairro_id]);
+            if ($bairro != null) {
+                $result = json_decode(Json::encode($model), true);
+                $result['bairro'] = $bairro;
+    
+                return ['message' => 'sucesso', 'cliente' => $result];
+            }
+
+            return ['message' => 'sucesso', 'cliente' => $model];
+        } else {
+            return [];
+        }
+    }
+
+    public function actionUpdatecliente() {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+
+        $req = Yii::$app->request;
+
+        if ($req->isPost) {
+            $cliente = $req->post("cliente");
+            $cliente_id = $req->post("cliente_id");
+
+            $telefone = $cliente["telefone"];
+            $telefone = preg_replace('/\D/', '', $telefone);
+
+            $model = \app\models\Cliente::findOne(["id" => $cliente_id]);
+            if ($model == null) {
+                return ['error' => 'client not found'];
+            }
+
+            $model->attributes = $cliente;
+            $model->telefone = $telefone;
+            
+            if (!$model->save()) {
+                return ['message' => $model->errors];
+            }
+            
+            $bairro = \app\models\Bairros::findOne(["id_bairro" => $model->bairro_id]);
+            if ($bairro != null) {
+                $result = json_decode(Json::encode($model), true);
+                $result['bairro'] = $bairro;
+    
+                return ['message' => 'sucesso', 'cliente' => $result];
+            }
+
+            return ['message' => 'sucesso', 'cliente' => $model];
+        } else {
+            return [];
+        }
+    }
+
+    public function actionCupom() {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $req = Yii::$app->request;
+
+        if ($req->isAjax) {
+            $cupom = $req->get('cupom');
+            $model = \app\models\Cupom::findOne(["cupom" => $cupom]);
+            if ($model['quantidade_disponivel'] <= $model['quantidade_usada']) {
+                return ['error' => 'expired promotional code'];
+            }
+
+            return $model;
+        } else {
+            return [];
+        }
+    }
+
     public function actionSubgrupo() {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $req = Yii::$app->request;
@@ -277,31 +390,31 @@ class SiteController extends Controller {
             $model = \app\models\Produto::findOne(['CODIGO' => $cod]);
 
             $opcoes = (new Query())
-            ->select("produto.*, produto_ingrediente.CODIGO as ISINGREDIENTE_COD, produto_ingrediente.CODINGREDIENTE as ISINGREDIENTE_CODINGREDIENTE")
-            ->from("produto")
-            ->innerJoin("produto_ingrediente", "produto_ingrediente.CODINGREDIENTE = produto.CODIGO")
-            ->where(["produto_ingrediente.CODPRODUTO" => $cod])
-            ->all();
+                ->select("ingrediente.*, produto_ingrediente.CODIGO as ISINGREDIENTE_COD, produto_ingrediente.CODPRODUTO as ISINGREDIENTE_CODPRODUTO")
+                ->from("ingrediente")
+                ->innerJoin("produto_ingrediente", "produto_ingrediente.CODINGREDIENTE = ingrediente.CODIGO")
+                ->where(["produto_ingrediente.CODPRODUTO" => $cod])
+                ->all();
 
-        $adicionais = (new Query())
-            ->select("produto.*, produto_adicional.CODIGO as ISADICIONAL_COD")
-            ->from("produto")
-            ->innerJoin("produto_adicional", "produto_adicional.PROD_ADICIONAL = produto.CODIGO")
-            ->where(["produto_adicional.CODPRODUTO" => $cod])
-            ->all();
+            $adicionais = (new Query())
+                ->select("produto.*, produto_adicional.CODIGO as ISADICIONAL_COD")
+                ->from("produto")
+                ->innerJoin("produto_adicional", "produto_adicional.PROD_ADICIONAL = produto.CODIGO")
+                ->where(["produto_adicional.CODPRODUTO" => $cod])
+                ->all();
 
 
-        $opcionais = (new Query())
-            ->select("produto.*, produto_opcional.CODIGO as ISOPCIONAL_COD")
-            ->from("produto")
-            ->innerJoin("produto_opcional", "produto_opcional.CODOPCIONAL = produto.CODIGO")
-            ->where(["produto_opcional.CODPRODUTO" => $cod])
-            ->all();
+            $opcionais = (new Query())
+                ->select("produto.*, produto_opcional.CODIGO as ISOPCIONAL_COD")
+                ->from("produto")
+                ->innerJoin("produto_opcional", "produto_opcional.CODOPCIONAL = produto.CODIGO")
+                ->where(["produto_opcional.CODPRODUTO" => $cod])
+                ->all();
 
-            $result = json_decode(Json::encode($model), true);
-            $result['opcoes'] = $opcoes;
-            $result['adicionais'] = $adicionais;
-            $result['opcionais'] = $opcionais;
+                $result = json_decode(Json::encode($model), true);
+                $result['opcoes'] = $opcoes;
+                $result['adicionais'] = $adicionais;
+                $result['opcionais'] = $opcionais;
 
             return $result;
         } else {
@@ -348,9 +461,9 @@ class SiteController extends Controller {
                 $codproduto = $produto['CODIGO'];
 
                 $opcoes = (new Query())
-                    ->select("produto.*, produto_ingrediente.CODIGO as ISINGREDIENTE_COD, produto_ingrediente.CODINGREDIENTE as ISINGREDIENTE_CODINGREDIENTE")
-                    ->from("produto")
-                    ->innerJoin("produto_ingrediente", "produto_ingrediente.CODINGREDIENTE = produto.CODIGO")
+                    ->select("ingrediente.*, produto_ingrediente.CODIGO as ISINGREDIENTE_COD, produto_ingrediente.CODINGREDIENTE as ISINGREDIENTE_CODINGREDIENTE")
+                    ->from("ingrediente")
+                    ->innerJoin("produto_ingrediente", "produto_ingrediente.CODINGREDIENTE = ingrediente.CODIGO")
                     ->where(["produto_ingrediente.CODPRODUTO" => $codproduto])
                     ->all();
 
@@ -414,44 +527,24 @@ class SiteController extends Controller {
         }
     }
 
-    public function actionSalvarpedido($token) {
+    public function actionSalvarpedido() {
         Yii::$app->response->format = Response::FORMAT_JSON;
-
-        $payload = Token::getPayload($token, "Hello&MikeFooBar123");
-        $uid = $payload["req_uid"];
-
-        $existentToken = \app\models\Token::findOne(['uuid' => $uid]);
-        if ($existentToken != null) {
-            Yii::$app->response->statusCode = 400;
-            return ['message' => 'invalid token'];
-        }
-
         $req = Yii::$app->request;
+       
         if ($req->isPost) {
-            $mesa = $req->post('mesa');
-            $consumo_list = $req->post('pedido');
+            $pedido = $req->post('pedido');
+            $consumo_list = $req->post('items');
 
-            $model_mesa = \app\models\Mesa::findOne(['COD_MESA' => $mesa['COD_MESA']]);
-            if ($model_mesa != null) {
-                if ($model_mesa["SITUACAO"] !== 0) {
-                    Yii::$app->response->statusCode = 400;
-                    return ['message' => 'order closed'];
-                }
-
-                $model_mesa->attributes = $mesa;
-                $model_mesa->update();
-            } else {
-                $model_mesa = new \app\models\Mesa();
-                $model_mesa->attributes = $mesa;
-                $model_mesa->save();
-            }
-
+            $model_pedido = new \app\models\Pedido();
+            $model_pedido->attributes = $pedido;
+            $model_pedido->save();
             
             foreach ($consumo_list as $consumo) {
-                $consumo_model = \app\models\Consumo::findOne(['DISPOSITIVO' => $consumo['DISPOSITIVO']]);
+                $consumo_model = \app\models\ConsumoDelivery::findOne(['DISPOSITIVO' => $consumo['DISPOSITIVO']]);
                 if ($consumo_model == null) {
-                    $consumo_model = new \app\models\Consumo();
+                    $consumo_model = new \app\models\ConsumoDelivery();
                     $consumo_model->attributes = $consumo;
+                    $consumo_model["COD_PEDIDO"] = $model_pedido["ID"];
                     
                     if (!$consumo_model->save()) {
                         return ['message' => $consumo_model->errors];
@@ -461,9 +554,9 @@ class SiteController extends Controller {
                     if (isset($consumo['LISTA_ADICIONAIS'])) {
                         $adicionais = $consumo['LISTA_ADICIONAIS'];
                         foreach ($adicionais as $ad) {
-                            $adicional = new \app\models\Itemadicional();
+                            $adicional = new \app\models\ItemAdicionalDelivery();
                             $adicional->attributes = $ad;
-                            $adicional->CONSUMO = $consumo_model->CODIGO;
+                            $adicional->CONSUMODELIVERY = $consumo_model->CODIGO;
                             $adicional->save();
                         }
                     }
@@ -472,9 +565,9 @@ class SiteController extends Controller {
                     if (isset($consumo['LISTA_OPCIONAIS'])) {
                         $opcionais = $consumo['LISTA_OPCIONAIS'];
                         foreach ($opcionais as $op) {
-                            $opcional = new \app\models\Itemopcional();
+                            $opcional = new \app\models\ItemOpcionalDelivery();
                             $opcional->attributes = $op;
-                            $opcional->CONSUMO = $consumo_model->CODIGO;
+                            $opcional->CONSUMODELIVERY = $consumo_model->CODIGO;
                             $opcional->save();
                         }
                     }
@@ -483,9 +576,9 @@ class SiteController extends Controller {
                     if (isset($consumo['LISTA_OPCOES'])) {
                         $opcoes = $consumo['LISTA_OPCOES'];
                         foreach ($opcoes as $op) {
-                            $opcao = new \app\models\Itemingrediente();
+                            $opcao = new \app\models\ItemIngredienteDelivery();
                             $opcao->attributes = $op;
-                            $opcao->CONSUMO = $consumo_model->CODIGO;
+                            $opcao->CONSUMODELIVERY = $consumo_model->CODIGO;
                             $opcao->save();
                         }
                     }
@@ -494,57 +587,22 @@ class SiteController extends Controller {
                     if (isset($consumo['LISTA_MONTAGEM'])) {
                         $montagem = $consumo['LISTA_MONTAGEM'];
                         foreach ($montagem as $item) {
-                            $montado = new \app\models\ItemMontado();
+                            $montado = new \app\models\ItemMontadoDelivery();
                             $montado->attributes = $item;
-                            $montado->CONSUMO = $consumo_model->CODIGO;
+                            $montado->CONSUMODELIVERY = $consumo_model->CODIGO;
                             $montado->save();
                         }
                     }
                 }
             }
 
-            $tokenreg = new \app\models\Token();
-            $tokenreg->uuid = $uid;
-            $tokenreg->save();
+            if ($model_pedido["COD_CUPOM"] != null) {
+                $model_cupom = \app\models\Cupom::findOne(['codigo' => $model_pedido["COD_CUPOM"]]);
+                $qtde_utilizado = $model_cupom['quantidade_usada'];
+                $model_cupom->quantidade_usada = $qtde_utilizado + 1;
 
-            return ['message' => 'sucesso'];
-        } else {
-            return [];
-        }
-    }
-
-    public function actionFecharmesa() {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-        
-        $req = Yii::$app->request;
-        if ($req->isPost) {
-            $token = $req->post('token');
-            $quantidade = $req->post('quantidade');
-
-            $payload = Token::getPayload($token, "Hello&MikeFooBar123");
-            $uid = $payload["req_uid"];
-            $mesa = $payload["uid"];
-
-            $existentToken = \app\models\Token::findOne(['uuid' => $uid]);
-            if ($existentToken != null) {
-                Yii::$app->response->statusCode = 400;
-                return ['message' => 'invalid token'];
+                $model_cupom->save();
             }
-
-            $model_mesa = \app\models\Mesa::findOne(['COD_MESA' => $mesa, 'SITUACAO' => 0]);
-            if (isset($model_mesa)) {
-                $model_mesa->QUANT_DIVIDIR_CONTA = $quantidade;
-                $model_mesa->SITUACAO = 1;
-                $model_mesa->update();
-
-                $tokenreg = new \app\models\Token();
-                $tokenreg->uuid = $uid;
-                $tokenreg->save();
-            } else {
-                Yii::$app->response->statusCode = 400;
-                return ['message' => 'mesa nao encontrada'];
-            }
-
 
             return ['message' => 'sucesso'];
         } else {

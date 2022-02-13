@@ -1,17 +1,13 @@
 import { name as PontoCarne } from "../components/PontoCarne.js";
-import { name as UsaCopos } from "../components/UsaCopos.js";
-import { name as FormTalheres } from "../components/FormTalheres.js";
 import { name as ObservationForm } from "../components/ObservationForm.js";
 import { name as FormQuantity } from "../components/FormQuantity.js";
 import { name as ProductsForm } from "../components/ProductsForm.js";
-import { name as AditionalForm } from "../components/AditionalForm.js";
 import { name as OpcionaisForm } from "../components/OpcionaisForm.js";
+import { name as OpcoesForm } from "../components/OpcoesForm.js";
 
 import {
   addItem,
-  setPontoCarne, 
-  setCopos,
-  setTalheres,
+  setPontoCarne,
   setObservation,
   setQuantity,
   setProducts,
@@ -71,9 +67,9 @@ export const createProductsDetail = (state) => {
 
   if (opcoes && opcoes.length > 0) {
     const str = opcoes.reduce((acc, item, index) => {
-      if (index > 0) return `${acc}, ${item.PRODUTO}`;
+      if (index > 0) return `${acc}, ${item.NOME}`;
 
-      return `${item.PRODUTO}`;
+      return `${item.NOME}`;
     }, "");
 
     finalStr = `${finalStr}<br />Opções: ${str}`;
@@ -84,32 +80,10 @@ export const createProductsDetail = (state) => {
 
 export const createDetail = (state) => {
   const carneStr = state.ponto_carne ? `${state.ponto_carne}`: '';
-  const talheresStr = state.talheres ? `Talheres/Pratos: ${state.talheres}` : '';
-
-  const coposStr = (() => {
-    let resultStr = "";
-    if (state.copo > 0) {
-      resultStr = `Copo: ${state.copo}`;
-    }
-    if (state.copo_gelo > 0) {
-      resultStr = `${resultStr}, Copo com gelo: ${state.copo_gelo}`;
-    }
-    if (state.copo_gelo_limao > 0) {
-      resultStr = `${resultStr}, Copo com gelo e limão: ${state.copo_gelo_limao}`;
-    }
-
-    return resultStr;
-  })();
 
   let detail = "";
   if (carneStr !== "") {
     detail = carneStr;
-  }
-  if (coposStr !== "") {
-    detail = `${detail}\n${coposStr}`;
-  }
-  if (talheresStr !== "") {
-    detail = `${detail}\n${talheresStr}`;
   }
 
   return detail.replace(/\r?\n|\r/g, '. ');
@@ -127,9 +101,7 @@ export const getProductsConfig = (productList, category) => {
 
   const defaultOptions = {
     PRODUTOS: hasProducts,
-    USA_PONTO_CARNE: 0,
-    USA_COPOS: 0,
-    USA_TALHERES: 0,
+    USA_PONTO_CARNE: 0
   };
 
   return productList.reduce((acc, item) => {
@@ -172,12 +144,6 @@ export const getProductsConfig = (productList, category) => {
     if (item.USA_PONTO_CARNE === 1) {
       opts.USA_PONTO_CARNE = 1;
     }
-    if (item.USA_COPOS === 1) {
-      opts.USA_COPOS = 1;
-    }
-    if (item.USA_TALHERES === 1) {
-      opts.USA_TALHERES = 1;
-    }
 
     return {...opts};
   }, defaultOptions);
@@ -204,22 +170,13 @@ export const createForms = () => {
   opcionaisForm.storeKey = "optional";
   opcionaisForm.addEventListener("kyosk-change", dispatchStore(setOptional));
 
-  const opcoesForm = document.createElement(OpcionaisForm);
+  const opcoesForm = document.createElement(OpcoesForm);
   opcoesForm.storeKey = "opcoes";
   opcoesForm.titleText = "Opções";
   opcoesForm.addEventListener("kyosk-change", dispatchStore(setOpcoes));
 
   const pontoCarneForm = document.createElement(PontoCarne);
   pontoCarneForm.addEventListener("kyosk-change", dispatchStore(setPontoCarne));
-
-  const usaCoposForm = document.createElement(UsaCopos);
-  usaCoposForm.addEventListener("kyosk-change", (event) => {
-    const { name, value } = event.detail;
-    orderStore.dispatchAction(setCopos({ name, value }));
-  });
-
-  const usaTalheresForm = document.createElement(FormTalheres);
-  usaTalheresForm.addEventListener("kyosk-change", dispatchStore(setTalheres));
   
   const observationForm = document.createElement(ObservationForm);
   observationForm.addEventListener("kyosk-change", dispatchStore(setObservation));
@@ -233,8 +190,8 @@ export const createForms = () => {
   forms.set("additional", { index: 2, element: adicionalForm });
   forms.set("opcoes", { index: 3, element: opcoesForm });
   forms.set("ponto-carne", { index: 4, element: pontoCarneForm });
-  forms.set("usa-copos", { index: 5, element: usaCoposForm });
-  forms.set("usa-talheres", { index: 6, element: usaTalheresForm });
+  // forms.set("usa-copos", { index: 5, element: usaCoposForm });
+  // forms.set("usa-talheres", { index: 6, element: usaTalheresForm });
   forms.set("observation", { index: 7, element: observationForm });
   forms.set("quantity", { index: 8, element: quantityForm });
 
@@ -254,14 +211,6 @@ export const getSliderForms = (options, forms) => {
   }
   if (options.USA_PONTO_CARNE === 1) {
     const form = forms.get("ponto-carne");
-    resultForms.push(form);
-  }
-  if (options.USA_COPOS === 1) {
-    const form = forms.get("usa-copos");
-    resultForms.push(form);
-  }
-  if (options.USA_TALHERES === 1) {
-    const form = forms.get("usa-talheres");
     resultForms.push(form);
   }
 
@@ -338,12 +287,12 @@ export const finishOrder = ({ product, unitPrice, category }) => {
     cancelText: "Ir para o carrinho",
     onConfirm: () => {
       orderStore.dispatchAction(clearOrder());
-      const url = `/web/${window.location.search}`;
+      const url = `/${window.location.search}`;
       Router.go(url);
     }, 
     onCancel: () => {
       orderStore.dispatchAction(clearOrder());
-      const url = `/web/carrinho${window.location.search}`;
+      const url = `/carrinho${window.location.search}`;
       Router.go(url);
     }
   });

@@ -21,7 +21,8 @@ class SvgIcon extends HTMLElement {
   }
 
   async fetchIcon(src) {
-    const response = await fetch(src);
+    const finalUrl = `${window.baseUrl}/icons/${src}`;
+    const response = await fetch(finalUrl);
     const svgStr = await response.text();
 
     const existent = Array.from(this.shadowRoot.children);

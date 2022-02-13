@@ -36,6 +36,7 @@ use Yii;
  * @property ItemAdicional[] $itemAdicionals
  * @property ItemIngrediente[] $itemIngredientes
  * @property ItemMontado[] $itemMontados
+ * @property ItemOpcional[] $itemOpcionals
  */
 class Consumo extends \yii\db\ActiveRecord
 {
@@ -101,7 +102,6 @@ class Consumo extends \yii\db\ActiveRecord
         ];
     }
 
-
     /**
      * Gets query for [[CODMESA]].
      *
@@ -150,5 +150,15 @@ class Consumo extends \yii\db\ActiveRecord
     public function getItemMontados()
     {
         return $this->hasMany(ItemMontado::className(), ['CONSUMO' => 'CODIGO']);
+    }
+
+    /**
+     * Gets query for [[ItemOpcionals]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getItemOpcionals()
+    {
+        return $this->hasMany(ItemOpcional::className(), ['CONSUMO' => 'CODIGO']);
     }
 }

@@ -3,10 +3,14 @@ import { name as productsPage } from "./pages/Products.js";
 import { name as categoriesPage } from "./pages/Categories.js";
 import { name as productPage } from "./pages/Product.js";
 import { name as cartPage } from "./pages/Cart.js";
+import { name as registerPage } from "./pages/Register.js";
+import { name as updatePage } from "./pages/Update.js";
+import { name as finishPage } from "./pages/Finish.js";
 
+const base = `${window.baseUrl}/`;
 
 const routerSlot = document.querySelector("page-content");
-const router = new Router(routerSlot, { baseUrl: "/web/" });
+const router = new Router(routerSlot, { baseUrl: base });
 
 const originalResolver = router.__resolveRoute;
 router.__resolveRoute = function(...args) {
@@ -19,6 +23,14 @@ router.__resolveRoute = function(...args) {
       resolve(result);
     }).catch(reject);
   });
+}
+
+const originalRouterGo = window.Router.go;
+window.Router.go = function(url) {
+  const targetUrl = new URL(`${window.location.origin}${url}`);
+  const pathname = targetUrl.pathname;
+  const newUrl = pathname === "/" ? base : `${window.baseUrl}${url}`;
+  return originalRouterGo.apply(this, [newUrl]);
 }
 
 router.setRoutes([
@@ -57,6 +69,18 @@ router.setRoutes([
         component: productPage,
       }
     ]
+  },
+  {
+    path: "/cadastro",
+    component: registerPage,
+  },
+  {
+    path: "/atualizar-cadastro",
+    component: updatePage,
+  },
+  {
+    path: "/finish",
+    component: finishPage,
   }
 ]);
 

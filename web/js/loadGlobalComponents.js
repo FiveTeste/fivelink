@@ -1,4 +1,9 @@
 import "./components/SvgIcon.js";
 import "./components/QuantitySelector.js";
 import "./components/PageContent.js";
-import "./components/QRReader.js";
+import "./components/Prompt.js";
+import "./components/Loader.js";
+import "./components/ClientCard.js";
+import "./components/ShippingCard.js";
+import "./components/PaymentCard.js";
+import "./components/OrderSummary.js";

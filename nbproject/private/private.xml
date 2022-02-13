@@ -3,12 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/laragon/www/kyoskonline/views/site/index.php</file>
-            <file>file:/C:/laragon/www/kyoskonline/models/GrupoGen.php</file>
-            <file>file:/C:/laragon/www/kyoskonline/models/Grupo.php</file>
-            <file>file:/C:/laragon/www/kyoskonline/web/js/app.js</file>
-            <file>file:/C:/laragon/www/kyoskonline/controllers/SiteController.php</file>
-            <file>file:/C:/laragon/www/kyoskonline/assets/AppAsset.php</file>
+            <file>file:/C:/xampp/htdocs/kyoskonline/controllers/SiteController.php</file>
+            <file>file:/C:/xampp/htdocs/kyoskonline/models/Consumo.php</file>
+            <file>file:/C:/xampp/htdocs/kyoskonline/modules/api/controllers/ServiceController.php</file>
+            <file>file:/C:/xampp/htdocs/kyoskonline/modules/api/controllers/PedidoController.php</file>
         </group>
     </open-files>
 </project-private>

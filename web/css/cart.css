@@ -1,5 +1,6 @@
 .content {
   padding: 0 1rem;
+  font-family: var(--font-poppins);
 }
 
 .content .content__button {
@@ -22,6 +23,7 @@
 
 .content .content__button::before {
   position: absolute;
+  border-radius: 0.5rem;
   content: "";
   top: 0;
   right: 0;
@@ -32,7 +34,6 @@
   transition: opacity 0.3s linear;
   opacity: 0;
 }
-
 
 
 .content .content__button:hover::before {
