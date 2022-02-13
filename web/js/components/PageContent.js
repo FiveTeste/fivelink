@@ -245,8 +245,11 @@ class PageContent extends HTMLElement {
   }
 
   loadViewHeight() {
+    const body = document.querySelector("body");
+
     const height = window.innerHeight;
     this.style.setProperty("--v-height", `${height}px`);
+    body.style.setProperty("height", `${height}px`);
   }
 
   updatedCart(value) {
