@@ -472,6 +472,8 @@ class SiteController extends Controller
                         'CODPRODUTO' => $produtoCombo->CODPRODUTO,
                         'VALOR' => $produtoCombo->VALOR,
                         'QTDE' => $produtoCombo->QTDE,
+                        'PRODUTO' => $produtoDetalhes->PRODUTO ?? null, 
+                        'DESCRICAO' => $produtoDetalhes->ACOMPANHAMENTO ?? null, 
                     ];
                 }
             }
