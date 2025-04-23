@@ -13,12 +13,14 @@ use app\validators\PromotionalValidator;
 use yii\db\Query;
 use yii\helpers\Json;
 
-class SiteController extends Controller {
+class SiteController extends Controller
+{
 
     /**
      * {@inheritdoc}
      */
-    public function behaviors() {
+    public function behaviors()
+    {
         return [
             'access' => [
                 'class' => AccessControl::className(),
@@ -43,7 +45,8 @@ class SiteController extends Controller {
     /**
      * {@inheritdoc}
      */
-    public function actions() {
+    public function actions()
+    {
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
@@ -60,7 +63,8 @@ class SiteController extends Controller {
      *
      * @return string
      */
-    public function actionIndex() {
+    public function actionIndex()
+    {
         $current_url = Yii::$app->request->url;
         $current_path = parse_url($current_url, PHP_URL_PATH);
 
@@ -85,12 +89,13 @@ class SiteController extends Controller {
         $empresa = \app\models\Empresa::find()->one();
 
         return $this->render("index", [
-                    'painelUrl' => Yii::$app->params['painelUrl'],
-                    'empresa' => $empresa
+            'painelUrl' => Yii::$app->params['painelUrl'],
+            'empresa' => $empresa
         ]);
     }
 
-    public function actionFoto() {
+    public function actionFoto()
+    {
         $re = Yii::$app->request;
         if ($re->isAjax) {
             $fileName = $_FILES['file']['name'];
@@ -133,7 +138,8 @@ class SiteController extends Controller {
                     case UPLOAD_ERR_EXTENSION:
                         $message = 'Error: arquivo não carregado completamente.';
                         break;
-                    default: $message = 'Error: arquivo não carregado completamente.';
+                    default:
+                        $message = 'Error: arquivo não carregado completamente.';
                         break;
                 }
                 echo json_encode(array(
@@ -151,7 +157,8 @@ class SiteController extends Controller {
      *
      * @return Response|string
      */
-    public function actionLogin() {
+    public function actionLogin()
+    {
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -163,7 +170,7 @@ class SiteController extends Controller {
 
         $model->password = '';
         return $this->render('login', [
-                    'model' => $model,
+            'model' => $model,
         ]);
     }
 
@@ -172,7 +179,8 @@ class SiteController extends Controller {
      *
      * @return Response
      */
-    public function actionLogout() {
+    public function actionLogout()
+    {
         Yii::$app->user->logout();
 
         return $this->goHome();
@@ -183,7 +191,8 @@ class SiteController extends Controller {
      *
      * @return Response|string
      */
-    public function actionContact() {
+    public function actionContact()
+    {
         $model = new ContactForm();
         if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
             Yii::$app->session->setFlash('contactFormSubmitted');
@@ -191,7 +200,7 @@ class SiteController extends Controller {
             return $this->refresh();
         }
         return $this->render('contact', [
-                    'model' => $model,
+            'model' => $model,
         ]);
     }
 
@@ -200,12 +209,14 @@ class SiteController extends Controller {
      *
      * @return string
      */
-    public function actionAbout() {
+    public function actionAbout()
+    {
         return $this->render('about');
     }
 
     /**         FUNCOES DO APLICATIVO           * */
-    public function actionGrupo() {
+    public function actionGrupo()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $req = Yii::$app->request;
 
@@ -228,7 +239,8 @@ class SiteController extends Controller {
         }
     }
 
-    public function actionBairros() {
+    public function actionBairros()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $req = Yii::$app->request;
 
@@ -241,7 +253,8 @@ class SiteController extends Controller {
         }
     }
 
-    public function actionCliente() {
+    public function actionCliente()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $req = Yii::$app->request;
 
@@ -268,7 +281,8 @@ class SiteController extends Controller {
         }
     }
 
-    public function actionSavecliente() {
+    public function actionSavecliente()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
         $req = Yii::$app->request;
@@ -302,7 +316,8 @@ class SiteController extends Controller {
         }
     }
 
-    public function actionUpdatecliente() {
+    public function actionUpdatecliente()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
 
         $req = Yii::$app->request;
@@ -340,7 +355,8 @@ class SiteController extends Controller {
         }
     }
 
-    public function actionCupom() {
+    public function actionCupom()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $req = Yii::$app->request;
 
@@ -357,7 +373,8 @@ class SiteController extends Controller {
         }
     }
 
-    public function actionSubgrupo() {
+    public function actionSubgrupo()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $req = Yii::$app->request;
 
@@ -370,7 +387,8 @@ class SiteController extends Controller {
         }
     }
 
-    public function actionGetsubgrupo() {
+    public function actionGetsubgrupo()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $req = Yii::$app->request;
 
@@ -383,7 +401,8 @@ class SiteController extends Controller {
         }
     }
 
-    public function actionProduto() {
+    public function actionProduto()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $req = Yii::$app->request;
 
@@ -392,26 +411,26 @@ class SiteController extends Controller {
             $model = \app\models\Produto::findOne(['CODIGO' => $cod]);
 
             $opcoes = (new Query())
-                    ->select("ingrediente.*, produto_ingrediente.CODIGO as ISINGREDIENTE_COD, produto_ingrediente.CODPRODUTO as ISINGREDIENTE_CODPRODUTO")
-                    ->from("ingrediente")
-                    ->innerJoin("produto_ingrediente", "produto_ingrediente.CODINGREDIENTE = ingrediente.CODIGO")
-                    ->where(["produto_ingrediente.CODPRODUTO" => $cod])
-                    ->all();
+                ->select("ingrediente.*, produto_ingrediente.CODIGO as ISINGREDIENTE_COD, produto_ingrediente.CODPRODUTO as ISINGREDIENTE_CODPRODUTO")
+                ->from("ingrediente")
+                ->innerJoin("produto_ingrediente", "produto_ingrediente.CODINGREDIENTE = ingrediente.CODIGO")
+                ->where(["produto_ingrediente.CODPRODUTO" => $cod])
+                ->all();
 
             $adicionais = (new Query())
-                    ->select("produto.*, produto_adicional.CODIGO as ISADICIONAL_COD")
-                    ->from("produto")
-                    ->innerJoin("produto_adicional", "produto_adicional.PROD_ADICIONAL = produto.CODIGO")
-                    ->where(["produto_adicional.CODPRODUTO" => $cod])
-                    ->all();
+                ->select("produto.*, produto_adicional.CODIGO as ISADICIONAL_COD")
+                ->from("produto")
+                ->innerJoin("produto_adicional", "produto_adicional.PROD_ADICIONAL = produto.CODIGO")
+                ->where(["produto_adicional.CODPRODUTO" => $cod])
+                ->all();
 
 
             $opcionais = (new Query())
-                    ->select("produto.*, produto_opcional.CODIGO as ISOPCIONAL_COD")
-                    ->from("produto")
-                    ->innerJoin("produto_opcional", "produto_opcional.CODOPCIONAL = produto.CODIGO")
-                    ->where(["produto_opcional.CODPRODUTO" => $cod])
-                    ->all();
+                ->select("produto.*, produto_opcional.CODIGO as ISOPCIONAL_COD")
+                ->from("produto")
+                ->innerJoin("produto_opcional", "produto_opcional.CODOPCIONAL = produto.CODIGO")
+                ->where(["produto_opcional.CODPRODUTO" => $cod])
+                ->all();
 
             $adicionaisResponse = array();
             foreach ($adicionais as $adicional) {
@@ -431,12 +450,53 @@ class SiteController extends Controller {
                 array_push($opcionaisResponse, $opcionalResult);
             }
 
+            $combos = \app\models\Combo::find()
+            ->where(['CODPRODUTO' => $cod])
+            ->orderBy(['ORDEM' => SORT_ASC])
+            ->all();
+
+            $response = [];
+            foreach ($combos as $combo) {
+                $produtosCombo = \app\models\ComboProdutos::find()
+                ->With('produto')
+                ->where(['COMBO_ID' => $combo->ID])
+                ->all();
+
+            $produtos = [];
+            foreach ($produtosCombo as $produtoCombo) {
+                $produtoDetalhes = \app\models\Produto::findOne(['CODIGO' => $produtoCombo->CODPRODUTO]);
+                if ($produtoDetalhes) {
+                    $produtos[] = [
+                        'ID' => $produtoCombo->ID,
+                        'COMBO_ID' => $produtoCombo->COMBO_ID,
+                        'CODPRODUTO' => $produtoCombo->CODPRODUTO,
+                        'VALOR' => $produtoCombo->VALOR,
+                        'QTDE' => $produtoCombo->QTDE,
+                    ];
+                }
+            }
+
+            $response[] = [
+                'combo' => [
+                    'ID' => $combo->ID,
+                    'DESCRICAO' => $combo->DESCRICAO,
+                    'QTDE_MAX' => $combo->QTDE_MAX,
+                    'ORDEM' => $combo->ORDEM,
+                    'CODPRODUTO' => $combo->CODPRODUTO,
+                    'OBRIGATORIO' => $combo->OBRIGATORIO,
+                    'VALOR_BASE' => $combo->VALOR_BASE,
+                ],
+                'produtos' => $produtos,
+            ];
+            }
+
             $validator = new PromotionalValidator($model);
 
             $result = json_decode(Json::encode($model), true);
             $result['opcoes'] = $opcoes;
             $result['adicionais'] = $adicionaisResponse;
             $result['opcionais'] = $opcionaisResponse;
+            $result['combos'] = $response;
             $result['isPromotional'] = $validator->isPromotional();
 
             return $result;
@@ -445,7 +505,8 @@ class SiteController extends Controller {
         }
     }
 
-    public function actionDestaques() {
+    public function actionDestaques()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $req = Yii::$app->request;
 
@@ -468,14 +529,15 @@ class SiteController extends Controller {
         }
     }
 
-    public function actionProdutobygrupo() {
+    public function actionProdutobygrupo()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $req = Yii::$app->request;
 
         if ($req->isGet) {
             $grupo = $req->get('codgrupo');
             //$model = \app\models\Produto::findAll(['APP_DELIVERY' => 1, 'CODGRUPO' => $grupo, 'SITUACAO' => 0]);
-            $model = \app\models\Produto::findBySql("select * from produto p where p.SITUACAO = 0 and p.APP_DELIVERY = 1 and p.CODGRUPO = '".$grupo."' order by p.PRODUTO")->all();
+            $model = \app\models\Produto::findBySql("select * from produto p where p.SITUACAO = 0 and p.APP_DELIVERY = 1 and p.CODGRUPO = '" . $grupo . "' order by p.PRODUTO")->all();
 
             $response = array();
             foreach ($model as $produto) {
@@ -483,12 +545,6 @@ class SiteController extends Controller {
 
                 $result = json_decode(Json::encode($produto), true);
                 $result['isPromotional'] = $validator->isPromotional();
-
-                // Verifica se o produto é um combo
-                if ($produto->PRODUTO_COMBO == 1) {
-                    $combos = \app\models\Combo::getCombosByCodigoProduto($produto->CODIGO);
-                    $result['combos'] = $combos;
-                }
 
                 array_push($response, $result);
             }
@@ -498,7 +554,8 @@ class SiteController extends Controller {
         }
     }
 
-    public function actionProdutobysubgrupo() {
+    public function actionProdutobysubgrupo()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $req = Yii::$app->request;
 
@@ -516,26 +573,26 @@ class SiteController extends Controller {
                 $codproduto = $produto['CODIGO'];
 
                 $opcoes = (new Query())
-                        ->select("ingrediente.*, produto_ingrediente.CODIGO as ISINGREDIENTE_COD, produto_ingrediente.CODINGREDIENTE as ISINGREDIENTE_CODINGREDIENTE")
-                        ->from("ingrediente")
-                        ->innerJoin("produto_ingrediente", "produto_ingrediente.CODINGREDIENTE = ingrediente.CODIGO")
-                        ->where(["produto_ingrediente.CODPRODUTO" => $codproduto])
-                        ->all();
+                    ->select("ingrediente.*, produto_ingrediente.CODIGO as ISINGREDIENTE_COD, produto_ingrediente.CODINGREDIENTE as ISINGREDIENTE_CODINGREDIENTE")
+                    ->from("ingrediente")
+                    ->innerJoin("produto_ingrediente", "produto_ingrediente.CODINGREDIENTE = ingrediente.CODIGO")
+                    ->where(["produto_ingrediente.CODPRODUTO" => $codproduto])
+                    ->all();
 
                 $adicionais = (new Query())
-                        ->select("produto.*, produto_adicional.CODIGO as ISADICIONAL_COD")
-                        ->from("produto")
-                        ->innerJoin("produto_adicional", "produto_adicional.PROD_ADICIONAL = produto.CODIGO")
-                        ->where(["produto_adicional.CODPRODUTO" => $codproduto])
-                        ->all();
+                    ->select("produto.*, produto_adicional.CODIGO as ISADICIONAL_COD")
+                    ->from("produto")
+                    ->innerJoin("produto_adicional", "produto_adicional.PROD_ADICIONAL = produto.CODIGO")
+                    ->where(["produto_adicional.CODPRODUTO" => $codproduto])
+                    ->all();
 
 
                 $opcionais = (new Query())
-                        ->select("produto.*, produto_opcional.CODIGO as ISOPCIONAL_COD")
-                        ->from("produto")
-                        ->innerJoin("produto_opcional", "produto_opcional.CODOPCIONAL = produto.CODIGO")
-                        ->where(["produto_opcional.CODPRODUTO" => $codproduto])
-                        ->all();
+                    ->select("produto.*, produto_opcional.CODIGO as ISOPCIONAL_COD")
+                    ->from("produto")
+                    ->innerJoin("produto_opcional", "produto_opcional.CODOPCIONAL = produto.CODIGO")
+                    ->where(["produto_opcional.CODPRODUTO" => $codproduto])
+                    ->all();
 
                 $adicionaisResponse = array();
                 foreach ($adicionais as $adicional) {
@@ -569,39 +626,42 @@ class SiteController extends Controller {
         }
     }
 
-    public function actionOpcionalbyproduto() {
+    public function actionOpcionalbyproduto()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $req = Yii::$app->request;
 
         if ($req->isAjax) {
             $codproduto = $req->get('codproduto');
             $model = \app\models\Ingrediente::find()
-                    ->innerJoin("produto_ingrediente", "produto_ingrediente.CODINGREDIENTE = ingrediente.CODIGO ")
-                    ->andWhere(["produto_ingrediente.CODPRODUTO" => $codproduto])
-                    ->all();
+                ->innerJoin("produto_ingrediente", "produto_ingrediente.CODINGREDIENTE = ingrediente.CODIGO ")
+                ->andWhere(["produto_ingrediente.CODPRODUTO" => $codproduto])
+                ->all();
             return $model;
         } else {
             return [];
         }
     }
 
-    public function actionAdicionalbyproduto() {
+    public function actionAdicionalbyproduto()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $req = Yii::$app->request;
 
         if ($req->isAjax) {
             $codproduto = $req->get('codproduto');
             $model = \app\models\Produto::find()
-                    ->innerJoin("produto_adicional", "produto_adicional.PROD_ADICIONAL = produto.CODIGO ")
-                    ->andWhere(["produto_adicional.CODPRODUTO" => $codproduto])
-                    ->all();
+                ->innerJoin("produto_adicional", "produto_adicional.PROD_ADICIONAL = produto.CODIGO ")
+                ->andWhere(["produto_adicional.CODPRODUTO" => $codproduto])
+                ->all();
             return $model;
         } else {
             return [];
         }
     }
 
-    public function actionSalvarpedido() {
+    public function actionSalvarpedido()
+    {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $req = Yii::$app->request;
 
@@ -648,13 +708,13 @@ class SiteController extends Controller {
                             $opcional = new \app\models\Itemopcionaldelivery();
                             $opcional->attributes = $opc;
                             $opcional->CONSUMODELIVERY = $consumo_model->CODIGO;
-                            $opcional->save();                            
+                            $opcional->save();
                         }
                     }
 
                     // inserir opcoes
                     if (isset($consumo['LISTA_OPCOES'])) {
-                        $opcoes = $consumo['LISTA_OPCOES'];                         
+                        $opcoes = $consumo['LISTA_OPCOES'];
                         foreach ($opcoes as $op) {
                             $opcao = new \app\models\Itemingredientedelivery();
                             $opcao->attributes = $op;
@@ -683,7 +743,7 @@ class SiteController extends Controller {
 
                 $model_cupom->save();
             }
-            
+
             $model_pedido->STATUS = "PENDENTE";
             $model_pedido->update();
 
@@ -692,63 +752,4 @@ class SiteController extends Controller {
             return [];
         }
     }
-
-
-
-    public function actionCombos($codgrupo, $codproduto) {
-        Yii::$app->response->format = Response::FORMAT_JSON;
-    
-        $produto = \app\models\Produto::findOne(['CODIGO' => $codproduto, 'CODGRUPO' => $codgrupo]);
-    
-        if (!$produto) {
-            return [
-                'error' => 'Produto não encontrado.',
-            ];
-        }
-    
-        $combos = \app\models\Combo::find()
-            ->where(['CODPRODUTO' => $codproduto])
-            ->orderBy(['ORDEM' => SORT_ASC])
-            ->all();
-    
-        $response = [];
-    
-        foreach ($combos as $combo) {
-
-            $produtosCombo = \app\models\ComboProdutos::find()
-            ->With('produto')
-            ->where(['COMBO_ID' => $combo->ID])
-            ->all();
-    
-            $produtos = [];
-            foreach ($produtosCombo as $produtoCombo) {
-                $produtoDetalhes = \app\models\Produto::findOne(['CODIGO' => $produtoCombo->CODPRODUTO]);
-                if ($produtoDetalhes) {
-                    $produtos[] = [
-                        'ID' => $produtoCombo->ID,
-                        'COMBO_ID' => $produtoCombo->COMBO_ID,
-                        'CODPRODUTO' => $produtoCombo->CODPRODUTO,
-                        'VALOR' => $produtoCombo->VALOR,
-                        'QTDE' => $produtoCombo->QTDE,
-                    ];
-                }
-            }
-    
-            $response[] = [
-                'combo' => [
-                    'ID' => $combo->ID,
-                    'DESCRICAO' => $combo->DESCRICAO,
-                    'QTDE_MAX' => $combo->QTDE_MAX,
-                    'ORDEM' => $combo->ORDEM,
-                    'CODPRODUTO' => $combo->CODPRODUTO,
-                    'OBRIGATORIO' => $combo->OBRIGATORIO,
-                    'VALOR_BASE' => $combo->VALOR_BASE,
-                ],
-                'produtos' => $produtos,
-            ];
-        }
-    
-        return $response;
-    }
-
 }
