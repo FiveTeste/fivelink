@@ -1,24 +1,28 @@
 <?php
 
 use app\assets\CssLoader;
+use yii\helpers\Json;
 
-$this->title = 'Kyosk online';
+$this->title = 'Five - Delivery';
 ?>
 
 <page-content></page-content>
+<template id="page-content">
 
 <!-- PAGE CONTENT TEMPLATE -->
-<template id="page-content">
     <?= CssLoader::loadCss("page-content.css") ?>
 
-    <div class="page">
-        <header class="page__header header">
-            <a href="/" class="header__link">
+    <div class="page" style="grid-template-rows: 1fr">
+        <header class="page__header header"  style="display: none;">
+            <a href="/home" class="header__link">
                 <div 
                     class="header__logo" 
                     style="background-image: url(<?= Yii::$app->request->baseUrl?>/images/logo/logo.png)"
                 ></div>
+
+                
             </a>
+            <span class="header__nomeempresa header__title"></span>
             
             <a href="/carrinho" class="cart">
                 <div class="cart__price">
@@ -30,9 +34,9 @@ $this->title = 'Kyosk online';
 
         <main class="page__content"><slot name="content"></slot></main>
 
-        <footer class="page__footer">
+        <footer class="page__footer" style="display: none">
             <nav class="navbar">
-                <a href="/" data-href="<?= Yii::$app->request->baseUrl?>/" class="navbar__item">
+                <a href="/home" data-href="<?= Yii::$app->request->baseUrl?>/home" class="navbar__item">
                     <svg-icon src="home.svg" />
                 </a>
                 <a href="/carrinho" data-href="<?= Yii::$app->request->baseUrl?>/carrinho" class="navbar__item">
@@ -45,6 +49,45 @@ $this->title = 'Kyosk online';
     <prompt-modal></prompt-modal>
     <app-loader></app-loader>
 </template>
+
+<template id="wellcome-template">
+    <?= CssLoader::loadCss("wellcome-page.css") ?>
+    <div class="content">
+        <div class="content__header header">
+            <img class="header__logo" src="<?= Yii::$app->request->baseUrl?>/images/logo/logo-five.png" />
+            <h1 class="header__title">Seja bem-vindo!</h1>
+            <div class="header__item operation-closed" id="operation-closed">
+                <svg-icon src="warning.svg" style="display: contents;color:#e83131;"></svg-icon>
+                <strong style="color:#e83131;margin-left: 1rem;">Não estamos aceitando pedidos no momento!</strong>
+            </div>
+        </div>
+        <div class="content__infos">
+            <a class="info__item order-link" id="order-available" href="<?= Yii::$app->request->baseUrl?>/home">
+                <svg-icon src="shopping-bag.svg" style="display: contents"></svg-icon> 
+                <span class="item__text">Faça seu pedido</span>
+            </a>
+
+            <!-- <a class="info__item order-link" id="order-unavailable" disabled href="<?= Yii::$app->request->baseUrl?>/home">
+                <svg-icon src="warning.svg" style="display: contents"></svg-icon> 
+                <span class="item__text">Não estamos aceitando pedidos</span>
+            </a> -->
+
+            <a class="info__item insta-link" target="_blank" href="<?= $empresa->instagram ?>">
+                <svg-icon src="instagram.svg" style="display: contents"></svg-icon> 
+                <span class="item__text">Siga nosso Instagram</span>
+            </a>
+            <a class="info__item location-link" target="_blank" href="<?= $empresa->localizacao ?>">
+                <svg-icon src="map-pin.svg" style="display: contents"></svg-icon> 
+                <span class="item__text">Onde estamos localizados</span>
+            </a>           
+        </div>
+        <div class="content__footer footer">
+            <img class="footer__logo" src="<?= Yii::$app->request->baseUrl?>/images/logo/logo_five_footer.png" />
+            <span class="footer__text">© 2022 Five tecnologia. Todos os direitos reservados</span>
+        </div>
+    </div>
+</template>
+
 
 <template id="loader-template">
     <?= CssLoader::loadCss("loader.css") ?>
@@ -135,12 +178,17 @@ $this->title = 'Kyosk online';
             <div class="image-container__image"></div>
         </div>
         <div class="item__detail">
-            <div class="item__name"><slot name="name"></slot></div>
-            <div class="item__price price-container">
-                <div class="item__preco"><slot name="preco"></slot></div>
-                <div class="item__precooriginal"><slot name="preco_original"></slot></div>
+            <div class="item__namepreco">
+                <div class="item__name"><slot name="name"></slot></div>
+                <div class="item__price price-container">
+                    <div class="item__preco"><slot name="preco"></slot></div>
+                    <div class="item__precooriginal"><slot name="preco_original"></slot></div>
+                </div>  
             </div>
-        </div>
+            <div class="product__item__description">
+                <slot name="description"></slot>
+            </div>
+        </div>       
     </li>
 </template>
 
@@ -232,8 +280,13 @@ $this->title = 'Kyosk online';
     <?= CssLoader::loadCss("form-quantity.css") ?>
 
     <div class="content">
-        <strong class="content__title">Quantidade:</strong>
-        <article class="content__selector selector">
+        <strong class="content__title">Observação:</strong>
+        <div id="content__observation" class="content__input input">
+          <span class="input__label">Alguma observação sobre o pedido?</span>
+          <textarea class="input__field" id="input_observacao" maxlength="100"></textarea>
+        </div> 
+        <strong class="content__title">Quantidade:</strong> 
+        <article id="containerQuantity" class="content__selector selector">
             <quantity-selector name="quantity" class="selector__input" minvalue="1" />
         </article>
     </div>
@@ -298,7 +351,7 @@ $this->title = 'Kyosk online';
             <button class="button button__minus">-</button>
             <span class="quantity"></span>
             <button class="button button__plus">+</button>
-            <!-- <quantity-selector></quantity-selector> -->
+            <quantity-selector></quantity-selector> 
         </div>
     </li>
 
@@ -319,6 +372,11 @@ $this->title = 'Kyosk online';
         <div class="item__checked checked">
             <svg-icon class="checked__icon" src="check-small.svg" />
         </div>
+        <div class="item__quantity">
+                <button class="button__add">+</button>
+                <label class="quantity"><slot name="quantity"></slot></label>
+                <button class="button__remove">-</button>
+            </div>
     </li>
 
 </template>
@@ -353,7 +411,7 @@ $this->title = 'Kyosk online';
                 
                 <div class="item__observation"><slot name="observation"></slot></div>
             </div>
-            <div class="item__quantity">
+            <div id="quantityContainer" class="item__quantity">
                 <button class="button__add">+</button>
                 <label class="item__order-quantity"><slot name="order-quantity"></slot></label>
                 <button class="button__remove">-</button>
@@ -385,7 +443,7 @@ $this->title = 'Kyosk online';
             <label class="form__item">
                 <span>Telefone:</span>
                 <div class="input-container">
-                    <input id="phone" name="telefone" pattern="\d*" inputmode="numeric" required />
+                    <input id="phone" name="telefone" inputmode="numeric" required />
                 </div>
             </label>
 
@@ -462,6 +520,16 @@ $this->title = 'Kyosk online';
                     <option value="Pix">PIX</option>
                 </select>
             </div>
+
+            
+            <div id="input-box-chave-pix" hidden="true">
+                <button class="button-add-chave-pix" id="btn-chave-pix">
+                    <svg-icon src="copy-outline-icon.svg" style="width: 16px; height: 16px; display: flex; margin-right: 0.5rem;"></svg-icon>  Copiar chave PIX
+                </button>
+                <div style="text-align: center;">                    
+                    <span id="input-chave-pix"></span>
+                </div>
+            </div>
         </label>
     </div>
 
@@ -525,7 +593,39 @@ $this->title = 'Kyosk online';
 </template>
 
 <script type="text/javascript">
+    window.onbeforeunload = function(){        
+        return "";
+    };
+    
+
+    window.addEventListener('popstate', function(event) {
+    
+        
+        //console.log('evento na pagina',window.location.pathname);
+        /*const atual = window.location.pathname.split('/');
+        const page = atual.length > 0 ? `/${atual[atual.length - 2]}/${atual[atual.length - 1]}` : '';
+        console.log('pagina atual',page);
+        if(page == window.location.returnnavigation){
+            console.log('voltar ao inicio',page ,'navegado', window.location.returnnavigation);
+        }else{
+            console.log('outra pagina',page ,'navegado', window.location.returnnavigation);
+        }*/
+
+        //history.pushState(null, null, window.location.pathname);
+
+    }, false);
+
     window.baseUrl = '<?= Yii::$app->request->baseUrl; ?>';
+    window.painelUrl = '<?= $painelUrl ?>';
+    window.empresa = <?= Json::encode($empresa) ?>;
+
+    
+    
+    window.onload = (event) => {
+
+        
+    };
+    
 </script>
 
 <script src="<?= Yii::$app->request->baseUrl?>/js/dependencies/crypto-js.min.js"></script>

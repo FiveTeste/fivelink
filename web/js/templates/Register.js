@@ -4,6 +4,7 @@ import { setUser, setAddress } from "../store/userActions.js";
 import { api } from "../services/api.js";
 
 import { masks } from "../utils/masks.js";
+import { validatePhone } from "../utils/validatePhone.js";
 
 class RegisterTemplate extends HTMLElement {
   constructor() {
@@ -36,6 +37,16 @@ class RegisterTemplate extends HTMLElement {
 
     const formData = new FormData(event.target);
     const values = Object.fromEntries(formData);
+
+    const isValidPhone = validatePhone(values.telefone);
+    if (!isValidPhone) {
+      fireEvent("show-modal", {
+        type: "error", 
+        message: "Informe um número de telefone válido"
+      });
+      return;
+    }
+
 
     if (typeof values.bairro_id === "string" && values.bairro_id !== "") {
       values.bairro_id = +values.bairro_id;
@@ -133,7 +144,7 @@ class RegisterTemplate extends HTMLElement {
     pageTitleElement.textContent = pageTitle;
 
     if (this.action === "update" && !userStore.state.user) {
-      Router.go(`/${location.search}`);
+      Router.go(`/home${location.search}`);
       return;
     }
 

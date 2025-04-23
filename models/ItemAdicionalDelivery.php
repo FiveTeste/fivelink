@@ -16,7 +16,7 @@ use Yii;
  *
  * @property ConsumoDelivery $cONSUMODELIVERY
  */
-class ItemAdicionalDelivery extends \yii\db\ActiveRecord
+class Itemadicionaldelivery extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -61,6 +61,6 @@ class ItemAdicionalDelivery extends \yii\db\ActiveRecord
      */
     public function getCONSUMODELIVERY()
     {
-        return $this->hasOne(ConsumoDelivery::className(), ['CODIGO' => 'CONSUMODELIVERY']);
+        return $this->hasOne(Consumodelivery::className(), ['CODIGO' => 'CONSUMODELIVERY']);
     }
 }

@@ -38,11 +38,14 @@ class OpcaoItem extends HTMLElement {
   }
 
   connectedCallback() {
+    this.handleClick = this.handleClick.bind(this);
+
     this.style.setProperty("-webkit-tap-highlight-color", "transparent");
-    this.addEventListener("click", this.handleClick.bind(this));
+    this.addEventListener("click", this.handleClick, true);
   }
 
   disconnectedCallback() {
+    this.removeEventListener("click", this.handleClick, true);
   }
 }
 

@@ -19,7 +19,7 @@ use Yii;
  *
  * @property ConsumoDelivery $cONSUMODELIVERY
  */
-class ItemIngredienteDelivery extends \yii\db\ActiveRecord
+class Itemingredientedelivery extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -39,7 +39,7 @@ class ItemIngredienteDelivery extends \yii\db\ActiveRecord
             [['CODIGO'], 'string', 'max' => 45],
             [['CODPRODUTO', 'CODINGREDIENTE', 'CODITEM'], 'string', 'max' => 6],
             [['PAGO'], 'string', 'max' => 5],
-            [['CONSUMODELIVERY'], 'exist', 'skipOnError' => true, 'targetClass' => ConsumoDelivery::className(), 'targetAttribute' => ['CONSUMODELIVERY' => 'CODIGO']],
+            [['CONSUMODELIVERY'], 'exist', 'skipOnError' => true, 'targetClass' => Consumodelivery::className(), 'targetAttribute' => ['CONSUMODELIVERY' => 'CODIGO']],
         ];
     }
 
@@ -68,6 +68,6 @@ class ItemIngredienteDelivery extends \yii\db\ActiveRecord
      */
     public function getCONSUMODELIVERY()
     {
-        return $this->hasOne(ConsumoDelivery::className(), ['CODIGO' => 'CONSUMODELIVERY']);
+        return $this->hasOne(Consumodelivery::className(), ['CODIGO' => 'CONSUMODELIVERY']);
     }
 }

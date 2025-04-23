@@ -4,10 +4,22 @@ import { api } from "../services/api.js";
 import { sumTotalPrice, getShippingTax } from "./calcs.js";
 import { formatMoney } from "./numberFormat.js";
 
+
+const createDate = (str) => {
+  const [date, time] = str.split(" ");
+  const [year, month, day] = date.split("-");
+  const [hour, minute] = time.split(":");
+
+  return new Date(+year, +month - 1, +day, +hour, +minute);
+}
+
 export const validateCupomDate = (cupom) => {
   const currentDate = new Date();
-  const dateStart = new Date(cupom.datahora_inicial);
-  const dateEnd = new Date(cupom.datahora_final);
+
+  const dateStart = createDate(cupom.datahora_inicial);
+  const dateEnd = createDate(cupom.datahora_final);
+  // const dateStart = new Date(cupom.datahora_inicial);
+  // const dateEnd = new Date(cupom.datahora_final);
 
   const currentTime = currentDate.getTime();
   const timeStart = dateStart.getTime();

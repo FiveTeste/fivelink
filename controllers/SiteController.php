@@ -9,9 +9,7 @@ use yii\web\Response;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
-use DateTime;
-use Exception;
-use yii\db\ActiveRecord;
+use app\validators\PromotionalValidator;
 use yii\db\Query;
 use yii\helpers\Json;
 
@@ -76,17 +74,22 @@ class SiteController extends Controller {
             $separador = "";
             foreach ($paramNames as $paramName) {
                 $param = $params[$paramName];
-                $paramsUrl .= $separador."$paramName=$param";
+                $paramsUrl .= $separador . "$paramName=$param";
                 $separador = "&";
             }
 
             $newUrl .= "?$paramsUrl";
             return $this->redirect($newUrl);
         }
-        
-        return $this->render("index");
+
+        $empresa = \app\models\Empresa::find()->one();
+
+        return $this->render("index", [
+                    'painelUrl' => Yii::$app->params['painelUrl'],
+                    'empresa' => $empresa
+        ]);
     }
-    
+
     public function actionFoto() {
         $re = Yii::$app->request;
         if ($re->isAjax) {
@@ -97,15 +100,14 @@ class SiteController extends Controller {
             $fileExt = pathinfo($fileName, PATHINFO_EXTENSION);
             $fileContent = file_get_contents($_FILES['file']['tmp_name']);
             $codigo = $re->post("produto");
-            
-            if ($fileError == UPLOAD_ERR_OK) {                
-                $image_path = '/web/images/produtos/'.$codigo.'.png';
-                $uploaded = move_uploaded_file($fileTemp, \Yii::$app->basePath.$image_path);
-                if($uploaded){
-                    $model = \app\models\Produto::findOne(['CODIGO'=>$codigo]);
+
+            if ($fileError == UPLOAD_ERR_OK) {
+                $image_path = '/web/images/produtos/' . $codigo . '.png';
+                $uploaded = move_uploaded_file($fileTemp, \Yii::$app->basePath . $image_path);
+                if ($uploaded) {
+                    $model = \app\models\Produto::findOne(['CODIGO' => $codigo]);
                     $model->FOTO = $image_path;
                     $model->save();
-
                 }
                 return $uploaded;
             } else {
@@ -143,6 +145,7 @@ class SiteController extends Controller {
             return $this->redirect(['404', 'id' => '404']);
         }
     }
+
     /**
      * Login action.
      *
@@ -201,20 +204,20 @@ class SiteController extends Controller {
         return $this->render('about');
     }
 
-    
-    /**         FUNCOES DO APLICATIVO           **/
+    /**         FUNCOES DO APLICATIVO           * */
     public function actionGrupo() {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $req = Yii::$app->request;
 
         if ($req->isGet) {
-            $model = \app\models\Grupo::findAll(['NAO_MOSTRA_KYOSK' => 'N']);
+            //$model = \app\models\Grupo::findAll(['APP_DELIVERY' => 1]);
+            $model = \app\models\Grupo::findBySql('select * from grupo g where g.APP_DELIVERY = 1 order by g.sequencia,g.GRUPO')->all();
             $grupos = json_decode(Json::encode($model), true);
-            
+
             $response = array();
             foreach ($grupos as $grupo) {
                 $codigo = $grupo["CODIGO"];
-                $NAO_MOSTRA_KYOSK = \app\models\Subgrupo::findAll(['CODGRUPO'=>$codigo, 'NAO_MOSTRA_KYOSK' => 'N']);
+                $NAO_MOSTRA_KYOSK = \app\models\Subgrupo::findAll(['CODGRUPO' => $codigo, 'NAO_MOSTRA_KYOSK' => 'N']);
 
                 $grupo["TEM_SUBGRUPO"] = empty($NAO_MOSTRA_KYOSK) === false;
                 array_push($response, $grupo);
@@ -228,13 +231,12 @@ class SiteController extends Controller {
     public function actionBairros() {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $req = Yii::$app->request;
-     
+
         if ($req->isAjax) {
             $bairros = \app\models\Bairros::find()->all();
 
             return $bairros;
         } else {
-            echo "aqui";
             return [];
         }
     }
@@ -242,7 +244,7 @@ class SiteController extends Controller {
     public function actionCliente() {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $req = Yii::$app->request;
-     
+
         if ($req->isAjax) {
             $telefone = $req->get('telefone');
             $parsedPhone = preg_replace('/\D/', '', $telefone);
@@ -256,7 +258,7 @@ class SiteController extends Controller {
             if ($bairro != null) {
                 $result = json_decode(Json::encode($model), true);
                 $result['bairro'] = $bairro;
-    
+
                 return $result;
             }
 
@@ -272,7 +274,7 @@ class SiteController extends Controller {
         $req = Yii::$app->request;
 
         if ($req->isPost) {
-            $cliente = $req->post("cliente");       
+            $cliente = $req->post("cliente");
 
             $telefone = $cliente["telefone"];
             $telefone = preg_replace('/\D/', '', $telefone);
@@ -280,17 +282,17 @@ class SiteController extends Controller {
             $model = new \app\models\Cliente();
             $model->attributes = $cliente;
             $model->telefone = $telefone;
-            
-            
+
+
             if (!$model->save()) {
                 return ['message' => $model->errors];
             }
-            
+
             $bairro = \app\models\Bairros::findOne(["id_bairro" => $model->bairro_id]);
             if ($bairro != null) {
                 $result = json_decode(Json::encode($model), true);
                 $result['bairro'] = $bairro;
-    
+
                 return ['message' => 'sucesso', 'cliente' => $result];
             }
 
@@ -319,16 +321,16 @@ class SiteController extends Controller {
 
             $model->attributes = $cliente;
             $model->telefone = $telefone;
-            
+
             if (!$model->save()) {
                 return ['message' => $model->errors];
             }
-            
+
             $bairro = \app\models\Bairros::findOne(["id_bairro" => $model->bairro_id]);
             if ($bairro != null) {
                 $result = json_decode(Json::encode($model), true);
                 $result['bairro'] = $bairro;
-    
+
                 return ['message' => 'sucesso', 'cliente' => $result];
             }
 
@@ -367,7 +369,7 @@ class SiteController extends Controller {
             return [];
         }
     }
-    
+
     public function actionGetsubgrupo() {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $req = Yii::$app->request;
@@ -390,31 +392,52 @@ class SiteController extends Controller {
             $model = \app\models\Produto::findOne(['CODIGO' => $cod]);
 
             $opcoes = (new Query())
-                ->select("ingrediente.*, produto_ingrediente.CODIGO as ISINGREDIENTE_COD, produto_ingrediente.CODPRODUTO as ISINGREDIENTE_CODPRODUTO")
-                ->from("ingrediente")
-                ->innerJoin("produto_ingrediente", "produto_ingrediente.CODINGREDIENTE = ingrediente.CODIGO")
-                ->where(["produto_ingrediente.CODPRODUTO" => $cod])
-                ->all();
+                    ->select("ingrediente.*, produto_ingrediente.CODIGO as ISINGREDIENTE_COD, produto_ingrediente.CODPRODUTO as ISINGREDIENTE_CODPRODUTO")
+                    ->from("ingrediente")
+                    ->innerJoin("produto_ingrediente", "produto_ingrediente.CODINGREDIENTE = ingrediente.CODIGO")
+                    ->where(["produto_ingrediente.CODPRODUTO" => $cod])
+                    ->all();
 
             $adicionais = (new Query())
-                ->select("produto.*, produto_adicional.CODIGO as ISADICIONAL_COD")
-                ->from("produto")
-                ->innerJoin("produto_adicional", "produto_adicional.PROD_ADICIONAL = produto.CODIGO")
-                ->where(["produto_adicional.CODPRODUTO" => $cod])
-                ->all();
+                    ->select("produto.*, produto_adicional.CODIGO as ISADICIONAL_COD")
+                    ->from("produto")
+                    ->innerJoin("produto_adicional", "produto_adicional.PROD_ADICIONAL = produto.CODIGO")
+                    ->where(["produto_adicional.CODPRODUTO" => $cod])
+                    ->all();
 
 
             $opcionais = (new Query())
-                ->select("produto.*, produto_opcional.CODIGO as ISOPCIONAL_COD")
-                ->from("produto")
-                ->innerJoin("produto_opcional", "produto_opcional.CODOPCIONAL = produto.CODIGO")
-                ->where(["produto_opcional.CODPRODUTO" => $cod])
-                ->all();
+                    ->select("produto.*, produto_opcional.CODIGO as ISOPCIONAL_COD")
+                    ->from("produto")
+                    ->innerJoin("produto_opcional", "produto_opcional.CODOPCIONAL = produto.CODIGO")
+                    ->where(["produto_opcional.CODPRODUTO" => $cod])
+                    ->all();
 
-                $result = json_decode(Json::encode($model), true);
-                $result['opcoes'] = $opcoes;
-                $result['adicionais'] = $adicionais;
-                $result['opcionais'] = $opcionais;
+            $adicionaisResponse = array();
+            foreach ($adicionais as $adicional) {
+                $adicionalValidator = new PromotionalValidator($adicional);
+
+                $adicionalResult = json_decode(Json::encode($adicional), true);
+                $adicionalResult['isPromotional'] = $adicionalValidator->isPromotional();
+                array_push($adicionaisResponse, $adicionalResult);
+            }
+
+            $opcionaisResponse = array();
+            foreach ($opcionais as $opcional) {
+                $opcionalValidator = new PromotionalValidator($opcional);
+
+                $opcionalResult = json_decode(Json::encode($opcional), true);
+                $opcionalResult['isPromotional'] = $opcionalValidator->isPromotional();
+                array_push($opcionaisResponse, $opcionalResult);
+            }
+
+            $validator = new PromotionalValidator($model);
+
+            $result = json_decode(Json::encode($model), true);
+            $result['opcoes'] = $opcoes;
+            $result['adicionais'] = $adicionaisResponse;
+            $result['opcionais'] = $opcionaisResponse;
+            $result['isPromotional'] = $validator->isPromotional();
 
             return $result;
         } else {
@@ -427,8 +450,19 @@ class SiteController extends Controller {
         $req = Yii::$app->request;
 
         if ($req->isAjax) {
-            $destaques = \app\models\Produto::findAll(["DESTAQUE" => "S"]);
-            return $destaques;
+            $destaques = \app\models\Produto::findAll(["DESTAQUE" => "S", "SITUACAO" => 0, "APP_DELIVERY" => 1]);
+
+            $response = array();
+            foreach ($destaques as $produto) {
+                $validator = new PromotionalValidator($produto);
+
+                $result = json_decode(Json::encode($produto), true);
+                $result['isPromotional'] = $validator->isPromotional();
+
+                array_push($response, $result);
+            }
+
+            return $response;
         } else {
             return [];
         }
@@ -438,13 +472,24 @@ class SiteController extends Controller {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $req = Yii::$app->request;
 
-         if ($req->isAjax) {
+        if ($req->isGet) {
             $grupo = $req->get('codgrupo');
-            $model = \app\models\Produto::findAll(['MOSTRA_KYOSK_APP' => 1, 'CODGRUPO' => $grupo, 'SITUACAO' => 0]);
-            return $model;
-         } else {
-             return [];
-         }
+            //$model = \app\models\Produto::findAll(['APP_DELIVERY' => 1, 'CODGRUPO' => $grupo, 'SITUACAO' => 0]);
+            $model = \app\models\Produto::findBySql("select * from produto p where p.SITUACAO = 0 and p.APP_DELIVERY = 1 and p.CODGRUPO = '".$grupo."' order by p.PRODUTO")->all();
+
+            $response = array();
+            foreach ($model as $produto) {
+                $validator = new PromotionalValidator($produto);
+
+                $result = json_decode(Json::encode($produto), true);
+                $result['isPromotional'] = $validator->isPromotional();
+
+                array_push($response, $result);
+            }
+            return $response;
+        } else {
+            return [];
+        }
     }
 
     public function actionProdutobysubgrupo() {
@@ -453,38 +498,61 @@ class SiteController extends Controller {
 
         if ($req->isAjax) {
             $subgrupo = $req->get('cod');
-            $model = \app\models\Produto::findAll(['MOSTRA_KYOSK_APP' => 1, 'CODSUBGRUPO' => $subgrupo, 'SITUACAO' => 0]);
+            $model = \app\models\Produto::findAll(['APP_DELIVERY' => 1, 'CODSUBGRUPO' => $subgrupo, 'SITUACAO' => 0]);
 
             $response = array();
             foreach ($model as $produto) {
+                $validator = new PromotionalValidator($produto);
+
                 $result = json_decode(Json::encode($produto), true);
+                $result['isPromotional'] = $validator->isPromotional();
+
                 $codproduto = $produto['CODIGO'];
 
                 $opcoes = (new Query())
-                    ->select("ingrediente.*, produto_ingrediente.CODIGO as ISINGREDIENTE_COD, produto_ingrediente.CODINGREDIENTE as ISINGREDIENTE_CODINGREDIENTE")
-                    ->from("ingrediente")
-                    ->innerJoin("produto_ingrediente", "produto_ingrediente.CODINGREDIENTE = ingrediente.CODIGO")
-                    ->where(["produto_ingrediente.CODPRODUTO" => $codproduto])
-                    ->all();
+                        ->select("ingrediente.*, produto_ingrediente.CODIGO as ISINGREDIENTE_COD, produto_ingrediente.CODINGREDIENTE as ISINGREDIENTE_CODINGREDIENTE")
+                        ->from("ingrediente")
+                        ->innerJoin("produto_ingrediente", "produto_ingrediente.CODINGREDIENTE = ingrediente.CODIGO")
+                        ->where(["produto_ingrediente.CODPRODUTO" => $codproduto])
+                        ->all();
 
                 $adicionais = (new Query())
-                    ->select("produto.*, produto_adicional.CODIGO as ISADICIONAL_COD")
-                    ->from("produto")
-                    ->innerJoin("produto_adicional", "produto_adicional.PROD_ADICIONAL = produto.CODIGO")
-                    ->where(["produto_adicional.CODPRODUTO" => $codproduto])
-                    ->all();
+                        ->select("produto.*, produto_adicional.CODIGO as ISADICIONAL_COD")
+                        ->from("produto")
+                        ->innerJoin("produto_adicional", "produto_adicional.PROD_ADICIONAL = produto.CODIGO")
+                        ->where(["produto_adicional.CODPRODUTO" => $codproduto])
+                        ->all();
 
 
                 $opcionais = (new Query())
-                    ->select("produto.*, produto_opcional.CODIGO as ISOPCIONAL_COD")
-                    ->from("produto")
-                    ->innerJoin("produto_opcional", "produto_opcional.CODOPCIONAL = produto.CODIGO")
-                    ->where(["produto_opcional.CODPRODUTO" => $codproduto])
-                    ->all();
+                        ->select("produto.*, produto_opcional.CODIGO as ISOPCIONAL_COD")
+                        ->from("produto")
+                        ->innerJoin("produto_opcional", "produto_opcional.CODOPCIONAL = produto.CODIGO")
+                        ->where(["produto_opcional.CODPRODUTO" => $codproduto])
+                        ->all();
+
+                $adicionaisResponse = array();
+                foreach ($adicionais as $adicional) {
+                    $adicionalValidator = new PromotionalValidator($adicional);
+
+                    $adicionalResult = json_decode(Json::encode($adicional), true);
+                    $adicionalResult['isPromotional'] = $adicionalValidator->isPromotional();
+                    array_push($adicionaisResponse, $adicionalResult);
+                }
+
+                $opcionaisResponse = array();
+                foreach ($opcionais as $opcional) {
+                    $opcionalValidator = new PromotionalValidator($opcional);
+
+                    $opcionalResult = json_decode(Json::encode($opcional), true);
+                    $opcionalResult['isPromotional'] = $opcionalValidator->isPromotional();
+                    array_push($opcionaisResponse, $opcionalResult);
+                }
+
 
                 $result['opcoes'] = $opcoes;
-                $result['adicionais'] = $adicionais;
-                $result['opcionais'] = $opcionais;
+                $result['adicionais'] = $adicionaisResponse;
+                $result['opcionais'] = $opcionaisResponse;
 
                 array_push($response, $result);
             }
@@ -530,22 +598,27 @@ class SiteController extends Controller {
     public function actionSalvarpedido() {
         Yii::$app->response->format = Response::FORMAT_JSON;
         $req = Yii::$app->request;
-       
+
         if ($req->isPost) {
             $pedido = $req->post('pedido');
             $consumo_list = $req->post('items');
 
+            if ($consumo_list == null || count($consumo_list) <= 0) {
+                return [];
+            }
+
             $model_pedido = new \app\models\Pedido();
             $model_pedido->attributes = $pedido;
+            $model_pedido->STATUS = "GRAVANDO";
             $model_pedido->save();
-            
+
             foreach ($consumo_list as $consumo) {
-                $consumo_model = \app\models\ConsumoDelivery::findOne(['DISPOSITIVO' => $consumo['DISPOSITIVO']]);
+                $consumo_model = \app\models\Consumodelivery::findOne(['DISPOSITIVO' => $consumo['DISPOSITIVO']]);
                 if ($consumo_model == null) {
                     $consumo_model = new \app\models\ConsumoDelivery();
                     $consumo_model->attributes = $consumo;
                     $consumo_model["COD_PEDIDO"] = $model_pedido["ID"];
-                    
+
                     if (!$consumo_model->save()) {
                         return ['message' => $consumo_model->errors];
                     }
@@ -554,7 +627,7 @@ class SiteController extends Controller {
                     if (isset($consumo['LISTA_ADICIONAIS'])) {
                         $adicionais = $consumo['LISTA_ADICIONAIS'];
                         foreach ($adicionais as $ad) {
-                            $adicional = new \app\models\ItemAdicionalDelivery();
+                            $adicional = new \app\models\Itemadicionaldelivery();
                             $adicional->attributes = $ad;
                             $adicional->CONSUMODELIVERY = $consumo_model->CODIGO;
                             $adicional->save();
@@ -564,19 +637,20 @@ class SiteController extends Controller {
                     // inserir opcionais  
                     if (isset($consumo['LISTA_OPCIONAIS'])) {
                         $opcionais = $consumo['LISTA_OPCIONAIS'];
-                        foreach ($opcionais as $op) {
-                            $opcional = new \app\models\ItemOpcionalDelivery();
-                            $opcional->attributes = $op;
+                        //return $opcionais;
+                        foreach ($opcionais as $opc) {
+                            $opcional = new \app\models\Itemopcionaldelivery();
+                            $opcional->attributes = $opc;
                             $opcional->CONSUMODELIVERY = $consumo_model->CODIGO;
-                            $opcional->save();
+                            $opcional->save();                            
                         }
                     }
 
                     // inserir opcoes
                     if (isset($consumo['LISTA_OPCOES'])) {
-                        $opcoes = $consumo['LISTA_OPCOES'];
+                        $opcoes = $consumo['LISTA_OPCOES'];                         
                         foreach ($opcoes as $op) {
-                            $opcao = new \app\models\ItemIngredienteDelivery();
+                            $opcao = new \app\models\Itemingredientedelivery();
                             $opcao->attributes = $op;
                             $opcao->CONSUMODELIVERY = $consumo_model->CODIGO;
                             $opcao->save();
@@ -587,7 +661,7 @@ class SiteController extends Controller {
                     if (isset($consumo['LISTA_MONTAGEM'])) {
                         $montagem = $consumo['LISTA_MONTAGEM'];
                         foreach ($montagem as $item) {
-                            $montado = new \app\models\ItemMontadoDelivery();
+                            $montado = new \app\models\Itemmontadodelivery();
                             $montado->attributes = $item;
                             $montado->CONSUMODELIVERY = $consumo_model->CODIGO;
                             $montado->save();
@@ -603,8 +677,11 @@ class SiteController extends Controller {
 
                 $model_cupom->save();
             }
+            
+            $model_pedido->STATUS = "PENDENTE";
+            $model_pedido->update();
 
-            return ['message' => 'sucesso'];
+            return ['message' => 'sucesso', 'numPedido' => $model_pedido['ID']];
         } else {
             return [];
         }

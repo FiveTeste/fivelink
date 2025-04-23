@@ -1,8 +1,0 @@
-version: '2'
-services:
-  php:
-    image: yiisoftware/yii2-php:7.1-apache
-    volumes:
-      - ./:/app:delegated
-    ports:
-      - '8000:80'

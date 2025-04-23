@@ -6,7 +6,7 @@
 }
 
 .page .page__header {
-  height: 5.4rem;
+  height: 5.8rem;
   background: var(--background-gradient);
   display: flex;
   align-items: center;
@@ -26,7 +26,7 @@
   width: 5rem;
   height: 5rem;
   background: no-repeat center, var(--color-header-background);
-  background-size: contain;
+  background-size: cover;
   border-radius: 50%;
   box-shadow: 0rem 0rem 0.2rem rgb(128, 128, 128);
   pointer-events: none;
@@ -35,13 +35,11 @@
 .header .header__title {
   margin: 0;
   margin-left: 0.5rem;
-  font-family: var(--font-artifika);
+  font-family: Arial, Helvetica, sans-serif;
   font-weight: normal;
-  font-size: 2rem;
-  color: var(--color-highlight);
+  font-size: 1.4rem;
+  color: white;
   pointer-events: none;
-  align-self: flex-end;
-  margin-bottom: 0.5rem;
 }
 
 .page .page__content {

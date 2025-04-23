@@ -3,7 +3,6 @@ import { name as ProductTemplate } from "../templates/Product.js";
 import { api } from "../services/api.js";
 
 import { formatMoney } from "../utils/numberFormat.js";
-import { isPromotional } from "../utils/isPromotional.js";
 
 class ProductPage extends HTMLElement {
   constructor() {
@@ -25,7 +24,7 @@ class ProductPage extends HTMLElement {
     const priceElement = document.createElement("span");
     priceElement.slot = "price";
 
-    const price = isPromotional(product) ? product.PRECO_PROMOCAO : product.PRECOVENDA;
+    const price = product.isPromotional ? product.PRECO_PROMOCAO : product.PRECOVENDA;
     priceElement.textContent = formatMoney(price);
 
     const pageTemplate = document.createElement(ProductTemplate);
@@ -75,6 +74,7 @@ class ProductPage extends HTMLElement {
 
   connectedCallback() {
     fireEvent("change-navbar", { show: false });
+    fireEvent("change-header", { show: true });
 
     const parent = this.location.route.parent.name;
     if (parent === "categories") {

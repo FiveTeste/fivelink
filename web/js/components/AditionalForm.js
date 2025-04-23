@@ -1,7 +1,6 @@
 import { name as AditionalItem } from "./AditionalItem.js";
 
 import { formatMoney } from "../utils/numberFormat.js";
-import { isPromotional } from "../utils/isPromotional.js";
 
 import { orderStore } from "../store/order.js";
 
@@ -38,7 +37,7 @@ class AdicionalForm extends HTMLElement {
     const elementHtml = html`
         <div>
           <div class='title__container'>
-            <strong class="title">Adicionais</strong>
+            <strong class="title">Adicione</strong>
           </div>
           <ul class="list__container">
             <slot name="items"></slot>
@@ -85,9 +84,8 @@ class AdicionalForm extends HTMLElement {
     list.forEach((product) => {
       const name = product.PRODUTO || "";
 
-      const isPromocao = isPromotional(product);
-      const preco = isPromocao ? product.PRECO_PROMOCAO : product.PRECOVENDA;
-      const imageUrl = product.FOTO ? product.FOTO : "../web/images/new/food.jpg";
+      const preco = product.isPromotional ? product.PRECO_PROMOCAO : product.PRECOVENDA;
+      const imageUrl = product.FOTO ? `${window.painelUrl}/${product.FOTO}` : "../web/images/new/food.jpg";
 
       const element = document.createElement(AditionalItem);
       element.addEventListener("kyosk-change", this.handleSelect.bind(this));
@@ -95,7 +93,7 @@ class AdicionalForm extends HTMLElement {
       const slotsHtml = html`<span slot="name">${name.toLowerCase()}</span>`;
       const slotsPreco = html`<span slot="price">${formatMoney(preco || "")}</span>`;
 
-      if (isPromocao) {
+      if (product.isPromotional) {
         const slotPrecoOriginal = html`<span slot="preco_original">${formatMoney(product.PRECOVENDA || "")}</span>`;
         element.appendChild(slotPrecoOriginal);
       }

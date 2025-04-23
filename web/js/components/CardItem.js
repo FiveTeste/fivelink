@@ -17,6 +17,7 @@ class CardItem extends HTMLElement {
       : `/${group.CODIGO}/produtos${location.search}`;
 
     Router.go(url);
+    window.location.returnnavigation = url;
   }
 
   connectedCallback() {

@@ -21,7 +21,7 @@ class HomePage extends HTMLElement {
     const container = this.shadowRoot.firstChild;
     data.forEach((item) => {
       const groupName = item.GRUPO || "";
-      const imageUrl = item.FOTO ? item.FOTO : "../web/images/new/food.jpg";
+      const imageUrl = item.FOTO ? `${window.painelUrl}/${item.FOTO}` : "";
 
       
       const slotsHtml = html`
@@ -40,6 +40,7 @@ class HomePage extends HTMLElement {
   connectedCallback() {
     this.loadItems();
     fireEvent("change-navbar", { show: true });
+    fireEvent("change-header", { show: true });
   }
 }
 

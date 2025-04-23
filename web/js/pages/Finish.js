@@ -12,6 +12,7 @@ class FinishPage extends HTMLElement {
 
   connectedCallback() {
     fireEvent("change-navbar", { show: true });
+    fireEvent("change-header", { show: true });
   }
   disconnectedCallback() {}
 }

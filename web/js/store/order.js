@@ -13,7 +13,8 @@ export const orderStore = new Store((state = INITIAL_STATE, action) => {
       return { ...state, observation: action.payload }
     }
     case "SET_QUANTITY": {
-      return { ...state, quantity: action.payload }
+      //return { ...state, quantity: action.payload }
+      return { ...state, quantity: action.payload.quantity,observation: action.payload.observation }
     }
     case "SET_PRODUCTS": {
       return { ...state, products: action.payload }

@@ -1,3 +1,4 @@
+import { name as wellcomePage } from "./pages/Wellcome.js";
 import { name as homePage } from "./pages/Home.js";
 import { name as productsPage } from "./pages/Products.js";
 import { name as categoriesPage } from "./pages/Categories.js";
@@ -36,6 +37,10 @@ window.Router.go = function(url) {
 router.setRoutes([
   {
     path: "/",
+    component: wellcomePage,
+  },
+  {
+    path: "/home",
     component: homePage,
   },
   {

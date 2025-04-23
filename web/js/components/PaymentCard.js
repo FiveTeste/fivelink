@@ -80,6 +80,37 @@ class PaymentCard extends HTMLElement {
     const dispatchValue = value && value !== "" ? value : undefined;
 
     this.store.dispatchAction(setPayment(dispatchValue));
+
+    const boxpix = this.shadowRoot.getElementById("input-box-chave-pix"); 
+    const chavepix = this.shadowRoot.getElementById("input-chave-pix");    
+    if(dispatchValue === 'Pix' && chavepix.textContent !== ''){
+      boxpix.removeAttribute("hidden");      
+    }else{
+      boxpix.setAttribute("hidden", true);      
+    }
+  }
+
+  onCopyChavePix(event){
+    const chavepix = this.shadowRoot.getElementById("input-chave-pix");    
+    navigator.clipboard.writeText(chavepix.textContent);  
+    toastr.options = {
+      "closeButton": true,
+      "debug": false,
+      "newestOnTop": false,
+      "progressBar": false,
+      "positionClass": "toast-bottom-full-width",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "6000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    } 
+    toastr.success("A chave Pix foi copiada.");   
   }
 
   connectedCallback() {
@@ -88,11 +119,18 @@ class PaymentCard extends HTMLElement {
     const paymentSelect = this.shadowRoot.querySelector(`select[name="payment_type"]`);
     const buttonAddCupom = this.shadowRoot.getElementById("add-cupom");
     const buttonRemoveCupom = this.shadowRoot.getElementById("remove-cupom");
+    const buttonChavePix = this.shadowRoot.getElementById("btn-chave-pix");
 
     buttonAddCupom.addEventListener("click", this.handleAddCupom.bind(this));
     buttonRemoveCupom.addEventListener("click", this.handleRemoveCupom.bind(this));
 
     paymentSelect.addEventListener("change", this.onChangeInput.bind(this));
+
+    buttonChavePix.addEventListener("click", this.onCopyChavePix.bind(this));
+    const chavepix = this.shadowRoot.getElementById("input-chave-pix");
+
+    const chave_pix_value = window.empresa.CHAVE_PIX || '';
+    chavepix.textContent = chave_pix_value;
 
     this.store.addListener(this.onChangeCupom.bind(this));
   }

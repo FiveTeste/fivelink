@@ -2,6 +2,8 @@
   --card-gradient: linear-gradient(150deg, #e02f34, #732529);
   --background-gradient: linear-gradient(150deg, #e02f34, #732529,#1c1b18);
   --background-gradient-inverted: linear-gradient(150deg, #1c1b18, #732529, #e02f34);
+  --instagram-gradient: linear-gradient(150deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+  --instagram-gradient-inverted: linear-gradient(150deg, #bc1888 0%,#cc2366 25%,#dc2743 50%,#e6683c 75%, #f09433 100%);
 
   --color-background: #f6f6f6;
   --color-header-background: #fff;

@@ -22,6 +22,8 @@ use Yii;
  * @property ConsumoDelivery[] $consumoDeliveries
  * @property Cliente $cLIENTE
  * @property Cupom $cODCUPOM
+ * @property float|null $VALOR_ENTREGA
+ * @property string|null $STATUS
  */
 class Pedido extends \yii\db\ActiveRecord
 {
@@ -41,8 +43,8 @@ class Pedido extends \yii\db\ActiveRecord
         return [
             [['CLIENTE_ID', 'VALOR', 'PAGAMENTO', 'ENTREGA', 'DESEJA_RECIBO'], 'required'],
             [['CLIENTE_ID', 'DESEJA_RECIBO', 'COD_CUPOM'], 'integer'],
-            [['VALOR', 'VALOR_TROCO'], 'number'],
-            [['PAGAMENTO', 'ENTREGA', 'INFO_RECIBO', 'DATA', 'HORA'], 'string', 'max' => 100],
+            [['VALOR', 'VALOR_TROCO','VALOR_ENTREGA'], 'number'],
+            [['PAGAMENTO', 'ENTREGA', 'INFO_RECIBO', 'DATA', 'HORA','STATUS'], 'string', 'max' => 100],
             [['CLIENTE_ID'], 'exist', 'skipOnError' => true, 'targetClass' => Cliente::className(), 'targetAttribute' => ['CLIENTE_ID' => 'id']],
             [['COD_CUPOM'], 'exist', 'skipOnError' => true, 'targetClass' => Cupom::className(), 'targetAttribute' => ['COD_CUPOM' => 'codigo']],
         ];
@@ -65,6 +67,8 @@ class Pedido extends \yii\db\ActiveRecord
             'DATA' => 'Data',
             'HORA' => 'Hora',
             'COD_CUPOM' => 'Cod  Cupom',
+            'VALOR_ENTREGA'=> 'Valor da entrega',
+            'STATUS'=> 'Status do pedido',
         ];
     }
 

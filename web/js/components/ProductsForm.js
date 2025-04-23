@@ -1,7 +1,6 @@
 import { name as ProductItem } from "./ProductItem.js";
 
 import { formatMoney } from "../utils/numberFormat.js";
-import { isPromotional } from "../utils/isPromotional.js";
 
 class ProductsForm extends HTMLElement {
   constructor() {
@@ -29,7 +28,10 @@ class ProductsForm extends HTMLElement {
 
     this.listContainer = document.createElement("ul");
     this.listContainer.style.cssText = `
-      padding: 0.5rem;
+      padding-top: 0.5rem;
+      padding-left: 0.5rem;
+      padding-right: 0.5rem;
+      padding-bottom: 8rem;
       max-height: 40rem;
       overflow-y: scroll;
       
@@ -68,14 +70,15 @@ class ProductsForm extends HTMLElement {
     this.dispatchEvent(new CustomEvent("kyosk-change", { detail }));
 
     const hasSelected = this.selectedProducts.length > 0;
-    fireEvent("toggle-form-slider", { enabled: hasSelected });
+    fireEvent("toggle-form-slider", { enabled: hasSelected });  
+    window.qtdeProdutos = this.selectedProducts.length;    
   }
 
   connectedCallback() {
     if (this.max || this.max === 0) {
       const maxSpan = html`
         <span style="color: var(--color-gray-dark); font-size: 1.4rem;">
-          Máximo: ${this.max} itens
+          Escolha até ${this.max} opções
         </span>
       `;
       this.titleContainer.appendChild(maxSpan);
@@ -84,35 +87,43 @@ class ProductsForm extends HTMLElement {
       this.titleElement.textContent = this.titleText;
     }
 
+    this.listContainer.innerHTML = '';
     const productList = this.products ? this.products : [];
     productList.forEach((product) => {
-      const name = product.PRODUTO || "";
+      const name = product.PRODUTO || ""; 
+      const description = product.ACOMPANHAMENTO || "";    
 
-      const isPromocao = isPromotional(product);
-      const preco = isPromocao ? product.PRECO_PROMOCAO : product.PRECOVENDA;
-      const imageUrl = product.FOTO ? product.FOTO : "../web/images/new/food.jpg";
+      const preco = product.isPromotional ? product.PRECO_PROMOCAO : product.PRECOVENDA;
+      const imageUrl = product.FOTO ? `${window.painelUrl}/${product.FOTO}` : "../web/images/new/food.jpg";
 
       const element = document.createElement(ProductItem);
       element.addEventListener("kyosk-click", this.handleSelect.bind(this));
 
       const slotsHtml = html`<span slot="name">${name.toLowerCase()}</span>`;
       const slotsPreco = html`<span slot="preco">${formatMoney(preco || "")}</span>`;
+      const slotsDescription = html`<span slot="description">${description.toLowerCase()}</span>`;
 
-      if (isPromocao) {
+      if (product.isPromotional) {
         const slotPrecoOriginal = html`<span slot="preco_original">${formatMoney(product.PRECOVENDA || "")}</span>`;
         element.appendChild(slotPrecoOriginal);
       }
 
+      const isSelected = this.selectedProducts.find((item) => 
+        item.CODIGO === product.CODIGO
+      );
+
       element.appendChild(slotsHtml);
       element.appendChild(slotsPreco);
-      element.setAttribute("checked", false);
+      element.appendChild(slotsDescription);
+      element.setAttribute("checked", !!isSelected);
       element.image = imageUrl;
       element.product = product;
 
       this.listContainer.appendChild(element);
     });
 
-    fireEvent("toggle-form-slider", { enabled: false });
+    const hasSelected = this.selectedProducts.length > 0;
+    fireEvent("toggle-form-slider", { enabled: hasSelected });
   }
 
   discconnectCallback() {}

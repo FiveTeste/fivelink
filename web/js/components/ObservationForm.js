@@ -37,7 +37,7 @@ class ObservationForm extends HTMLElement {
         <strong class="content__title">Observação:</strong>
         <div class="content__input input">
           <span class="input__label">Alguma observação sobre o pedido?</span>
-          <textarea class="input__field"></textarea>
+          <textarea class="input__field" maxlength="100"></textarea>
         </div>
       </div>
     `;

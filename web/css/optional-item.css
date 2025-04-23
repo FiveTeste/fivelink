@@ -3,13 +3,14 @@
   box-shadow: var(--card-shadow);
   border-radius: 0.3rem;
   color: var(--color-primary-text);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  cursor: pointer;
+  /*padding: 1rem;*/
+  padding-left: 1rem;
+  padding-right: 1rem;
   transition: all .2s ease;
 }
 
@@ -71,4 +72,72 @@
 .item__checked .checked__icon {
   display: flex;
   text-align: center;
+}
+
+.item__quantity {
+  font-family: var(--font-poppins);
+  display: grid;
+  text-align: center;
+  border: 0.1rem solid var(--color-gray-soft);
+  border-radius: 3rem;
+}
+
+.button__add {
+  height: 3rem;
+  width: 3rem;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--color-primary-text);
+  display: flex;
+  border-radius: 50%;
+  text-decoration: none;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.button__add:hover {
+  background: var(--color-gray-soft);
+  transition: all .3s ease;
+}
+
+.quantity {
+  font-size: 1.2rem;
+}
+
+.button__remove {
+  height: 3rem;
+  width: 3rem;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--color-primary-text);
+  display: flex;
+  border-radius: 50%;
+  text-decoration: none;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.button__remove:hover {
+  background: var(--color-gray-soft);
+  transition: all .3s ease;
+}
+
+.item__icon {
+  display: flex;
+  text-align: center;
+}
+
+.item__button-remove {
+  border: 0;
+  outline: none;
+  background: transparent;
+  display: flex;
+  text-decoration: none;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 }

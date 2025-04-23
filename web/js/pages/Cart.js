@@ -14,6 +14,8 @@ class CartPage extends HTMLElement {
 
     this.attachShadow({ mode: "open" });
     this.shadowRoot.appendChild(pageTemplate);
+
+    
   }
 
   async loadItems(items = []) {
@@ -33,15 +35,17 @@ class CartPage extends HTMLElement {
     });
 
     const newElements = items.reduce((acc, item, index) => {
-      const name = item.name;
+      const qtdestr = item.quantity > 1 ? `(${item.quantity}x) ` : '';
+      
+      const name = qtdestr + item.name;
 
       const isSubgrupo = !!item.subgroup;
 
       let imageUrl = "../web/images/new/food.jpg";
       if (isSubgrupo && item.subgroup.FOTO) {
-        imageUrl = item.subgroup.FOTO;
+        imageUrl = `${window.painelUrl}/${item.subgroup.FOTO}`;
       } else if (item.product && item.product.FOTO) {
-        imageUrl = item.product.FOTO;
+        imageUrl = `${window.painelUrl}/${item.product.FOTO}`;
       }
 
       const observation = (() => {
@@ -72,6 +76,13 @@ class CartPage extends HTMLElement {
       if (priceSlot) priceSlot.remove();
       if (quantitySlot) quantitySlot.remove();
 
+      const buttonAddcart = element.shadowRoot.querySelector('button[class="button__add"]');
+      const buttonMinuscart = element.shadowRoot.querySelector('button[class="button__remove"]');
+      if((item.montagem != null && item.montagem.length > 1) || (item.additional != null && item.additional.length > 0)){
+        buttonAddcart.disabled = true;
+        buttonMinuscart.disabled = true;
+      }      
+
       const slotsHtml = html`
         <span slot="name">${name.toLowerCase()}</span>
         <span slot="observation">${observation.toLowerCase()}</span>
@@ -100,6 +111,7 @@ class CartPage extends HTMLElement {
   connectedCallback() {
     this.loadItems(this.store.state.items);
     fireEvent("change-navbar", { show: true });
+    fireEvent("change-header", { show: true });
 
     this.store.addListener(this.handleUpdateCart.bind(this));
   }

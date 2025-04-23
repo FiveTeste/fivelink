@@ -1,3 +1,4 @@
+
 class QuantitySelector extends HTMLElement {
 
   static get observedAttributes() {
@@ -52,6 +53,33 @@ class QuantitySelector extends HTMLElement {
           background: var(--color-quantity-button-hover-background);
           transition: all .3s ease;
         }
+
+        .content {
+          padding: 0 0.5rem;
+          min-height: 350px;
+        }
+
+        .content .content__title {
+          color: var(--color-primary-text);
+          font-weight: 600;
+          padding: 0 0.5rem;
+          margin-bottom: 1rem;
+          display: inline-block;
+        }
+
+        .input .input__label {
+          color: var(--color-primary-text);
+          font-size: 1.4rem;
+          display: block;
+          margin-bottom: 0.5rem;
+        }
+
+        .input .input__field {
+          width: 100%;
+          min-height: 8rem;
+          padding: 0.5rem;
+          box-sizing: border-box;
+        }
       </style>
     `
 
@@ -75,13 +103,15 @@ class QuantitySelector extends HTMLElement {
     this.input.classList.add("quantity-selector__input");
     this.input.type = "number";
     this.input.id = this.getAttribute("name");
-    this.input.value = 0;
+    this.input.value = 1;
     this.input.style.textAlign = "center";
+    this.input.readOnly = true;
 
     container.appendChild(this.buttonMinus);
     container.appendChild(this.input);
     container.appendChild(this.buttonAdd);
 
+    const quantity_label = html`<strong class="content__title">Quantidade:</strong>`;
     this.appendChild(style);
     this.appendChild(container);
   }
@@ -91,13 +121,13 @@ class QuantitySelector extends HTMLElement {
 
     this.input.value = numberValue;
     this.value = numberValue;
-    this.dispatchChange();
+    this.dispatchChange();         
   }
 
   dispatchChange() {
     const detail = { value: this.value, name: this.getAttribute("name") };
     const event = new CustomEvent("kyosk-change", { detail });
-    this.dispatchEvent(event);
+    this.dispatchEvent(event);      
   }
 
   handleAdd(event) {
@@ -126,6 +156,7 @@ class QuantitySelector extends HTMLElement {
     const value = this.input.value;
     this.value = +value;
     this.dispatchChange();
+
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
@@ -135,18 +166,30 @@ class QuantitySelector extends HTMLElement {
         this.setValue(minValue);
       }
     }
-  }
+  }  
 
   connectedCallback() {
-    this.buttonAdd.addEventListener("click", this.handleAdd.bind(this));
-    this.buttonMinus.addEventListener("click", this.handleMinus.bind(this));
-    this.input.addEventListener("change", this.handleDirectChange.bind(this));
+    this.handleAdd = this.handleAdd.bind(this);
+    this.handleMinus = this.handleMinus.bind(this);
+    this.handleDirectChange = this.handleDirectChange.bind(this);
+   
+    var qtdeProdutos = window.qtdeProdutos;
+    isNaN(qtdeProdutos) ? qtdeProdutos = 1 : qtdeProdutos;  
+
+    var qtdeAdicionais = window.qtdeAdicionais;
+    isNaN(qtdeAdicionais) ? qtdeAdicionais = 0 : qtdeAdicionais;
+    
+    if((qtdeProdutos < 2) && (qtdeAdicionais === 0)){
+      this.buttonAdd.addEventListener("click", this.handleAdd);
+      this.buttonMinus.addEventListener("click", this.handleMinus);
+    }            
+    this.input.addEventListener("change", this.handleDirectChange);    
   }
 
   disconnectedCallback() {
-    this.buttonAdd.removeEventListener("click", this.handleAdd.bind(this));
-    this.buttonMinus.removeEventListener("click", this.handleMinus.bind(this));
-    this.input.removeEventListener("change", this.handleDirectChange.bind(this));
+    this.buttonAdd.removeEventListener("click", this.handleAdd);
+    this.buttonMinus.removeEventListener("click", this.handleMinus);
+    this.input.removeEventListener("change", this.handleDirectChange);  
   }
 }
 

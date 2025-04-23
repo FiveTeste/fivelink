@@ -11,10 +11,11 @@ use Yii;
  * @property string|null $CODOPCIONAL
  * @property string|null $CODITEM
  * @property int|null $CONSUMODELIVERY
+ * @property float|null $QTDE
  *
  * @property ConsumoDelivery $cONSUMODELIVERY
  */
-class ItemOpcionalDelivery extends \yii\db\ActiveRecord
+class Itemopcionaldelivery extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -30,9 +31,10 @@ class ItemOpcionalDelivery extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['QTDE'], 'number'],
             [['CONSUMODELIVERY'], 'integer'],
             [['CODOPCIONAL', 'CODITEM'], 'string', 'max' => 6],
-            [['CONSUMODELIVERY'], 'exist', 'skipOnError' => true, 'targetClass' => ConsumoDelivery::className(), 'targetAttribute' => ['CONSUMODELIVERY' => 'CODIGO']],
+            [['CONSUMODELIVERY'], 'exist', 'skipOnError' => true, 'targetClass' => Consumodelivery::className(), 'targetAttribute' => ['CONSUMODELIVERY' => 'CODIGO']],
         ];
     }
 
@@ -46,6 +48,7 @@ class ItemOpcionalDelivery extends \yii\db\ActiveRecord
             'CODOPCIONAL' => 'Codopcional',
             'CODITEM' => 'Coditem',
             'CONSUMODELIVERY' => 'Consumodelivery',
+            'QTDE' => 'Qtde',
         ];
     }
 
@@ -56,6 +59,6 @@ class ItemOpcionalDelivery extends \yii\db\ActiveRecord
      */
     public function getCONSUMODELIVERY()
     {
-        return $this->hasOne(ConsumoDelivery::className(), ['CODIGO' => 'CONSUMODELIVERY']);
+        return $this->hasOne(Consumodelivery::className(), ['CODIGO' => 'CONSUMODELIVERY']);
     }
 }

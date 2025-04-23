@@ -185,6 +185,12 @@ class Prompt extends HTMLElement {
 
     const container = document.createElement('div');
 
+    input.addEventListener('keypress',(...args)=>{
+      if(args[0].key === 'Enter'){
+        buttonConfirm.click();
+      }
+    });
+
     const buttonConfirm = document.createElement('button');
     buttonConfirm.textContent = confirmText;
     buttonConfirm.classList.add("prompt__button");

@@ -14,6 +14,7 @@ class RegisterPage extends HTMLElement {
 
   connectedCallback() {
     fireEvent("change-navbar", { show: false });
+    fireEvent("change-header", { show: true });
   }
   disconnectedCallback() {
     

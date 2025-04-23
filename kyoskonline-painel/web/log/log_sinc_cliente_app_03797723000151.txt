@@ -1,4 +1,0 @@
-20/04/2020 16:16:32 Dispositivo : App Cliente N° 271 | Erros => CODREGIAO:Codregiao is invalid.
-20/04/2020 16:18:47 Dispositivo : App Cliente N° 271 | Erros => CODREGIAO:Codregiao is invalid.
-20/04/2020 16:26:26 Dispositivo : App Cliente N° 271 | Erros => CODREGIAO:Codregiao is invalid.
-20/04/2020 16:30:44 Dispositivo : App Cliente N° 271 | Erros => CODREGIAO:Codregiao is invalid.

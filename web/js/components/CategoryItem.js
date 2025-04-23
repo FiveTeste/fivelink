@@ -11,7 +11,7 @@ class CategoryItem extends HTMLElement {
 
   onClick() {
     const detail = { value: this.category };
-    this.dispatchEvent(new CustomEvent("kyosk-click", { detail }));
+    this.dispatchEvent(new CustomEvent("kyosk-click", { detail }));  
   }
 
   connectedCallback() {

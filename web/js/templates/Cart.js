@@ -1,6 +1,8 @@
 import { userStore } from "../store/user.js";
 
 import { findClient } from "../utils/clientUtils.js";
+import { isOpen } from "../utils/operation.js";
+import { validatePhone } from "../utils/validatePhone.js";
 class CartTemplate extends HTMLElement {
   constructor() {
     super();
@@ -25,34 +27,60 @@ class CartTemplate extends HTMLElement {
   }
 
   async getClient(response) {
-    const client = await findClient(response);
+    const client = await findClient({ value: response });
     if (client) {
       Router.go('/finish');
     }
   }
 
+  getPhone() {
+    fireEvent("show-prompt", {
+      text: "Informe seu número de telefone.",
+      inputMask: "phone",
+      confirmText: "Confirmar",
+      cancelText: "Cancelar",
+      onConfirm: ({ value: phone }) => {
+        const isValidPhone = validatePhone(phone);
+        if (!isValidPhone) {
+          fireEvent("show-modal", {
+            type: "error", 
+            message: "Informe um número de telefone válido",
+            onConfirm: () => {
+              this.getPhone();
+            }
+          });
+        } else {
+          this.getClient(phone);
+        }
+      }
+    });
+  }
+
   changePhone() {
-    if (userStore.state.user) {
+    if (!isOpen()) {
+      fireEvent("show-modal", {
+        type: "warning", 
+        message: "Não estamos aceitando pedidos no momento!",
+        onConfirm: () => {},
+        textConfirm: "Ok",
+      });
+      return;
+    }
+
+    const user = userStore.state.user;
+    if (user && user.id) {
       Router.go('/finish');
     } else {
-      fireEvent("show-prompt", {
-        text: "Informe seu número de telefone.",
-        inputMask: "phone",
-        confirmText: "Confirmar",
-        cancelText: "Cancelar",
-        onConfirm: this.getClient.bind(this)
-      });
+      this.getPhone();
     }
   }
 
   connectedCallback() {
     const buttonInsertPhone = this.shadowRoot.getElementById("send_cart");
-    buttonInsertPhone.addEventListener("click", this.changePhone.bind(this));
-    
+    buttonInsertPhone.addEventListener("click", this.changePhone.bind(this));    
+
     this.toggleSendButton(this.store.state);
     this.store.addListener(this.toggleSendButton.bind(this));
-
-    
   }
   disconnectedCallback() {
     const buttonInsertPhone = this.shadowRoot.getElementById("send_cart");

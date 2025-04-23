@@ -33,9 +33,10 @@
   width: 100%;
   border-radius: 0.3rem;
   background-position: top left;
-  background-size: 120%;
+  background-size: 100%;
   background-repeat: no-repeat;
-  animation: 30s linear 0s infinite alternate card__image-slide;
+  object-fit: contain;
+  /*animation: 30s linear 0s infinite alternate card__image-slide;*/
 }
 
 @keyframes card__image-slide {

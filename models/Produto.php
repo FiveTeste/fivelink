@@ -9,35 +9,45 @@ use Yii;
  *
  * @property string $CODIGO
  * @property string $PRODUTO
- * @property string $UNIDADE
- * @property double $PRECOVENDA
+ * @property string|null $UNIDADE
+ * @property float $PRECOVENDA
  * @property int $SITUACAO
- * @property string $ADICIONAL
- * @property string $CODGRUPO
- * @property string $CODSUBGRUPO
- * @property string $PRODUTO_MONTADO
- * @property string $MOSTRA_KYOSK_APP
- * @property double $PRECO_PROMOCAO
- * @property string $DT_INICIO_PROMOCAO
- * @property string $DT_FIM_PROMOCAO
- * @property string $HORA_INICIO_PROMOCAO
- * @property string $HORA_FIM_PROMOCAO
- * @property int $HORARIO_PROMOCAO
- * @property int $USA_BALANCA
- * @property int $USA_TALHERES
- * @property int $USA_PONTO_CARNE
- * @property int $USA_COPOS
- * @property string $ACOMPANHAMENTO
- * @property string $FOTO
- * @property string $OPCIONAL
- * @property string $DESTAQUE
- * @property string $PROMO_DIAS_SEMANA
+ * @property string|null $ADICIONAL
+ * @property string|null $CODGRUPO
+ * @property string|null $CODSUBGRUPO
+ * @property string|null $PRODUTO_MONTADO
+ * @property string|null $MOSTRA_KYOSK_APP
+ * @property float|null $PRECO_PROMOCAO
+ * @property string|null $DT_INICIO_PROMOCAO
+ * @property string|null $DT_FIM_PROMOCAO
+ * @property string|null $HORA_INICIO_PROMOCAO
+ * @property string|null $HORA_FIM_PROMOCAO
+ * @property int|null $HORARIO_PROMOCAO
+ * @property int|null $USA_BALANCA
+ * @property int|null $USA_TALHERES
+ * @property int|null $USA_PONTO_CARNE
+ * @property int|null $USA_COPOS
+ * @property string|null $ACOMPANHAMENTO
+ * @property string|null $FOTO
+ * @property string|null $OPCIONAL
+ * @property int|null $QTDE_MAX_OPCIONAL
+ * @property int|null $QTDE_MAX_OPCOES
+ * @property string|null $DESTAQUE
+ * @property string|null $PROMO_DIAS_SEMANA
+ * @property int $PROMO_DELIVERY
+ * @property int $PROMO_MESA
+ * @property int $APP_CARDAPIO
+ * @property int $APP_DELIVERY
+ * @property int|null $QTDE_MAX_ADICIONAL
  *
  * @property Consumo[] $consumos
+ * @property ConsumoDelivery[] $consumoDeliveries
+ * @property ItemMontado[] $itemMontados
+ * @property ItemMontadoDelivery[] $itemMontadoDeliveries
  * @property Grupo $cODGRUPO
- * @property Subgrupo $cODSUBGRUPO
  * @property ProdutoAdicional[] $produtoAdicionals
  * @property ProdutoIngrediente[] $produtoIngredientes
+ * @property ProdutoOpcional[] $produtoOpcionals
  */
 class Produto extends \yii\db\ActiveRecord
 {
@@ -55,9 +65,9 @@ class Produto extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['CODIGO', 'PRODUTO', 'PRECOVENDA', 'SITUACAO'], 'required'],
+            [['CODIGO', 'PRODUTO', 'PRECOVENDA', 'SITUACAO', 'PROMO_DELIVERY', 'PROMO_MESA', 'APP_CARDAPIO', 'APP_DELIVERY'], 'required'],
             [['PRECOVENDA', 'PRECO_PROMOCAO'], 'number'],
-            [['SITUACAO', 'HORARIO_PROMOCAO', 'USA_BALANCA', 'USA_TALHERES', 'USA_PONTO_CARNE', 'USA_COPOS'], 'integer'],
+            [['SITUACAO', 'HORARIO_PROMOCAO', 'USA_BALANCA', 'USA_TALHERES', 'USA_PONTO_CARNE', 'USA_COPOS', 'QTDE_MAX_OPCIONAL', 'QTDE_MAX_OPCOES', 'PROMO_DELIVERY', 'PROMO_MESA', 'APP_CARDAPIO', 'APP_DELIVERY','QTDE_MAX_ADICIONAL'], 'integer'],
             [['CODIGO', 'CODGRUPO', 'CODSUBGRUPO'], 'string', 'max' => 6],
             [['PRODUTO'], 'string', 'max' => 100],
             [['UNIDADE'], 'string', 'max' => 3],
@@ -66,7 +76,6 @@ class Produto extends \yii\db\ActiveRecord
             [['ACOMPANHAMENTO', 'FOTO'], 'string', 'max' => 200],
             [['CODIGO'], 'unique'],
             [['CODGRUPO'], 'exist', 'skipOnError' => true, 'targetClass' => Grupo::className(), 'targetAttribute' => ['CODGRUPO' => 'CODIGO']],
-            [['CODSUBGRUPO'], 'exist', 'skipOnError' => true, 'targetClass' => Subgrupo::className(), 'targetAttribute' => ['CODSUBGRUPO' => 'CODIGO']],
         ];
     }
 
@@ -84,27 +93,36 @@ class Produto extends \yii\db\ActiveRecord
             'ADICIONAL' => 'Adicional',
             'CODGRUPO' => 'Codgrupo',
             'CODSUBGRUPO' => 'Codsubgrupo',
-            'PRODUTO_MONTADO' => 'Produto Montado',
-            'MOSTRA_KYOSK_APP' => 'Mostra Kyosk App',
-            'PRECO_PROMOCAO' => 'Preco Promocao',
-            'DT_INICIO_PROMOCAO' => 'Dt Inicio Promocao',
-            'DT_FIM_PROMOCAO' => 'Dt Fim Promocao',
-            'HORA_INICIO_PROMOCAO' => 'Hora Inicio Promocao',
-            'HORA_FIM_PROMOCAO' => 'Hora Fim Promocao',
-            'HORARIO_PROMOCAO' => 'Horario Promocao',
-            'USA_BALANCA' => 'Usa Balanca',
-            'USA_TALHERES' => 'Usa Talheres',
-            'USA_PONTO_CARNE' => 'Usa Ponto Carne',
-            'USA_COPOS' => 'Usa Copos',
+            'PRODUTO_MONTADO' => 'Produto  Montado',
+            'MOSTRA_KYOSK_APP' => 'Mostra  Kyosk  App',
+            'PRECO_PROMOCAO' => 'Preco  Promocao',
+            'DT_INICIO_PROMOCAO' => 'Dt  Inicio  Promocao',
+            'DT_FIM_PROMOCAO' => 'Dt  Fim  Promocao',
+            'HORA_INICIO_PROMOCAO' => 'Hora  Inicio  Promocao',
+            'HORA_FIM_PROMOCAO' => 'Hora  Fim  Promocao',
+            'HORARIO_PROMOCAO' => 'Horario  Promocao',
+            'USA_BALANCA' => 'Usa  Balanca',
+            'USA_TALHERES' => 'Usa  Talheres',
+            'USA_PONTO_CARNE' => 'Usa  Ponto  Carne',
+            'USA_COPOS' => 'Usa  Copos',
             'ACOMPANHAMENTO' => 'Acompanhamento',
             'FOTO' => 'Foto',
             'OPCIONAL' => 'Opcional',
+            'QTDE_MAX_OPCIONAL' => 'Qtde  Max  Opcional',
+            'QTDE_MAX_OPCOES' => 'Qtde  Max  Opcoes',
             'DESTAQUE' => 'Destaque',
-            'PROMO_DIAS_SEMANA' => 'Promo Dias Semana',
+            'PROMO_DIAS_SEMANA' => 'Promo  Dias  Semana',
+            'PROMO_DELIVERY' => 'Promo  Delivery',
+            'PROMO_MESA' => 'Promo  Mesa',
+            'APP_CARDAPIO' => 'App  Cardapio',
+            'APP_DELIVERY' => 'App  Delivery',
+			'QTDE_MAX_ADICIONAL'=>'Qtde Max Adicional',
         ];
     }
 
     /**
+     * Gets query for [[Consumos]].
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getConsumos()
@@ -113,6 +131,38 @@ class Produto extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[ConsumoDeliveries]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getConsumoDeliveries()
+    {
+        return $this->hasMany(ConsumoDelivery::className(), ['COD_PRODUTO' => 'CODIGO']);
+    }
+
+    /**
+     * Gets query for [[ItemMontados]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getItemMontados()
+    {
+        return $this->hasMany(ItemMontado::className(), ['CODPRODUTO' => 'CODIGO']);
+    }
+
+    /**
+     * Gets query for [[ItemMontadoDeliveries]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getItemMontadoDeliveries()
+    {
+        return $this->hasMany(ItemMontadoDelivery::className(), ['CODPRODUTO' => 'CODIGO']);
+    }
+
+    /**
+     * Gets query for [[CODGRUPO]].
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getCODGRUPO()
@@ -121,14 +171,8 @@ class Produto extends \yii\db\ActiveRecord
     }
 
     /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCODSUBGRUPO()
-    {
-        return $this->hasOne(Subgrupo::className(), ['CODIGO' => 'CODSUBGRUPO']);
-    }
-
-    /**
+     * Gets query for [[ProdutoAdicionals]].
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getProdutoAdicionals()
@@ -137,10 +181,22 @@ class Produto extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[ProdutoIngredientes]].
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getProdutoIngredientes()
     {
         return $this->hasMany(ProdutoIngrediente::className(), ['CODPRODUTO' => 'CODIGO']);
+    }
+
+    /**
+     * Gets query for [[ProdutoOpcionals]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProdutoOpcionals()
+    {
+        return $this->hasMany(ProdutoOpcional::className(), ['CODPRODUTO' => 'CODIGO']);
     }
 }

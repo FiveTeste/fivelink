@@ -1,5 +1,4 @@
 import { formatMoney } from "../utils/numberFormat.js";
-import { isPromotional } from "../utils/isPromotional.js";
 
 import { api } from "../services/api.js";
 class HomeTemplate extends HTMLElement {
@@ -26,7 +25,7 @@ class HomeTemplate extends HTMLElement {
   handleNavigate(product) {
     const { CODIGO, CODGRUPO } = product;
 
-    const url = `${CODGRUPO}/produtos/${CODIGO}${location.search}`;
+    const url = `/${CODGRUPO}/produtos/${CODIGO}${location.search}`;
     Router.go(url);
   }
 
@@ -37,17 +36,16 @@ class HomeTemplate extends HTMLElement {
 
     items.forEach((item) => {
       const productName = item.PRODUTO || "";
-      const isPromocao = isPromotional(item);
-      const preco = isPromocao ? item.PRECO_PROMOCAO : item.PRECOVENDA;
+      const preco = item.isPromotional ? item.PRECO_PROMOCAO : item.PRECOVENDA;
 
-      const imageUrl = item.FOTO ? item.FOTO : "../web/images/new/food.jpg";
+      const imageUrl = item.FOTO ? `${window.painelUrl}/${item.FOTO}` : "../web/images/new/food.jpg";
       const imageBackground = `linear-gradient(0deg, rgba(16, 17, 37, 0.5), rgba(16, 17, 37, 0.5)), url(${imageUrl});`
 
       const itemElement = html`
         <li class="glide__slide highlight__item" style="background-image: ${imageBackground}">
           <span class="item__name">${productName.toLowerCase()}</span>
           <div class="item__price price">
-              ${isPromocao ? `<span class="price__old">${formatMoney(item.PRECOVENDA || "")}</span>` : ''}
+              ${item.isPromotional ? `<span class="price__old">${formatMoney(item.PRECOVENDA || "")}</span>` : ''}
               <span class="price__current">${formatMoney(preco || "")}</span>
           </div>
         </li>

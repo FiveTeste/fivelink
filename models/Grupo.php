@@ -9,17 +9,16 @@ use Yii;
  *
  * @property string $CODIGO
  * @property string $GRUPO
- * @property string $NAO_MOSTRA_KYOSK
- * @property string $subgrupos
+ * @property string|null $NAO_MOSTRA_KYOSK
+ * @property string|null $FOTO
+ * @property int $APP_CARDAPIO
+ * @property int $APP_DELIVERY
+ * @property int $SEQUENCIA
  *
  * @property Produto[] $produtos
  */
 class Grupo extends \yii\db\ActiveRecord
 {
-    /**
-     * @ignore
-     */
-    public $subgrupos;
     /**
      * {@inheritdoc}
      */
@@ -34,11 +33,12 @@ class Grupo extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['CODIGO', 'GRUPO', 'NAO_MOSTRA_KYOSK'], 'required'],
+            [['CODIGO', 'GRUPO', 'APP_CARDAPIO', 'APP_DELIVERY'], 'required'],
+            [['FOTO'], 'string'],
+            [['APP_CARDAPIO', 'APP_DELIVERY','SEQUENCIA'], 'integer'],
             [['CODIGO'], 'string', 'max' => 6],
             [['GRUPO'], 'string', 'max' => 60],
             [['NAO_MOSTRA_KYOSK'], 'string', 'max' => 2],
-            [['subgrupos'], 'string'],
             [['CODIGO'], 'unique'],
         ];
     }
@@ -51,21 +51,21 @@ class Grupo extends \yii\db\ActiveRecord
         return [
             'CODIGO' => 'Codigo',
             'GRUPO' => 'Grupo',
-            'NAO_MOSTRA_KYOSK' => 'Nao Mostra Kyosk',
-            'subgrupos' => 'subgrupos',
+            'NAO_MOSTRA_KYOSK' => 'Nao  Mostra  Kyosk',
+            'FOTO' => 'Foto',
+            'APP_CARDAPIO' => 'App  Cardapio',
+            'APP_DELIVERY' => 'App  Delivery',
+            'SEQUENCIA' => 'Sequencia',
         ];
     }
 
     /**
+     * Gets query for [[Produtos]].
+     *
      * @return \yii\db\ActiveQuery
      */
     public function getProdutos()
     {
         return $this->hasMany(Produto::className(), ['CODGRUPO' => 'CODIGO']);
-    }
-    
-    public function getSubgrupos()
-    {
-        return $this->hasMany(Subgrupo::className(), ['CODGRUPO' => 'CODIGO']);
     }
 }

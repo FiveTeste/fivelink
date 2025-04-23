@@ -36,6 +36,7 @@
 }
 
 
+
 .content .content__button:hover::before {
   opacity: 1;
 }

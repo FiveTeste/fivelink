@@ -22,10 +22,12 @@ class AppAsset extends AssetBundle
     public $css = [
         'css/main.css',
         'css/white-theme.css',
+		'css/toastr.min.css',
     ];
     
     public $js = [
-        
+        'js/jquery-1.9.1.js',
+        'js/toastr.min.js'
     ];
 
     public $depends = [];

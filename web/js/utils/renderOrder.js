@@ -29,6 +29,7 @@ export const createOrderDetail = (state) => {
     return `${productsDetail}<br />${detail}`;
   }
 
+  
   return productsDetail;
 }
 
@@ -47,9 +48,9 @@ export const createProductsDetail = (state) => {
   }
   if (optional && optional.length > 0) {
     const str = optional.reduce((acc, item, index) => {
-      if (index > 0) return `${acc}, ${item.PRODUTO}`;
+      if (index > 0) return `${acc}, (${item.quantity}x) ${item.product.PRODUTO}`;
 
-      return `${item.PRODUTO}`;
+      return `(${item.quantity}x) ${item.product.PRODUTO}`;
     }, "");
 
     finalStr = `${finalStr}<br />Opcionais: ${str}`;
@@ -57,9 +58,9 @@ export const createProductsDetail = (state) => {
 
   if (additional && additional.length > 0) {
     const str = additional.reduce((acc, item, index) => {
-      if (index > 0) return `${acc}, ${item.PRODUTO}`;
+      if (index > 0) return `${acc}, (${item.quantity}x) ${item.product.PRODUTO}`;
 
-      return `${item.PRODUTO}`;
+      return `(${item.quantity}x) ${item.product.PRODUTO}`;
     }, "");
 
     finalStr = `${finalStr}<br />Adicionais: ${str}`;
@@ -162,8 +163,9 @@ export const createForms = () => {
 
   const adicionalForm = document.createElement(OpcionaisForm);
   adicionalForm.storeKey = "additional";
-  adicionalForm.titleText = "Adicionais";
+  adicionalForm.titleText = "Adicione"; // OpcionaisForm linha 93 tem uma logica que usa o valor dessa variavel
   adicionalForm.showPrice = true;
+  adicionalForm.validateMax = true;
   adicionalForm.addEventListener("kyosk-change", dispatchStore(setAdditional));
 
   const opcionaisForm = document.createElement(OpcionaisForm);
@@ -186,13 +188,13 @@ export const createForms = () => {
 
   const forms = new Map();
   forms.set("products", { index: 0, element: productsForm });
-  forms.set("opcionais", { index: 1, element: opcionaisForm });
-  forms.set("additional", { index: 2, element: adicionalForm });
-  forms.set("opcoes", { index: 3, element: opcoesForm });
-  forms.set("ponto-carne", { index: 4, element: pontoCarneForm });
+  forms.set("ponto-carne", { index: 1, element: pontoCarneForm });
+  forms.set("opcionais", { index: 2, element: opcionaisForm });
+  forms.set("additional", { index: 3, element: adicionalForm });
+  forms.set("opcoes", { index: 4, element: opcoesForm });
   // forms.set("usa-copos", { index: 5, element: usaCoposForm });
   // forms.set("usa-talheres", { index: 6, element: usaTalheresForm });
-  forms.set("observation", { index: 7, element: observationForm });
+  //forms.set("observation", { index: 7, element: observationForm });
   forms.set("quantity", { index: 8, element: quantityForm });
 
   return forms;
@@ -203,7 +205,8 @@ export const getSliderForms = (options, forms) => {
   const observation = forms.get("observation");
   const quantity = forms.get("quantity");
 
-  const resultForms = [observation, quantity];
+  //const resultForms = [observation, quantity];
+  const resultForms = [quantity];
 
   if (options.PRODUTOS === 1) {
     const form = forms.get("products");
@@ -214,8 +217,8 @@ export const getSliderForms = (options, forms) => {
     resultForms.push(form);
   }
 
-  const maxAdicional = +options.QTDE_MAX_ADICIONAL;
-  if (options.adicionais && options.adicionais.length > 0 && maxAdicional > 0) {
+  if (options.adicionais && options.adicionais.length > 0) {    
+    const maxAdicional = options.QTDE_MAX_ADICIONAL || 0;
     const form = forms.get("additional");
     form.element.loadProducts(options.adicionais);
     form.element.setMax(maxAdicional);
@@ -223,8 +226,8 @@ export const getSliderForms = (options, forms) => {
     resultForms.push(form);
   }
 
-  const maxOpcional = +options.QTDE_MAX_OPCIONAL;
-  if (options.opcionais && options.opcionais.length > 0 && maxOpcional > 0) {
+  if (options.opcionais && options.opcionais.length > 0) {
+    const maxOpcional = options.QTDE_MAX_OPCIONAL || 0;
     const form = forms.get("opcionais");
     form.element.loadProducts(options.opcionais);
     form.element.setMax(maxOpcional);
@@ -232,8 +235,8 @@ export const getSliderForms = (options, forms) => {
     resultForms.push(form);
   }
 
-  const maxOpcoes = +options.QTDE_MAX_OPCOES;
-  if (options.opcoes && options.opcoes.length > 0 && maxOpcoes > 0) {
+  if (options.opcoes && options.opcoes.length > 0) {
+    const maxOpcoes = options.QTDE_MAX_OPCOES || 0;
     const form = forms.get("opcoes");
     form.element.loadProducts(options.opcoes);
     form.element.setMax(maxOpcoes);
@@ -246,10 +249,10 @@ export const getSliderForms = (options, forms) => {
 
 export const finishOrder = ({ product, unitPrice, category }) => {
   const state = orderStore.state;
-
   const totalPrice = unitPrice * state.quantity;
 
-  const additionalPrice = calcAdditionalPrice(state.additional);
+  const additionalPrice = state.quantity * calcAdditionalPrice(state.additional);  //calculo que considera qtde do produto para ficar certo o valor dos adicionais
+  //const additionalPrice = calcAdditionalPrice(state.additional);
   const finalPrice = parseFloat(totalPrice) + parseFloat(additionalPrice);
 
   const currentDate = new Date();
@@ -281,17 +284,21 @@ export const finishOrder = ({ product, unitPrice, category }) => {
 
   appStore.dispatchAction(addItem(finish));
 
+  window.qtdeProdutos = 0;
+  window.qtdeAdicionais = 0;  
+  
   fireEvent("show-confirm", {
     message: "Deseja continuar pedindo?",
     confirmText: "Pedir mais",
     cancelText: "Ir para o carrinho",
     onConfirm: () => {
       orderStore.dispatchAction(clearOrder());
-      const url = `/${window.location.search}`;
+      //const url = `/home${window.location.search}`;      
+      const url = window.location.returnnavigation || `/home${window.location.search}`;
       Router.go(url);
     }, 
     onCancel: () => {
-      orderStore.dispatchAction(clearOrder());
+      orderStore.dispatchAction(clearOrder());      
       const url = `/carrinho${window.location.search}`;
       Router.go(url);
     }

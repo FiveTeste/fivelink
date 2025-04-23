@@ -1,0 +1,130 @@
+.content {
+  font-family: var(--font-poppins);
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 1fr 15rem;
+  height: 100%;
+  max-height: 100%;
+  min-height: 78rem;
+  overflow: hidden;
+}
+
+.content .content__header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.header .header__logo {
+  width: 25rem;
+  border-radius: 50%;
+}
+
+.header .header__title {
+  font-weight: 600;
+  font-size: 2.8rem;
+  color: var(--color-primary-text);
+}
+
+
+.content .content__infos {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(auto-fit, 6.5rem);
+  row-gap: 2.5rem;
+  padding: 0 1rem;
+}
+
+.content__infos .info__item {
+  margin: 0 auto;
+  width: 100%;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  cursor: pointer;
+  border: none;
+  outline: 0;
+  color: var(--color-secondary-text);
+  font-weight: 600;
+  font-family: var(--font-poppins);
+  z-index: 1;
+  position:relative;
+  text-decoration: none;
+}
+
+.info__item::before {
+  position: absolute;
+  content: "";
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 0.5rem;
+  z-index: -1;
+  transition: opacity 0.3s linear;
+  opacity: 0;
+}
+
+.info__item:not(:disabled):hover::before {
+  opacity: 1;
+}
+
+.info__item .item__text:not(:only-child) {
+  margin-left: 1rem;
+}
+
+.info__item.order-link {
+  background: var(--background-gradient);
+}
+
+.info__item.order-link::before {
+  background: var(--background-gradient-inverted);
+}
+
+.info__item.insta-link {
+  background: var(--instagram-gradient);
+}
+
+.info__item.insta-link::before {
+  background: var(--instagram-gradient-inverted);
+}
+
+.info__item.location-link {
+  background: linear-gradient(150deg, #39b5e8, #3977e2, #005bdf);
+}
+
+.info__item.location-link::before {
+  background: linear-gradient(150deg, #005bdf, #3977e2, #39b5e8);
+}
+
+
+.content .content__footer {
+  background-color: #002F5A;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+}
+
+.footer .footer__logo {
+  width: 18rem;
+}
+
+.footer .footer__text {
+  margin-top: 1.5rem;
+  color: var(--color-secondary-text);
+  text-align: center;
+}
+
+.header__item.operation-closed {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  flex-direction: column;
+  padding: 0 1rem;
+}

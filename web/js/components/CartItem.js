@@ -1,4 +1,4 @@
-import { removeItem, incrementItem, decrementItem } from "../store/actions.js";
+import { removeItem, incrementItem, decrementItem, countOrder } from "../store/actions.js";
 class CartItem extends HTMLElement {
   constructor(){
     super();
@@ -10,9 +10,28 @@ class CartItem extends HTMLElement {
     shadow.appendChild(content);
   }
 
-  handleDelete() {
+  handleDelete() {    
     const index = this.index;
-    this.store.dispatchAction(removeItem({ index }));
+    fireEvent("show-modal", {
+      message: "Deseja realmente excluir o item?",
+      onConfirm: ()=>{
+        this.store.dispatchAction(removeItem({ index }));
+        this.store.dispatchAction(countOrder());
+        const itensCart = this.store.state.items.length;
+        isNaN(itensCart) ? itensCart = 0 : itensCart;
+        if(itensCart === 0){
+          const url = `/home${window.location.search}`;
+          Router.go(url);
+        }
+      },
+      textConfirm: "Confirmar",
+      onCancel: () => {
+  
+      },
+      textCancel: "Cancelar"
+    });
+
+    //this.store.dispatchAction(removeItem({ index }));
   }
 
   handleIncrement() {
@@ -34,6 +53,15 @@ class CartItem extends HTMLElement {
 
     const deleteButton = this.shadowRoot.querySelector("button.item__button-remove");
     deleteButton.addEventListener("click", this.handleDelete.bind(this));
+
+    /*const quantityContainer = this.shadowRoot.querySelector(".item__quantity");
+    quantityContainer.addEventListener("click",function(){
+      fireEvent("show-modal", {
+        message: "Senhor(a) cliente, caso o pedido tenha adicionais ou mais de uma opção "+
+        "marcada em opções de sabores, não será possível alterar a quantidade!",
+        textConfirm: "Ok"
+      });
+    });*/
   }
 
   disconnectedCallback() {

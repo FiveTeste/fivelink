@@ -58,7 +58,7 @@ class ProductTemplate extends HTMLElement {
     const price = this.unitPrice;
     const value = price * quantity;
 
-    const additionalPrice = calcAdditionalPrice(additional);
+    const additionalPrice = (quantity * calcAdditionalPrice(additional));
     const finalPrice = parseFloat(value) + parseFloat(additionalPrice);
     const fixedPrice = finalPrice.toFixed(2);
 
@@ -76,6 +76,15 @@ class ProductTemplate extends HTMLElement {
   onChangeProducts(state) {
     const { products = [] } = state;
     const productsArr = this.category ? products : [this.product];
+
+    if(productsArr.length > 0){
+      var produtoStr = productsArr[0].PRODUTO;
+      if(state.quantity > 1){
+        produtoStr = `(${state.quantity}x) ${productsArr[0].PRODUTO}`;
+      }
+      const prodname = this.querySelector("span[slot='name']");
+      prodname.textContent = produtoStr;
+    }
 
     this.options = getProductsConfig(productsArr, this.category);
     this.slider.items = [...getSliderForms(this.options, this.forms)];
@@ -129,7 +138,8 @@ class ProductTemplate extends HTMLElement {
 
       const image = this.category.FOTO;
       if (image) {
-        imageElement.style.setProperty("background-image", `url(${image})`);
+        const imageUrl = `${window.painelUrl}/${image}`;
+        imageElement.style.setProperty("background-image", `url(${imageUrl})`);
       }
     } else {
       this.loadProductOptions();
@@ -138,7 +148,8 @@ class ProductTemplate extends HTMLElement {
 
       const image = this.product.FOTO;
       if (image) {
-        imageElement.style.setProperty("background-image", `url(${image})`);
+        const imageUrl = `${window.painelUrl}/${image}`;
+        imageElement.style.setProperty("background-image", `url(${imageUrl})`);
       }
     }
 

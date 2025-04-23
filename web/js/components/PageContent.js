@@ -15,17 +15,60 @@ class PageContent extends HTMLElement {
   removeFooter() {
     const pgContainer = this.shadowRoot.querySelector(".page");
     const footer = pgContainer.querySelector(".page__footer");
-
     footer.style.setProperty("display", "none");
-    pgContainer.style.setProperty("grid-template-rows", "5.4rem 1fr");
+    
+    const header = pgContainer.querySelector(".page__header");
+    const headerIsPresent = header.style.getPropertyValue('display') !== 'none';
+    if (headerIsPresent) {
+      pgContainer.style.setProperty("grid-template-rows", "5.4rem 1fr");
+    } else {
+      pgContainer.style.setProperty("grid-template-rows", "1fr");
+    }
   }
 
   showFooter() {
     const pgContainer = this.shadowRoot.querySelector(".page");
     const footer = pgContainer.querySelector(".page__footer");
-
     footer.style.removeProperty("display");
-    pgContainer.style.removeProperty("grid-template-rows");
+
+    const header = pgContainer.querySelector(".page__header");
+    const headerIsPresent = header.style.getPropertyValue('display') !== 'none';
+    if (headerIsPresent) {
+      pgContainer.style.removeProperty("grid-template-rows");
+    } else {
+      pgContainer.style.setProperty("grid-template-rows", "1fr 6rem");
+    }
+  }
+
+  removeHeader() {
+    const pgContainer = this.shadowRoot.querySelector(".page");
+    const header = pgContainer.querySelector(".page__header");
+    header.style.setProperty("display", "none");
+
+    const footer = pgContainer.querySelector(".page__footer");
+    const footerIsPresent = footer.style.getPropertyValue('display') !== 'none';
+    if (footerIsPresent) {
+      pgContainer.style.setProperty("grid-template-rows", "1fr 6rem");
+    } else {
+      pgContainer.style.setProperty("grid-template-rows", "1fr");
+    }
+  }
+
+  showHeader() {
+    const pgContainer = this.shadowRoot.querySelector(".page");
+    const header = pgContainer.querySelector(".page__header");
+    header.style.removeProperty("display");
+
+    const nomeempresa = pgContainer.querySelector(".page__header span.header__nomeempresa");
+    nomeempresa.textContent = window.empresa.FANTASIA;
+
+    const footer = pgContainer.querySelector(".page__footer");
+    const footerIsPresent = footer.style.getPropertyValue('display') !== 'none';
+    if (footerIsPresent) {
+      pgContainer.style.removeProperty("grid-template-rows");
+    } else {
+      pgContainer.style.setProperty("grid-template-rows", "5.4rem 1fr");
+    }
   }
 
   changeNavBar(event) {
@@ -34,6 +77,15 @@ class PageContent extends HTMLElement {
       this.showFooter();
     } else {
       this.removeFooter();
+    }
+  }
+
+  changeHeader(event) {
+    const show = event.detail.show;
+    if (show) {
+      this.showHeader();
+    } else {
+      this.removeHeader();
     }
   }
 
@@ -270,6 +322,7 @@ class PageContent extends HTMLElement {
     
     window.addEventListener("vaadin-router-location-changed", this.loadLinks.bind(this));
     window.addEventListener("kyosk-change-navbar", this.changeNavBar.bind(this));
+    window.addEventListener("kyosk-change-header", this.changeHeader.bind(this));
     window.addEventListener("kyosk-show-modal", this.showModal.bind(this));
     window.addEventListener("kyosk-show-confirm", this.showConfirm.bind(this));
     window.addEventListener("kyosk-quantity-prompt", this.showQuantityPrompt.bind(this));
@@ -283,7 +336,8 @@ class PageContent extends HTMLElement {
     this.store.removeListener(this.updatedCart.bind(this));
 
     window.removeEventListener("vaadin-router-location-changed", this.loadLinks.bind(this));
-    window.removeEventListener("kyosk-change-navbar", this.loadLinks.bind(this));
+    window.removeEventListener("kyosk-change-navbar", this.changeNavBar.bind(this));
+    window.removeEventListener("kyosk-change-header", this.changeHeader.bind(this));
     window.removeEventListener("kyosk-show-modal", this.showModal.bind(this));
     window.removeEventListener("kyosk-show-confirm", this.showConfirm.bind(this));
     window.removeEventListener("kyosk-quantity-prompt", this.showQuantityPrompt.bind(this));

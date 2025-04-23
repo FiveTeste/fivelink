@@ -17,12 +17,11 @@ class OrderSummary extends HTMLElement {
     
     const totalPrice = sumTotalPrice(items);
     const shippingTax = getShippingTax(state);
-
-    let totalFinal = parseFloat(totalPrice) + parseFloat(shippingTax);
     
-    const discount = getDiscountValue(totalFinal, cupom);
+    const discount = getDiscountValue(parseFloat(totalPrice), cupom);
 
-    totalFinal = totalFinal - parseFloat(discount);
+    let totalFinal = parseFloat(totalPrice) - parseFloat(discount);
+    totalFinal = totalFinal + parseFloat(shippingTax);
     totalFinal = totalFinal.toFixed(2);
 
     const totalValueContainer = this.shadowRoot.getElementById("total-value");

@@ -33,7 +33,7 @@ class CategoriesPage extends HTMLElement {
 
     data.forEach((item) => {
       const subGrupoName = item.SUBGRUPO || "";
-      const imageUrl = item.FOTO ? item.FOTO : "../web/images/new/food.jpg";
+      const imageUrl = item.FOTO ? `${window.painelUrl}/${item.FOTO}` : "../web/images/new/food.jpg";
 
       const element = document.createElement(CategoryItem);
       element.addEventListener("kyosk-click", this.handleClickItem.bind(this));
@@ -52,6 +52,7 @@ class CategoriesPage extends HTMLElement {
   connectedCallback() {
     this.loadItems();
     fireEvent("change-navbar", { show: true });
+    fireEvent("change-header", { show: true });
   }
 }
 

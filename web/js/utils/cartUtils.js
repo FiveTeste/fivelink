@@ -3,14 +3,14 @@ import { userStore } from "../store/user.js";
 import { clear } from "../store/actions.js";
 
 import { api } from "../services/api.js";
-import { isPromotional } from "./isPromotional.js";
 import { sumTotalPrice, getShippingTax, getDiscountValue } from "./calcs.js";
 import { formatMoney } from "./numberFormat.js";
+import { masks } from "./masks.js";
 
 const WHATSAPP_BREAK_LINE = "\n";
 
 const createMontadoObject = (item) => {
-  const itemPrice = isPromotional(item) ? item.PRECO_PROMOCAO : item.PRECOVENDA;
+  const itemPrice = item.isPromotional ? item.PRECO_PROMOCAO : item.PRECOVENDA;
 
   return { 
     NOMEPRODUTO: item.PRODUTO,
@@ -20,15 +20,15 @@ const createMontadoObject = (item) => {
 }
 
 const createAdditionalObject = (item) => {
-  const itemPrice = isPromotional(item) ? item.PRECO_PROMOCAO : item.PRECOVENDA;
+  const itemPrice = item.product.isPromotional ? item.product.PRECO_PROMOCAO : item.product.PRECOVENDA;
   const parsedPrice = parseFloat(itemPrice);
 
   return {
-    NOMEADICIONAL: item.PRODUTO,
-    CODADICIONAL: item.CODIGO,
-    QTDE: 1,
+    NOMEADICIONAL: item.product.PRODUTO,
+    CODADICIONAL: item.product.CODIGO,
+    QTDE: item.quantity,
     PRECO: parsedPrice.toFixed(2),
-    CODITEM: item.ISADICIONAL_COD
+    CODITEM: item.product.ISADICIONAL_COD
   }
 }
 
@@ -45,9 +45,10 @@ const createOpcoesObject = (item) => {
 
 const createOptionalObject = (item) => {
   return {
-    NOMEOPCIONAL: item.PRODUTO,
-    CODOPCIONAL: item.CODIGO,
-    CODITEM: item.ISOPCIONAL_COD
+    NOMEOPCIONAL: item.product.PRODUTO,
+    CODOPCIONAL: item.product.CODIGO,
+    QTDE: item.quantity,
+    CODITEM: item.product.ISOPCIONAL_COD
   }
 }
 
@@ -70,6 +71,23 @@ const createItemToSendObject = (item) => {
   const itemsOpcoes = item.opcoes || [];
   const opcoes = itemsOpcoes.map(createOpcoesObject);
 
+  const day = itemDate.getDate();
+  const month = itemDate.getMonth() + 1;
+  const year = itemDate.getFullYear();
+  const hour = itemDate.getHours();
+  const minute = itemDate.getMinutes();
+  const seconds = itemDate.getSeconds();
+  
+  const dayStr = String(day).padStart(2, '0');
+  const monthStr = String(month).padStart(2, '0');
+  const hourStr = String(hour).padStart(2, '0');
+  const minuteStr = String(minute).padStart(2, '0');
+  const secondsStr = String(seconds).padStart(2, '0');
+
+  const dateStr = `${dayStr}/${monthStr}/${year}`;
+  const timeStr = `${hourStr}:${minuteStr}:${secondsStr}`;
+
+
   return {
     ADC_CODITEM: "",
     ADICIONAL: "N",
@@ -82,10 +100,10 @@ const createItemToSendObject = (item) => {
     COD_USUARIO: "000001",
     COMPLEMENTO: item.observation,
     COMPLEMENTO2: item.detail,
-    DATA: itemDate.toLocaleDateString(),
+    DATA: dateStr,
     DISPOSITIVO: item.hash,
     FOTO: "default.png",
-    HORA: itemDate.toLocaleTimeString(),
+    HORA: timeStr,
     IMPRESSO: 0,
     LISTA_ADICIONAIS: adicional,
     LISTA_OPCIONAIS: opcionais,
@@ -95,7 +113,7 @@ const createItemToSendObject = (item) => {
     PAGO: "N",
     PRODUTO: name,
     QTDE: item.quantity,
-    TOTAL: item.totalPrice,
+    TOTAL: (item.quantity * item.unitPrice).toFixed(2) ,// item.totalPrice,
     TRANSF_MESA: 0,
     UNITARIO: item.unitPrice,
   }
@@ -107,12 +125,11 @@ const createRequestObject = () => {
 
   const totalPrice = sumTotalPrice(cartItems);
   const shippingTax = getShippingTax(appStore.state);
-
-  let totalFinal = parseFloat(totalPrice) + parseFloat(shippingTax);
   
-  const discount = getDiscountValue(totalFinal, appStore.state.cupom);
+  const discount = getDiscountValue(totalPrice, appStore.state.cupom);
 
-  totalFinal = totalFinal - parseFloat(discount);
+  let totalFinal = parseFloat(totalPrice) - parseFloat(discount);
+  totalFinal = totalFinal + parseFloat(shippingTax);
   totalFinal = totalFinal.toFixed(2);
   totalFinal = parseFloat(totalFinal);
 
@@ -131,6 +148,23 @@ const createRequestObject = () => {
     shipping = addressText;
   }
 
+  const day = currentDate.getDate();
+  const month = currentDate.getMonth() + 1;
+  const year = currentDate.getFullYear();
+  const hour = currentDate.getHours();
+  const minute = currentDate.getMinutes();
+  const seconds = currentDate.getSeconds();
+  
+  const dayStr = String(day).padStart(2, '0');
+  const monthStr = String(month).padStart(2, '0');
+  const hourStr = String(hour).padStart(2, '0');
+  const minuteStr = String(minute).padStart(2, '0');
+  const secondsStr = String(seconds).padStart(2, '0');
+
+  const dateStr = `${dayStr}/${monthStr}/${year}`;
+  const timeStr = `${hourStr}:${minuteStr}:${secondsStr}`;
+  
+
   const pedido = {
     CLIENTE_ID: user.id,
     VALOR: totalFinal,
@@ -140,8 +174,9 @@ const createRequestObject = () => {
     DESEJA_RECIBO: appStore.state.recibo ? 1 : 0,
     INFO_RECIBO: appStore.state.infoRecibo,
     COD_CUPOM: appStore.state.cupom ? appStore.state.cupom.codigo : undefined,
-    DATA: currentDate.toLocaleDateString(),
-    HORA: currentDate.toLocaleTimeString(),
+    DATA: dateStr,
+    HORA: timeStr,
+    VALOR_ENTREGA: shippingTax,
   }
 
   const finalItems = cartItems.map(createItemToSendObject);
@@ -171,7 +206,11 @@ const createMontagemMessage = (item) => {
 const createItemsMessage = (item, index) => {
   const rows = [];
   rows.push(`${index + 1}. ${item.PRODUTO} (${item.QTDE}x);`);
-
+  if (item.LISTA_MONTAGEM.length) {
+    rows.push(`  - Montagem:`);
+    const montagemStr = item.LISTA_MONTAGEM.map(createMontagemMessage).join(WHATSAPP_BREAK_LINE);
+    rows.push(`     ${montagemStr}`);
+  }
   if (item.LISTA_ADICIONAIS.length) {
     rows.push(`  - Adicionais:`);
     const addicionalStr = item.LISTA_ADICIONAIS.map(createAddicionalMessage).join(WHATSAPP_BREAK_LINE);
@@ -184,14 +223,10 @@ const createItemsMessage = (item, index) => {
   }
   if (item.LISTA_OPCOES.length) {
     rows.push(`  - Opções:`);
-    const opcoesStr = item.LISTA_OPCIONAIS.map(createOpcoesMessage).join(WHATSAPP_BREAK_LINE);
+    const opcoesStr = item.LISTA_OPCOES.map(createOpcoesMessage).join(WHATSAPP_BREAK_LINE);
     rows.push(`     ${opcoesStr}`);
   }
-  if (item.LISTA_MONTAGEM.length) {
-    rows.push(`  - Montagem:`);
-    const montagemStr = item.LISTA_MONTAGEM.map(createMontagemMessage).join(WHATSAPP_BREAK_LINE);
-    rows.push(`     ${montagemStr}`);
-  }
+  
   if (item.COMPLEMENTO && item.COMPLEMENTO !== "") {
     rows.push(`  - Observação: ${item.COMPLEMENTO}`);
   }
@@ -199,42 +234,70 @@ const createItemsMessage = (item, index) => {
   return rows.join(WHATSAPP_BREAK_LINE);
 }
 
-const enviarWhatsapp = () => {
+const enviarWhatsapp = (numPedido) => {
   const { pedido, items } = createRequestObject();
+  const user = userStore.state.user ? userStore.state.user : {};
+  const [nome] = user.nome.split(" ");
 
   const rows = [];
-  rows.push(`- *Valor:* ${formatMoney(pedido.VALOR)};`);
-  if (pedido.VALOR_TROCO) {
-    rows.push(`- *Valor troco:* ${formatMoney(pedido.VALOR_TROCO)};`);
+
+  rows.push(`*Pedido Delivery Five ${numPedido ? `#${numPedido}` : ""}*`);
+  rows.push(`---------------------------------------`);
+  rows.push("");
+  
+  const itemsStr = items.map(createItemsMessage).join(WHATSAPP_BREAK_LINE);
+  rows.push(`   ${itemsStr}`);
+  rows.push("");
+  rows.push(`*Total:* ${formatMoney(pedido.VALOR)}`);
+
+  if (appStore.state.cupom) {
+    rows.push(`*Cupom:* ${appStore.state.cupom.cupom}`);
   }
-  rows.push(`- *Pagamento:* ${pedido.PAGAMENTO};`);
-  rows.push(`- *Entrega:* ${pedido.ENTREGA};`);
+
+  rows.push("");
+  rows.push(`---------------------------------------`);
+  rows.push("");
+  if(pedido.ENTREGA === 'Retirar no local')
+    rows.push(`*Tempo para retirar em média ${window.empresa.TEMPO_RETIRADA} minutos`);
+  else
+    rows.push(`*Tempo de entrega em média ${window.empresa.TEMPO_ESPERA} minutos`);
+
+  rows.push("");
+  rows.push(`*${nome}*`);
+  rows.push(`${masks.phone(user.telefone)}`);
+
+  rows.push("");
+  rows.push(`${pedido.ENTREGA}`);
+
+  rows.push("");
+  rows.push(`*Pagamento:* ${pedido.PAGAMENTO}`);
+  
+  if (pedido.VALOR_TROCO) {
+    rows.push(`*Valor troco:* ${formatMoney(pedido.VALOR_TROCO)};`);
+  }
 
   const hasRecibo = pedido.DESEJA_RECIBO === 1 && pedido.INFO_RECIBO && pedido.INFO_RECIBO !== "";
   if (hasRecibo) {
-    rows.push(`- *Informações para recibo:* ${pedido.INFO_RECIBO};`);
+    rows.push("");
+    rows.push(`*Informações para recibo:* `);
+    rows.push(`${pedido.INFO_RECIBO}`);
   }
 
-  if (appStore.state.cupom) {
-    rows.push(` - *Cupom:* ${appStore.state.cupom.cupom};`)
-  }
-
-  const itemsStr = items.map(createItemsMessage).join(WHATSAPP_BREAK_LINE);
-  rows.push(` - *Items:*`);
-  rows.push(`   ${itemsStr}`);
-  
   const finalStr = rows.join(WHATSAPP_BREAK_LINE);
 
-  const url = `https://wa.me/5569999016304?text=${encodeURIComponent(finalStr)}`;
+  const phone = `55${window.empresa.whatsapp}`;
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(finalStr)}`;
   window.open(url,'_blank');
 }
 
 export const clearCard = () => {
   appStore.dispatchAction(clear());
 
-  const url = `/${location.search}`;
+  const url = `/home${location.search}`;
   Router.go(url);
 }
+
+
 
 export const sendCart = async () => {
   const requestData = createRequestObject();
@@ -253,17 +316,27 @@ export const sendCart = async () => {
     if (response.message && response.message === "sucesso") {
       fireEvent("show-modal", {
         type: "success", 
+        message: "Seu pedido foi enviado com sucesso. Obrigado!",
+        textConfirm: "OK",
+        onConfirm: () => {
+          enviarWhatsapp(response.numPedido);
+          clearCard();
+        }
+      });
+
+      /*fireEvent("show-modal", {
+        type: "success", 
         message: "Seu pedido foi enviado com sucesso. Obrigado! <br />Deseja enviá-lo por WhatsApp?",
         textConfirm: "Sim",
         textCancel: "Não",
         onConfirm: () => {
-          enviarWhatsapp();
+          enviarWhatsapp(response.numPedido);
           clearCard();
         },
         onCancel: () => {
           clearCard();
         }
-      });
+      });*/
     }
   } catch (err) {
     console.error(err);  

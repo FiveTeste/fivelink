@@ -34,11 +34,11 @@ class OpcoesForm extends HTMLElement {
     `;
     
     const elementHtml = html`
-        <div>
+        <div style="padding-bottom: 100px;">
           <div class='title__container'>
             <strong class="title">Opcionais</strong>
-            <span style="color: var(--color-gray-dark); font-size: 1.4rem; display: none;" id="quant_info">
-              Máximo: <span id="quant_max">0</span> itens
+            <span style="color: var(--color-gray-dark); font-size: 1.4rem;" id="quant_info">
+              Escolha até <span id="quant_max">0</span> opções
             </span>
           </div>
           <ul class="list__container">
@@ -72,16 +72,6 @@ class OpcoesForm extends HTMLElement {
 
   setMax(max) {
     this.max = +max;
-
-    const maxContainer = this.shadowRoot.querySelector("#quant_info");
-    const maxElement = maxContainer.querySelector("#quant_max");
-    if (this.max > 0) {
-      maxContainer.style.setProperty("display", "block");
-      maxElement.textContent = this.max;
-    } else {
-      maxContainer.style.setProperty("display", "none");
-      maxElement.textContent = 0;
-    }
   }
 
   loadProducts(list = []) {
@@ -114,6 +104,11 @@ class OpcoesForm extends HTMLElement {
       const titleElement = this.shadowRoot.querySelector("strong.title");
       titleElement.textContent = this.titleText;
     }
+
+    const maxContainer = this.shadowRoot.querySelector("#quant_info");
+    const maxElement = maxContainer.querySelector("#quant_max");
+    maxContainer.style.setProperty("display", "block");
+    maxElement.textContent = this.max;
 
     fireEvent("toggle-form-slider", { enabled: true });
   }

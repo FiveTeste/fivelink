@@ -13,7 +13,7 @@ const INITIAL_STATE = {
   infoRecibo: undefined,
 }
 
-export const appStore = new Store((state = INITIAL_STATE, action) => {
+export const appStore = new Store((state = INITIAL_STATE, action) => {  
   switch (action.type) {
     case "ADD_ITEM": {
       const newItems = [...state.items];
@@ -34,7 +34,8 @@ export const appStore = new Store((state = INITIAL_STATE, action) => {
       const newQuantity = currentItem.quantity + 1;
       const totalPrice = currentItem.unitPrice * newQuantity;
 
-      const additionalPrice = calcAdditionalPrice(currentItem.additional);
+      const additionalPrice = newQuantity * calcAdditionalPrice(currentItem.additional);
+      //const additionalPrice = calcAdditionalPrice(currentItem.additional);
       const finalPrice = parseFloat(totalPrice) + parseFloat(additionalPrice);
 
       const currentDate = new Date();
@@ -56,7 +57,8 @@ export const appStore = new Store((state = INITIAL_STATE, action) => {
       if (newQuantity <= 0) return state;
 
       const totalPrice = currentItem.unitPrice * newQuantity;
-      const additionalPrice = calcAdditionalPrice(currentItem.additional);
+      const additionalPrice = newQuantity * calcAdditionalPrice(currentItem.additional);
+      //const additionalPrice = calcAdditionalPrice(currentItem.additional);
       const finalPrice = parseFloat(totalPrice) + parseFloat(additionalPrice);
 
       const currentDate = new Date();
@@ -95,6 +97,10 @@ export const appStore = new Store((state = INITIAL_STATE, action) => {
 
     case "CLEAR": {
       return { items: [] }
+    }
+
+    case "COUNT": {
+      return { ...state }
     }
 
     default:

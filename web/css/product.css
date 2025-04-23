@@ -7,10 +7,10 @@
   width: 100%;
 
   background-image: url(../web/images/new/food.jpg);
-  background-size: 120%;
-  background-position: center center;
-
-  animation: 45s linear 0s infinite alternate product__image-slide;
+  background-size: 100%;
+  background-position: center;
+  object-fit: contain;
+  /*animation: 45s linear 0s infinite alternate product__image-slide;*/
 }
 
 .product .product__info {
@@ -76,7 +76,7 @@
 }
 
 
-@keyframes product__image-slide {
+/*@keyframes product__image-slide {
   16.5%, 49.5%, 82.5% {
     background-size: 100%;
     background-position: center center;
@@ -98,4 +98,4 @@
     background-size: 120%;
     background-position: top right;
   }
-}
+}*/

@@ -144,3 +144,9 @@ export function clearOrder() {
     type: "CLEAR_ORDER",
   }
 }
+
+export function countOrder() {
+  return {
+    type: "COUNT",
+  }
+}
