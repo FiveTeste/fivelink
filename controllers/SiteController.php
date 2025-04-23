@@ -484,6 +484,12 @@ class SiteController extends Controller {
                 $result = json_decode(Json::encode($produto), true);
                 $result['isPromotional'] = $validator->isPromotional();
 
+                // Verifica se o produto é um combo
+                if ($produto->PRODUTO_COMBO == 1) {
+                    $combos = \app\models\Combo::getCombosByCodigoProduto($produto->CODIGO);
+                    $result['combos'] = $combos;
+                }
+
                 array_push($response, $result);
             }
             return $response;
@@ -685,6 +691,64 @@ class SiteController extends Controller {
         } else {
             return [];
         }
+    }
+
+
+
+    public function actionCombos($codgrupo, $codproduto) {
+        Yii::$app->response->format = Response::FORMAT_JSON;
+    
+        $produto = \app\models\Produto::findOne(['CODIGO' => $codproduto, 'CODGRUPO' => $codgrupo]);
+    
+        if (!$produto) {
+            return [
+                'error' => 'Produto não encontrado.',
+            ];
+        }
+    
+        $combos = \app\models\Combo::find()
+            ->where(['CODPRODUTO' => $codproduto])
+            ->orderBy(['ORDEM' => SORT_ASC])
+            ->all();
+    
+        $response = [];
+    
+        foreach ($combos as $combo) {
+
+            $produtosCombo = \app\models\ComboProdutos::find()
+            ->With('produto')
+            ->where(['COMBO_ID' => $combo->ID])
+            ->all();
+    
+            $produtos = [];
+            foreach ($produtosCombo as $produtoCombo) {
+                $produtoDetalhes = \app\models\Produto::findOne(['CODIGO' => $produtoCombo->CODPRODUTO]);
+                if ($produtoDetalhes) {
+                    $produtos[] = [
+                        'ID' => $produtoCombo->ID,
+                        'COMBO_ID' => $produtoCombo->COMBO_ID,
+                        'CODPRODUTO' => $produtoCombo->CODPRODUTO,
+                        'VALOR' => $produtoCombo->VALOR,
+                        'QTDE' => $produtoCombo->QTDE,
+                    ];
+                }
+            }
+    
+            $response[] = [
+                'combo' => [
+                    'ID' => $combo->ID,
+                    'DESCRICAO' => $combo->DESCRICAO,
+                    'QTDE_MAX' => $combo->QTDE_MAX,
+                    'ORDEM' => $combo->ORDEM,
+                    'CODPRODUTO' => $combo->CODPRODUTO,
+                    'OBRIGATORIO' => $combo->OBRIGATORIO,
+                    'VALOR_BASE' => $combo->VALOR_BASE,
+                ],
+                'produtos' => $produtos,
+            ];
+        }
+    
+        return $response;
     }
 
 }

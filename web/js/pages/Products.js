@@ -61,6 +61,8 @@ class ProductsPage extends HTMLElement {
       element.slot = "items";
       element.product = item;
 
+      console.log("item", item);
+
       container.appendChild(element);
     });
   }
