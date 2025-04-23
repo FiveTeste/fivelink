@@ -118,6 +118,13 @@ export function setProducts(payload) {
   }
 }
 
+export function setCombos(payload) {
+  return {
+    type: "SET_COMBOS",
+    payload,
+  }
+}
+
 export function setAdditional(payload) {
   return {
     type: "SET_ADDITIONAL",

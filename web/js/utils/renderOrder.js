@@ -4,6 +4,7 @@ import { name as FormQuantity } from "../components/FormQuantity.js";
 import { name as ProductsForm } from "../components/ProductsForm.js";
 import { name as OpcionaisForm } from "../components/OpcionaisForm.js";
 import { name as OpcoesForm } from "../components/OpcoesForm.js";
+import { name as CombosForm } from "../components/CombosForm.js";
 
 import {
   addItem,
@@ -11,6 +12,7 @@ import {
   setObservation,
   setQuantity,
   setProducts,
+  setCombos,
   setAdditional,
   setOptional,
   setOpcoes,
@@ -177,6 +179,9 @@ export const createForms = () => {
   opcoesForm.titleText = "Opções";
   opcoesForm.addEventListener("kyosk-change", dispatchStore(setOpcoes));
 
+  const combosForm = document.createElement(CombosForm);
+  combosForm.addEventListener("kyosk-change", dispatchStore(setCombos));
+
   const pontoCarneForm = document.createElement(PontoCarne);
   pontoCarneForm.addEventListener("kyosk-change", dispatchStore(setPontoCarne));
   
@@ -192,6 +197,7 @@ export const createForms = () => {
   forms.set("opcionais", { index: 2, element: opcionaisForm });
   forms.set("additional", { index: 3, element: adicionalForm });
   forms.set("opcoes", { index: 4, element: opcoesForm });
+  forms.set("combos", { index: 5, element: combosForm });
   // forms.set("usa-copos", { index: 5, element: usaCoposForm });
   // forms.set("usa-talheres", { index: 6, element: usaTalheresForm });
   //forms.set("observation", { index: 7, element: observationForm });
@@ -240,7 +246,12 @@ export const getSliderForms = (options, forms) => {
     const form = forms.get("opcoes");
     form.element.loadProducts(options.opcoes);
     form.element.setMax(maxOpcoes);
+    resultForms.push(form);
+  }
 
+  if(options.combos && options.combos.length > 0){
+    const form = forms.get("combos");
+    form.element.loadProducts(options.combos);
     resultForms.push(form);
   }
 
@@ -276,6 +287,7 @@ export const finishOrder = ({ product, unitPrice, category }) => {
     additional: state.additional,
     optional: state.optional,
     opcoes: state.opcoes,
+    combos: state.combos,
     totalPrice: finalPrice.toFixed(2),
     detail,
     name,
