@@ -194,12 +194,11 @@ $this->title = 'Five - Delivery';
 
 <!-- COMBOS TEMPLATE -->
 <template id="combo-form">
-<style>
-  </style>
+<?= CssLoader::loadCss("combo-form.css") ?>
     <div class="combo-step">
     <div class="combo-step__title" id="step-title"></div>
         <ul class="combo-step__list" id="step-list"></ul>
-  </div>
+    </div>
 </template>
 
 <!-- CATEGORY ITEM TEMPLATE -->

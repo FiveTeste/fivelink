@@ -1,0 +1,5 @@
+.combo-step__list{
+    overflow: scroll;
+    margin-left: -37px;
+    padding-right: 10px;
+}
