@@ -37,7 +37,7 @@ class ProductItem extends HTMLElement {
   }
 
   connectedCallback() {
-    const element = this.shadowRoot.querySelector(".image-container__image ");
+    const element = this.shadowRoot.querySelector(".image-container__image");
     element.style.setProperty("background-image", `url(${this.image})`);
 
     this.handleCheck(this.getAttribute("checked"));

@@ -31,10 +31,12 @@ class Combo extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['QTDE_MAX', 'ORDEM', 'OBRIGATORIO'], 'integer'],
+            [['ID'], 'required'],
+            [['ID', 'QTDE_MAX', 'ORDEM', 'OBRIGATORIO'], 'integer'],
             [['VALOR_BASE'], 'number'],
             [['DESCRICAO'], 'string', 'max' => 100],
             [['CODPRODUTO'], 'string', 'max' => 6],
+            [['ID'], 'unique'],
         ];
     }
 
@@ -45,43 +47,37 @@ class Combo extends \yii\db\ActiveRecord
     {
         return [
             'ID' => 'ID',
-            'DESCRICAO' => 'Descrição',
-            'QTDE_MAX' => 'Quantidade Máxima',
+            'DESCRICAO' => 'Descricao',
+            'QTDE_MAX' => 'Qtde  Max',
             'ORDEM' => 'Ordem',
-            'CODPRODUTO' => 'Código do Produto',
-            'OBRIGATORIO' => 'Obrigatório',
-            'VALOR_BASE' => 'Valor Base',           
+            'CODPRODUTO' => 'Codproduto',
+            'OBRIGATORIO' => 'Obrigatorio',
+            'VALOR_BASE' => 'Valor  Base',
         ];
     }
-
-    /**
-     * Gets related ComboProdutos.
+    
+    public function fields() {
+        return [
+            // field name is the same as the attribute name
+            'ID' ,
+            'DESCRICAO',
+            'QTDE_MAX',
+            'ORDEM' ,
+            'CODPRODUTO',
+            'OBRIGATORIO' ,
+            'VALOR_BASE' ,
+            'PRODUTOS_COMBO' => function () {
+                return $this->getComboProdutos();
+            },
+        ];
+    }
+    
+     /**
+     * Gets query for combo_produto
+     *
      * @return \yii\db\ActiveQuery
      */
-    public function getComboProdutos()
-    {
-        return $this->hasMany(ComboProdutos::class, ['combo_id' => 'ID']);
-    }
-
-    /**
-     * Busca os combos e seus produtos relacionados com base no código do produto.
-     *
-     * @param string $codigoProduto Código do produto.
-     * @return array Lista de combos e seus produtos relacionados.
-     */
-    public static function getCombosByCodigoProduto($codigoProduto)
-    {
-        $combos = self::find()->where(['CODPRODUTO' => $codigoProduto])->all();
-
-        $result = [];
-        foreach ($combos as $combo) {
-            $comboProdutos = ComboProdutos::find()->where(['COMBO_ID' => $combo->ID])->all();
-            $result[] = [
-                'combo' => $combo,
-                'produtos' => $comboProdutos
-            ];
-        }
-
-        return $result;
+    public function getComboProdutos() {
+        return ComboProdutos::find()->where(['COMBO_ID' => $this->ID])->all();
     }
 }

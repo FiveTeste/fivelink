@@ -248,10 +248,10 @@ export const getSliderForms = (options, forms) => {
     form.element.setMax(maxOpcoes);
     resultForms.push(form);
   }
-
-  if(options.combos && options.combos.length > 0){
+  
+  if(options.COMBOS && options.COMBOS.length > 0){
     const form = forms.get("combos");
-    form.element.loadProducts(options.combos);
+    form.element.loadProducts(options.COMBOS);
     resultForms.push(form);
   }
 

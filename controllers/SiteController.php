@@ -450,7 +450,7 @@ class SiteController extends Controller
                 array_push($opcionaisResponse, $opcionalResult);
             }
 
-            $combos = \app\models\Combo::find()
+           /* $combos = \app\models\Combo::find()
             ->where(['CODPRODUTO' => $cod])
             ->orderBy(['ORDEM' => SORT_ASC])
             ->all();
@@ -462,33 +462,35 @@ class SiteController extends Controller
                 ->where(['COMBO_ID' => $combo->ID])
                 ->all();
 
-            $produtos = [];
-            foreach ($produtosCombo as $produtoCombo) {
-                $produtoDetalhes = \app\models\Produto::findOne(['CODIGO' => $produtoCombo->CODPRODUTO]);
-                if ($produtoDetalhes) {
-                    $produtos[] = [
-                        'ID' => $produtoCombo->ID,
-                        'COMBO_ID' => $produtoCombo->COMBO_ID,
-                        'CODPRODUTO' => $produtoCombo->CODPRODUTO,
-                        'VALOR' => $produtoCombo->VALOR,
-                        'QTDE' => $produtoCombo->QTDE,
-                    ];
+                $produtos = [];
+                foreach ($produtosCombo as $produtoCombo) {
+                    $produtoDetalhes = \app\models\Produto::findOne(['CODIGO' => $produtoCombo->CODPRODUTO]);
+                    if ($produtoDetalhes) {
+                        $produtos[] = [
+                            'ID' => $produtoCombo->ID,
+                            'COMBO_ID' => $produtoCombo->COMBO_ID,
+                            'CODPRODUTO' => $produtoCombo->CODPRODUTO,
+                            'VALOR' => $produtoCombo->VALOR,
+                            'QTDE' => $produtoCombo->QTDE,
+                            'PRODUTO' => $produtoDetalhes->PRODUTO ?? null, 
+                            'DESCRICAO' => $produtoDetalhes->ACOMPANHAMENTO ?? null, 
+                        ];
+                    }
                 }
-            }
 
-            $response[] = [
-                'combo' => [
-                    'ID' => $combo->ID,
-                    'DESCRICAO' => $combo->DESCRICAO,
-                    'QTDE_MAX' => $combo->QTDE_MAX,
-                    'ORDEM' => $combo->ORDEM,
-                    'CODPRODUTO' => $combo->CODPRODUTO,
-                    'OBRIGATORIO' => $combo->OBRIGATORIO,
-                    'VALOR_BASE' => $combo->VALOR_BASE,
-                ],
-                'produtos' => $produtos,
-            ];
-            }
+                $response[] = [
+                    'combo' => [
+                        'ID' => $combo->ID,
+                        'DESCRICAO' => $combo->DESCRICAO,
+                        'QTDE_MAX' => $combo->QTDE_MAX,
+                        'ORDEM' => $combo->ORDEM,
+                        'CODPRODUTO' => $combo->CODPRODUTO,
+                        'OBRIGATORIO' => $combo->OBRIGATORIO,
+                        'VALOR_BASE' => $combo->VALOR_BASE,
+                    ],
+                    'produtos' => $produtos,
+                ];
+            }*/
 
             $validator = new PromotionalValidator($model);
 
@@ -496,7 +498,7 @@ class SiteController extends Controller
             $result['opcoes'] = $opcoes;
             $result['adicionais'] = $adicionaisResponse;
             $result['opcionais'] = $opcionaisResponse;
-            $result['combos'] = $response;
+            //$result['combos'] = $response;
             $result['isPromotional'] = $validator->isPromotional();
 
             return $result;
