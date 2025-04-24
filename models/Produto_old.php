@@ -36,11 +36,9 @@ use Yii;
  * @property string|null $PROMO_DIAS_SEMANA
  * @property int $PROMO_DELIVERY
  * @property int $PROMO_MESA
- * @property int $PROMO_DOBRO
  * @property int $APP_CARDAPIO
  * @property int $APP_DELIVERY
  * @property int|null $QTDE_MAX_ADICIONAL
- * @property int $PRODUTO_COMBO
  *
  * @property Consumo[] $consumos
  * @property ConsumoDelivery[] $consumoDeliveries
@@ -51,23 +49,25 @@ use Yii;
  * @property ProdutoIngrediente[] $produtoIngredientes
  * @property ProdutoOpcional[] $produtoOpcionals
  */
-class Produto extends \yii\db\ActiveRecord {
-
+class Produto extends \yii\db\ActiveRecord
+{
     /**
      * {@inheritdoc}
      */
-    public static function tableName() {
+    public static function tableName()
+    {
         return 'produto';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules() {
+    public function rules()
+    {
         return [
             [['CODIGO', 'PRODUTO', 'PRECOVENDA', 'SITUACAO', 'PROMO_DELIVERY', 'PROMO_MESA', 'APP_CARDAPIO', 'APP_DELIVERY'], 'required'],
             [['PRECOVENDA', 'PRECO_PROMOCAO'], 'number'],
-            [['SITUACAO', 'HORARIO_PROMOCAO', 'USA_BALANCA', 'USA_TALHERES', 'USA_PONTO_CARNE', 'USA_COPOS', 'QTDE_MAX_OPCIONAL', 'QTDE_MAX_OPCOES', 'PROMO_DELIVERY', 'PROMO_MESA', 'APP_CARDAPIO', 'APP_DELIVERY', 'PROMO_DOBRO', 'QTDE_MAX_ADICIONAL', 'PRODUTO_COMBO'], 'integer'],
+            [['SITUACAO', 'HORARIO_PROMOCAO', 'USA_BALANCA', 'USA_TALHERES', 'USA_PONTO_CARNE', 'USA_COPOS', 'QTDE_MAX_OPCIONAL', 'QTDE_MAX_OPCOES', 'PROMO_DELIVERY', 'PROMO_MESA', 'APP_CARDAPIO', 'APP_DELIVERY','QTDE_MAX_ADICIONAL'], 'integer'],
             [['CODIGO', 'CODGRUPO', 'CODSUBGRUPO'], 'string', 'max' => 6],
             [['PRODUTO'], 'string', 'max' => 100],
             [['UNIDADE'], 'string', 'max' => 3],
@@ -82,7 +82,8 @@ class Produto extends \yii\db\ActiveRecord {
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels() {
+    public function attributeLabels()
+    {
         return [
             'CODIGO' => 'Codigo',
             'PRODUTO' => 'Produto',
@@ -115,51 +116,7 @@ class Produto extends \yii\db\ActiveRecord {
             'PROMO_MESA' => 'Promo  Mesa',
             'APP_CARDAPIO' => 'App  Cardapio',
             'APP_DELIVERY' => 'App  Delivery',
-            'PROMO_DOBRO' => 'Promocão em dobro',
-            'QTDE_MAX_ADICIONAL' => 'Qtde Max Adicional',
-            'PRODUTO_COMBO' => 'Produto combo',
-        ];
-    }
-
-    public function fields() {
-        return [
-        'CODIGO',
-        'PRODUTO'  ,
-        'UNIDADE' ,
-        'PRECOVENDA' ,
-        'SITUACAO',
-        'ADICIONAL' ,
-        'CODGRUPO',
-        'CODSUBGRUPO' ,
-        'PRODUTO_MONTADO' ,
-        'MOSTRA_KYOSK_APP',
-        'PRECO_PROMOCAO' ,
-        'DT_INICIO_PROMOCAO' ,
-        'DT_FIM_PROMOCAO' ,
-        'HORA_INICIO_PROMOCAO' ,
-        'HORA_FIM_PROMOCAO' ,
-        'HORARIO_PROMOCAO' ,
-        'USA_BALANCA' ,
-        'USA_TALHERES' ,
-        'USA_PONTO_CARNE' ,
-        'USA_COPOS' ,
-        'ACOMPANHAMENTO' ,
-        'FOTO',
-        'OPCIONAL' ,
-        'QTDE_MAX_OPCIONAL' ,
-        'QTDE_MAX_OPCOES' ,
-        'DESTAQUE' ,
-        'PROMO_DIAS_SEMANA' ,
-        'PROMO_DELIVERY' ,
-        'PROMO_MESA' ,
-        'APP_CARDAPIO' ,
-        'APP_DELIVERY' ,
-        'PROMO_DOBRO' ,
-        'QTDE_MAX_ADICIONAL' ,
-        'PRODUTO_COMBO' ,
-        'COMBOS' => function(){
-                return  $this->PRODUTO_COMBO == 1 ? $this->getCombos() : [];
-            },
+			'QTDE_MAX_ADICIONAL'=>'Qtde Max Adicional',
         ];
     }
 
@@ -168,7 +125,8 @@ class Produto extends \yii\db\ActiveRecord {
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getConsumos() {
+    public function getConsumos()
+    {
         return $this->hasMany(Consumo::className(), ['COD_PRODUTO' => 'CODIGO']);
     }
 
@@ -177,7 +135,8 @@ class Produto extends \yii\db\ActiveRecord {
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getConsumoDeliveries() {
+    public function getConsumoDeliveries()
+    {
         return $this->hasMany(ConsumoDelivery::className(), ['COD_PRODUTO' => 'CODIGO']);
     }
 
@@ -186,7 +145,8 @@ class Produto extends \yii\db\ActiveRecord {
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getItemMontados() {
+    public function getItemMontados()
+    {
         return $this->hasMany(ItemMontado::className(), ['CODPRODUTO' => 'CODIGO']);
     }
 
@@ -195,7 +155,8 @@ class Produto extends \yii\db\ActiveRecord {
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getItemMontadoDeliveries() {
+    public function getItemMontadoDeliveries()
+    {
         return $this->hasMany(ItemMontadoDelivery::className(), ['CODPRODUTO' => 'CODIGO']);
     }
 
@@ -204,7 +165,8 @@ class Produto extends \yii\db\ActiveRecord {
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getCODGRUPO() {
+    public function getCODGRUPO()
+    {
         return $this->hasOne(Grupo::className(), ['CODIGO' => 'CODGRUPO']);
     }
 
@@ -213,7 +175,8 @@ class Produto extends \yii\db\ActiveRecord {
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getProdutoAdicionals() {
+    public function getProdutoAdicionals()
+    {
         return $this->hasMany(ProdutoAdicional::className(), ['CODPRODUTO' => 'CODIGO']);
     }
 
@@ -222,7 +185,8 @@ class Produto extends \yii\db\ActiveRecord {
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getProdutoIngredientes() {
+    public function getProdutoIngredientes()
+    {
         return $this->hasMany(ProdutoIngrediente::className(), ['CODPRODUTO' => 'CODIGO']);
     }
 
@@ -231,11 +195,8 @@ class Produto extends \yii\db\ActiveRecord {
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getProdutoOpcionals() {
+    public function getProdutoOpcionals()
+    {
         return $this->hasMany(ProdutoOpcional::className(), ['CODPRODUTO' => 'CODIGO']);
-    }
-
-    public function getCombos() {
-        return Combo::find(['CODPRODUTO' => 'CODIGO'])->orderBy('ORDEM')->all();//Combo::find()->where(['CODPRODUTO' => $this->CODIGO])->all();
     }
 }

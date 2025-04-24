@@ -116,7 +116,7 @@ class ProductsForm extends HTMLElement {
       element.appendChild(slotsPreco);
       element.appendChild(slotsDescription);
       element.setAttribute("checked", !!isSelected);
-      element.image = imageUrl;
+      element.setAttribute("image", imageUrl);
       element.product = product;
 
       this.listContainer.appendChild(element);

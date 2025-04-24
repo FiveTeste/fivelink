@@ -13,7 +13,7 @@ use Yii;
  * @property float|null $VALOR
  * @property float|null $QTDE
  */
-class ComboProdutos extends \yii\db\ActiveRecord
+class Comboprodutos extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -29,9 +29,11 @@ class ComboProdutos extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['COMBO_ID'], 'integer'],
+            [['ID'], 'required'],
+            [['ID', 'COMBO_ID'], 'integer'],
             [['VALOR', 'QTDE'], 'number'],
             [['CODPRODUTO'], 'string', 'max' => 6],
+            [['ID'], 'unique'],
         ];
     }
 
@@ -42,30 +44,45 @@ class ComboProdutos extends \yii\db\ActiveRecord
     {
         return [
             'ID' => 'ID',
-            'COMBO_ID' => 'ID do Combo',
-            'CODPRODUTO' => 'Código do Produto',
+            'COMBO_ID' => 'Combo  ID',
+            'CODPRODUTO' => 'Codproduto',
             'VALOR' => 'Valor',
-            'QTDE' => 'Quantidade',
+            'QTDE' => 'Qtde',
         ];
     }
 
-    /**
-     * Gets query for the related Combo.
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getCombo()
-    {
-        return $this->hasOne(Combo::className(), ['ID' => 'COMBO_ID']);
+    public function fields() {
+        return [
+            // field name is the same as the attribute name
+            'ID',
+            'COMBO_ID',
+            'CODPRODUTO',
+            'VALOR',
+            'QTDE' ,
+            'PRODUTO' => function () {
+                return $this->getNomeProduto();
+            },
+            'FOTO' => function () {
+                return $this->getFotoProduto();
+            },
+        ];
     }
 
-    /**
-     * Gets query for the related Produto.
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProduto()
-    {
-        return $this->hasOne(Produto::className(), ['CODIGO' => 'CODPRODUTO']);
+    
+    public function getNomeProduto() {
+        $query = new \yii\db\Query();
+        $query->select('PRODUTO')->from('produto')->where(['CODIGO'=> $this->CODPRODUTO]);
+        $comand = $query->createCommand();
+        $nome = $comand->query()->readColumn(0);;
+        
+        return $nome;
+    }
+    
+    public function getFotoProduto() {
+        $query = new \yii\db\Query();
+        $query->select('FOTO')->from('produto')->where(['CODIGO'=> $this->CODPRODUTO]);
+        $comand = $query->createCommand();
+        $foto = $comand->query()->readColumn(0);;
+        return $foto;
     }
 }

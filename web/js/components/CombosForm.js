@@ -22,19 +22,21 @@ class ComboForm extends HTMLElement {
         const step = this.combos[this.currentIndex];
         if (!step) return;
 
-        const { combo, produtos } = step;
+        const combo = this.combos;
+        const produtos = step.PRODUTOS_COMBO;
 
         const template = document.getElementById("combo-form");
         const content = template.content.cloneNode(true);
 
-        content.querySelector("#step-title").textContent = combo.DESCRICAO;
+        content.querySelector("#step-title").textContent = this.DESCRICAO;
 
         const list = content.querySelector("#step-list");
+        console.log(produtos, 'comb0')
 
         produtos.forEach(produto => {
             const item = document.createElement("product-item");
 
-            item.setAttribute("image", `path/to/${produto.CODPRODUTO}.jpg`);
+            item.setAttribute("image", produto.FOTO);
             item.setAttribute("checked", false);
 
             // slots
