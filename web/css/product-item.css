@@ -15,7 +15,8 @@
   content: "";
 }
 
-.item:hover {
+.item:hover 
+.item:focus-visible{
   box-shadow: none;
   filter: brightness(85%);
 }
@@ -116,6 +117,11 @@
   font-weight: 100;
   text-transform: capitalize;
 }
+
+.product__item__description {
+  margin-top: 0.5rem;
+}
+
 
 /*@keyframes product__image-slide {
   16.5%, 49.5%, 82.5% {
