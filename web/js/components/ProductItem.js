@@ -1,6 +1,6 @@
 class ProductItem extends HTMLElement {
   static get observedAttributes() {
-    return ['checked'];
+    return ['checked', 'image'];
   }
 
   constructor() {
@@ -20,7 +20,7 @@ class ProductItem extends HTMLElement {
 
   handleCheck(checked) {
     const container = this.shadowRoot.querySelector(".item");
-    const isChecked = eval(checked);
+    const isChecked = checked === "true";
 
      if (isChecked) {
        if (container.classList.contains("checked")) return;
@@ -32,13 +32,21 @@ class ProductItem extends HTMLElement {
 
   attributeChangedCallback(name, oldValue, newValue) {
     if (name === "checked") {
-      this.handleCheck(newValue)
+      this.handleCheck(newValue);
+    } else if (name === "image") {
+      const element = this.shadowRoot.querySelector(".image-container__image");
+      if (element) {
+        element.style.setProperty("background-image", `url(${newValue})`);
+      }
     }
   }
 
   connectedCallback() {
-    const element = this.shadowRoot.querySelector(".image-container__image");
-    element.style.setProperty("background-image", `url(${this.image})`);
+    const imageAttr = this.getAttribute("image");
+    if (imageAttr) {
+      const element = this.shadowRoot.querySelector(".image-container__image");
+      element.style.setProperty("background-image", `url(${imageAttr})`);
+    }
 
     this.handleCheck(this.getAttribute("checked"));
     this.addEventListener("click", this.onClick);

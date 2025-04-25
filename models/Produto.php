@@ -236,6 +236,6 @@ class Produto extends \yii\db\ActiveRecord {
     }
 
     public function getCombos() {
-        return Combo::find(['CODPRODUTO' => 'CODIGO'])->orderBy('ORDEM')->all();//Combo::find()->where(['CODPRODUTO' => $this->CODIGO])->all();
+        return Combo::find()->where(['CODPRODUTO' => $this->CODIGO])->orderBy('ORDEM')->all();
     }
 }
