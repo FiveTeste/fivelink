@@ -28,6 +28,9 @@ export const orderStore = new Store((state = INITIAL_STATE, action) => {
     case "SET_OPCOES": {
       return { ...state, opcoes: action.payload }
     }
+    case "SET_COMBOS": {
+      return { ...state, combos: action.payload }
+    }
     case "CLEAR_ORDER": {
       return { ...INITIAL_STATE }
     }
