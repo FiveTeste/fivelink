@@ -34,7 +34,7 @@ class FormSlider extends HTMLElement {
           display: flex;
           flex-direction: column;
           padding: 0 0.5rem;
-
+          padding-bottom: 5rem; /* Adiciona espaço para evitar que o botão sobreponha o último produto */
         }
         
         #next-button, #prev-button {
